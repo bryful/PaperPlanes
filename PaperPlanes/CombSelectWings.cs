@@ -31,7 +31,7 @@ namespace PaperPlanes
 			this.Items.Add("垂直尾翼");
 			this.SelectedIndex = 0;
 		}
-		public int TargetWing
+		public int SelectWing
 		{
 			get
 			{

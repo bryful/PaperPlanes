@@ -18,17 +18,18 @@ namespace PaperPlanes
 {
 	public class DrawWings : Control
 	{
-		public float[] MainDef =new float[] {45,50,23.9f,7.9f,176.2f,15,15,20,10};
-		public float[] HTailDef =new float[] {182.4f,30.3f,17,14.2f,104.9f,15,15,20,10};
-		public float[] VTailDef =new float[] {158.8f,31.6f,15.8f,15.8f,55.4f,15,15,20,10};
+		public float[] MainDef =new float[]		{ 49.8f,48.3f,21.6f,4.9f ,152f ,15f   ,15f  ,20f ,10f};
+		public float[] HTailDef =new float[]	{182.4f,30.3f,17f  ,13.9f,100f ,15f   ,0    ,20f ,10f};
+		public float[] VTailDef =new float[]	{158.8f,31.6f,12.6f,24.8f,54.1f,15f   ,15f  ,20f ,10f};
+		public float[] TwinTailDef =new float[] {156.3f,31.6f,18.9f,14.9f,58.5f,15.2f ,16.7f,9.8f,10.5f};
+		public float[] V_TailDef =new float[]	{158.8f,31.6f,15.8f,10.5f,67.2f,15,25f,20f  ,10f};
 
 		/*
-		public enum EDITMODE
-		{
-			NORMAL =0,
-			TWINTAIL,
-			VTAIL
-		}
+		"Main":[49.8,48.3,21.6,4.9,152,15,15,20,10],
+"TailH":[182.4,30.3,17,13.9,100,15,0,20,10],
+"TailV":[158.8,31.6,12.6,24.8,54.1,15,15,20,10],
+"TwinTail":[156.3,31.6,18.9,14.9,58.5,15.2,16.7,9.8,10.5],
+"V_Tail":[158.8,31.6,15.8,10.5,67.2,15,25,20,10]}
 		*/
 		#region event
 		public event EventHandler SetectWingIndexChanged;
@@ -56,7 +57,7 @@ namespace PaperPlanes
 			set
 			{
 				if (m_Main != null) m_Main.SetWingMode(PPWing.WING_MODE.MAIN);
-				if (m_TailV != null) m_Main.SetWingMode(PPWing.WING_MODE.VER_TAIL);
+				if (m_TailV != null) m_TailV.SetWingMode(PPWing.WING_MODE.VER_TAIL);
 				if (m_TailH != null) m_TailH.SetWingMode(PPWing.WING_MODE.HOR_TAIL);
 				if (m_TwinTail != null) m_TwinTail.SetWingMode(PPWing.WING_MODE.TWIN_TAIL);
 				if (m_V_Tail != null) m_V_Tail.SetWingMode(PPWing.WING_MODE.V_TAIL);
@@ -108,6 +109,8 @@ namespace PaperPlanes
 
 		private Color m_GridColor = Color.FromArgb(230,230,230);
 		public Color GridColor { get { return m_GridColor; } set { m_GridColor = value; this.Invalidate(); } }
+		private Color m_GridColor2 = Color.FromArgb(210,210,210);
+		public Color GridColor2 { get { return m_GridColor2; } set { m_GridColor2 = value; this.Invalidate(); } }
 
 		private Color m_BaseLine = Color.FromArgb(150,150,150);
 		public Color BaseLine { get { return m_BaseLine; } set { m_BaseLine = value; this.Invalidate(); } }
@@ -144,6 +147,7 @@ namespace PaperPlanes
 					m_TailH.SetWingMode(PPWing.WING_MODE.HOR_TAIL);
 					m_TailH.SetLocDPI(m_DPI, m_DispLocation);
 					m_TailH.Params = HTailDef;
+					m_TailH.WingDihedral = 0;
 					this.Invalidate();
 				}
 			}
@@ -157,9 +161,10 @@ namespace PaperPlanes
 				m_TailV = value;
 				if(m_TailV!=null)
 				{
-					m_TailH.SetWingMode(PPWing.WING_MODE.VER_TAIL);
+					m_TailV.SetWingMode(PPWing.WING_MODE.VER_TAIL);
 					m_TailV.SetLocDPI(m_DPI, m_DispLocation);
 					m_TailV.Params = VTailDef;
+					m_TailV.WingDihedral = 0;
 					this.Invalidate();
 				}
 			}
@@ -175,7 +180,8 @@ namespace PaperPlanes
 				{
 					m_TwinTail.SetWingMode(PPWing.WING_MODE.TWIN_TAIL);
 					m_TwinTail.SetLocDPI(m_DPI, m_DispLocation);
-					m_TwinTail.Params = VTailDef;
+					m_TwinTail.Params = TwinTailDef;
+					m_TwinTail.WingDihedral = 0;
 					this.Invalidate();
 				}
 			}
@@ -191,7 +197,7 @@ namespace PaperPlanes
 				{
 					m_V_Tail.SetWingMode(PPWing.WING_MODE.V_TAIL);
 					m_V_Tail.SetLocDPI(m_DPI, m_DispLocation);
-					m_V_Tail.Params = VTailDef;
+					m_V_Tail.Params = V_TailDef;
 					this.Invalidate();
 				}
 			}
@@ -212,8 +218,8 @@ namespace PaperPlanes
 					ToParamsList();
 
 					m_ParamList.EditModeChanged += M_ParamList_EditModeChanged;
-					m_ParamList.TargetWing = m_SelectWingIndex;
-					m_ParamList.TargetWingChanged += M_ParamList_TargetWingChanged;
+					m_ParamList.SelectWing = m_SelectWingIndex;
+					m_ParamList.SelectWingChanged += M_ParamList_TargetWingChanged;
 					m_ParamList.ValueChanged += M_ParamList_ValueChanged;
 
 				}
@@ -229,19 +235,21 @@ namespace PaperPlanes
 		private void M_ParamList_TargetWingChanged(object sender, EventArgs e)
 		{
 			if (m_ParamList == null) return;
-			if(m_SelectWingIndex!= m_ParamList.TargetWing)
+			if(m_SelectWingIndex!= m_ParamList.SelectWing)
 			{
-				m_SelectWingIndex = m_ParamList.TargetWing;
-				ToParamsList();
-				this.Invalidate();
+				m_SelectWingIndex = m_ParamList.SelectWing;
 			}
+			ToParamsList();
+			this.Invalidate();
 		}
 
 		public void Init()
 		{
-			//if (m_Main != null) m_Main.Params = MainDef;
-			//if (m_TailH != null) m_TailH.Params = HTailDef;
-			//if (m_TailV != null) m_TailV.Params = VTailDef;
+			if (m_Main != null) m_Main.Params = MainDef;
+			if (m_TailH != null) m_TailH.Params = HTailDef;
+			if (m_TailV != null) m_TailV.Params = VTailDef;
+			if (m_TwinTail != null) m_TwinTail.Params = TwinTailDef;
+			if (m_V_Tail != null) m_V_Tail.Params = V_TailDef;
 		}
 		// *****************************************************************************
 		private void M_ParamList_EditModeChanged(object sender, EventArgs e)
@@ -272,28 +280,45 @@ namespace PaperPlanes
 			base.OnResize(e);
 			this.Invalidate();
 		}
+		public float BodyLength()
+		{
+			float ret = 0;
+			switch (m_EditMode)
+			{
+				case DrawWings.EDIT_MODE.NORMAL:
+					if ((m_TailH != null) && (m_TailV != null))
+					{
+						ret = m_TailH.WingPos + m_TailH.WingRoot;
+						float x2 = m_TailV.WingPos + m_TailV.WingRoot;
+						if (ret < x2) ret = x2;
+					}
+					break;
+				case DrawWings.EDIT_MODE.TWINTAIL:
+					if (m_TwinTail != null)
+					{
+						ret = m_TwinTail.WingPos + m_TwinTail.WingRoot;
+					}
+					break;
+				case DrawWings.EDIT_MODE.VTAIL:
+					if (m_V_Tail != null)
+					{
+						ret = m_V_Tail.WingPos + m_V_Tail.WingRoot;
+					}
+					break;
+
+			}
+			return ret;
+		}
 		// *****************************************************************************
 		/// <summary>
 		/// 機体の全長を求める
 		/// </summary>
 		/// <returns></returns>
-		public PointF LengthPos()
+		public PointF BodyLengthPos()
 		{
 			PointF ret = new PointF(0, 0);
-			float x = 0;
-			switch (m_EditMode)
-			{
-				case DrawWings.EDIT_MODE.NORMAL:
-					x = m_TailH.WingPos + m_TailH.WingRoot;
-					float x1 = m_TailV.WingPos + m_TailV.WingRoot;
-					if (x < x1) x = x1;
-					break;
-				case DrawWings.EDIT_MODE.TWINTAIL:
-				case DrawWings.EDIT_MODE.VTAIL:
-					x = m_TailH.WingPos + m_TailH.WingRoot;
-					break;
-
-			}
+			float x = BodyLength();
+			
 			ret = new PointF(PP.MM2P(m_DispLocation.X + x, m_DPI), PP.MM2P(m_DispLocation.Y, m_DPI));
 			return ret;
 		}
@@ -317,16 +342,78 @@ namespace PaperPlanes
 				int w = this.ClientRectangle.Width;
 				int h = this.ClientRectangle.Height;
 				float cm1 = (float)PP.MM2P(10, m_DPI);
-				int cw = (int)(w / cm1 + 0.5);
-				int ch = (int)(h / cm1 + 0.5);
-				for (int i = 0; i <= ch; i++)
+
+				#region hor
+				//水平線
+				float y = (float)PP.MM2P(m_DispLocation.Y, m_DPI);
+				int cnt = 0;
+				do
 				{
-					g.DrawLine(p, 0, cm1 * i, w, cm1 * i);
-				}
-				for (int i = 0; i <= cw; i++)
+					if((cnt % 5) == 0)
+					{
+						p.Color = m_GridColor2;
+					}
+					else
+					{
+						p.Color = m_GridColor;
+					}
+					cnt++;
+					g.DrawLine(p, 0, y, w, y);
+					y += cm1;
+				} while (y < h);
+				cnt = 1;
+				y = (float)PP.MM2P(m_DispLocation.Y, m_DPI) -cm1;
+				do
 				{
-					g.DrawLine(p, cm1 * i, 0, cm1 * i, h);
-				}
+					if((cnt % 5) == 0)
+					{
+						p.Color = m_GridColor2;
+					}
+					else
+					{
+						p.Color = m_GridColor;
+					}
+					cnt++;
+					g.DrawLine(p, 0, y, w, y);
+					y -= cm1;
+				} while (y >= 0);
+				#endregion
+
+				#region Vur
+				float x = (float)PP.MM2P(m_DispLocation.X, m_DPI);
+				cnt = 0;
+				do
+				{
+					if((cnt % 5) == 0)
+					{
+						p.Color = m_GridColor2;
+					}
+					else
+					{
+						p.Color = m_GridColor;
+					}
+					cnt++;
+					g.DrawLine(p, x, 0, x, h);
+					x += cm1;
+				} while (x < w);
+				cnt = 1;
+				x = (float)PP.MM2P(m_DispLocation.X, m_DPI) -cm1;
+				do
+				{
+					if((cnt % 5) == 0)
+					{
+						p.Color = m_GridColor2;
+					}
+					else
+					{
+						p.Color = m_GridColor;
+					}
+					cnt++;
+					g.DrawLine(p, x, 0, x, h);
+					x -= cm1;
+				} while (x >= 0);
+				#endregion
+
 				//ベースライン
 				p.Width = 2;
 				p.Color = m_BaseLine;
@@ -339,7 +426,7 @@ namespace PaperPlanes
 				//全長
 				p.Width = 2;
 				p.Color = Color.Black;
-				g.DrawLine(p, new PointF(PP.MM2P(m_DispLocation.X, m_DPI), PP.MM2P(m_DispLocation.Y, m_DPI)), LengthPos());
+				g.DrawLine(p, new PointF(PP.MM2P(m_DispLocation.X, m_DPI), PP.MM2P(m_DispLocation.Y, m_DPI)), BodyLengthPos());
 
 
 				p.Color = Color.Black;
@@ -445,7 +532,7 @@ namespace PaperPlanes
 			{
 				if (m_ParamList != null)
 				{
-					m_ParamList.TargetWing = m_SelectWingIndex;
+					m_ParamList.SelectWing = m_SelectWingIndex;
 				}
 			}
 			if (IsMouseDown)
@@ -501,11 +588,9 @@ namespace PaperPlanes
 		{
 			if (m_ParamList == null) return;
 			PPWing wing = null;
+			float tv = 1;
 			switch (m_SelectWingIndex)
 			{
-				case 0:
-					wing = m_Main;
-					break;
 				case 1:
 					if (m_EditMode == EDIT_MODE.NORMAL)
 					{
@@ -522,46 +607,91 @@ namespace PaperPlanes
 					break;
 				case 2:
 					wing = m_TailV;
+					tv = 0.5f;
 					break;
+				case 0:
 				default:
-					return;
+					wing = m_Main;
+					break;
 			}
 			m_ParamList.EventFlag = false;
 			m_ParamList.WingPos = wing.WingPos;
 			m_ParamList.WingRoot = wing.WingRoot;
 			m_ParamList.WingTip = wing.WingTip;
 			m_ParamList.WingTipOffset = wing.WingTipOffset;
-			m_ParamList.WingSpan = wing.WingSpan;
-			if ((m_EditMode == EDIT_MODE.NORMAL) || (m_EditMode == EDIT_MODE.VTAIL))
-			{
-				m_ParamList.WingDihedral = wing.WingDihedral;
-			}
-
-			if (m_EditMode == EDIT_MODE.TWINTAIL)
-			{
-				m_ParamList.WingTip2 = wing.WingTip2;
-				m_ParamList.WingTipOffset2 = wing.WingTipOffset2;
-				m_ParamList.WingSpan2 = wing.WingSpan2;
-			}
+			m_ParamList.WingSpan = wing.WingSpan * tv;
+			m_ParamList.WingDihedral = wing.WingDihedral;
+			m_ParamList.WingTip2 = wing.WingTip2;
+			m_ParamList.WingTipOffset2 = wing.WingTipOffset2;
+			m_ParamList.WingSpan2 = wing.WingSpan2;
+	
 			m_ParamList.EventFlag = true;
 
+			ShowInfo();
 
+
+		}
+		public void ShowInfo()
+		{
+			if (m_ParamList == null) return;
+			m_ParamList.Body = BodyLength()/10;// mm->cm
+
+			if (m_Main != null) m_ParamList.MainArea = m_Main.HorArea/100;
+			m_ParamList.TailHorArea = TailHorArea()/100;
+			m_ParamList.TailHorAreaIdeal = TailHorArea()/100;
+
+			m_ParamList.TailVerArea = TailVerArea() / 100;
+			m_ParamList.TailVerAreaIdeal = TailVerArea() / 100;
+		}
+		// *****************************************************************************
+		public float TailHorArea()
+		{
+			float ret = 0;
+			switch(m_EditMode)
+			{
+				case EDIT_MODE.NORMAL:
+					if (m_TailH != null) ret = m_TailH.HorArea;
+					break;
+				case EDIT_MODE.TWINTAIL:
+					if (m_TwinTail != null) ret = m_TwinTail.HorArea;
+					break;
+				case EDIT_MODE.VTAIL:
+					if (m_V_Tail != null) ret = m_V_Tail.HorArea;
+					break;
+			}
+			return ret;
+		}
+		// *****************************************************************************
+		public float TailVerArea()
+		{
+			float ret = 0;
+			switch(m_EditMode)
+			{
+				case EDIT_MODE.NORMAL:
+					if (m_TailV != null) ret = m_TailV.HorArea/2;
+					break;
+				case EDIT_MODE.TWINTAIL:
+					if (m_TwinTail != null) ret = m_TwinTail.VerArea;
+					break;
+				case EDIT_MODE.VTAIL:
+					if (m_V_Tail != null) ret = m_V_Tail.VerArea;
+					break;
+			}
+			return ret;
 		}
 		// *****************************************************************************
 		public void FromParamsList()
 		{
 			if (m_ParamList == null) return;
 			PPWing wing = null;
-
-			switch (m_ParamList.TargetWing)
+			float tv = 1;
+			switch (m_ParamList.SelectWing)
 			{
-				case 0:
-					wing = m_Main;
-					break;
 				case 1:
 					if (m_EditMode == EDIT_MODE.NORMAL)
 					{
 						wing = m_TailH;
+						
 					}
 					else if (m_EditMode == EDIT_MODE.TWINTAIL)
 					{
@@ -574,30 +704,27 @@ namespace PaperPlanes
 					break;
 				case 2:
 					wing = m_TailV;
+					tv = 2;
 					break;
 				default:
-					return;
+				case 0:
+					wing = m_Main;
+					break;
 			}
 			wing.WingPos = m_ParamList.WingPos;
 			wing.WingRoot = m_ParamList.WingRoot;
 			wing.WingTip = m_ParamList.WingTip;
 			wing.WingTipOffset = m_ParamList.WingTipOffset;
-			wing.WingSpan = m_ParamList.WingSpan;
+			wing.WingSpan = m_ParamList.WingSpan * tv;
 
-			if ((m_EditMode == EDIT_MODE.NORMAL) || (m_EditMode == EDIT_MODE.VTAIL))
-			{
-				{
-					wing.WingDihedral = m_ParamList.WingDihedral;
-				}
+			wing.WingDihedral = m_ParamList.WingDihedral;
+			wing.WingSpan2 = m_ParamList.WingSpan2;
+			wing.WingTip2 = m_ParamList.WingTip2;
+			wing.WingTipOffset2 = m_ParamList.WingTipOffset2;
+			this.Invalidate();
 
-				if (m_EditMode == EDIT_MODE.TWINTAIL)
-				{
-					wing.WingSpan2 = m_ParamList.WingSpan2;
-					wing.WingTip2 = m_ParamList.WingTip2;
-					wing.WingTipOffset2 = m_ParamList.WingTipOffset2;
-					this.Invalidate();
-				}
-			}
+			ShowInfo();
+
 		}
 		// *****************************************************************************
 		public bool Save(string path)

@@ -103,7 +103,13 @@
     <Compile Include="CombSelectWings.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="EmptyBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MAC.cs" />
+    <Compile Include="PPInfoBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PPParams.cs">
       <SubType>Component</SubType>
     </Compile>

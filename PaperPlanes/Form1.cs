@@ -59,6 +59,7 @@ namespace PaperPlanes
 
 			drawWings1.Init();
 			LoadFile(BakFilePath);
+			drawWings1.ToParamsList();
 		}
 		private string BakFilePath
 		{

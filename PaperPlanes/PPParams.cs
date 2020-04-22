@@ -28,20 +28,20 @@ namespace PaperPlanes
 		public PPParams()
 
 		{
-			this.Size = new Size(140, 20);
+			this.Size = new Size(200, 20);
 			this.MinimumSize = this.Size;
 			this.MaximumSize = this.Size;
 			// *
 			Label1.Name = "Label1";
 			Label1.AutoSize = false;
 			Label1.Location = new Point(0, 0);
-			Label1.Size = new Size(70, 20);
+			Label1.Size = new Size(130, 20);
 			Label1.TextAlign = ContentAlignment.MiddleRight;
 			Label1.Text = this.Text;
 			Label1.Font = this.Font;
 
 			NumericUpDown1.Name = "NumericUpDown1";
-			NumericUpDown1.Location = new Point(70, 0);
+			NumericUpDown1.Location = new Point(130, 0);
 			NumericUpDown1.Size = new Size(70, 20);
 			NumericUpDown1.DecimalPlaces = 1;
 			NumericUpDown1.Font = this.Font;
