@@ -25,5 +25,7 @@ namespace PaperPlanes
             double d = w / sz2;
             return (float)d;
         }
+		
+		
 	}
 }

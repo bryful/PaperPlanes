@@ -11,137 +11,56 @@ using System.IO;
 
 namespace PaperPlanes
 {
-	public class PPPoint
-	{
-		public bool Selected = false;
-
-		private float m_DPI = 82;
-		private float m_X = 0;
-		private float m_Y = 0;
-		private float m_PX = 0;
-		private float m_PY = 0;
-
-		public float X { get { return m_X; } }
-		public float Y { get { return m_Y; } }
-		public float PX { get { return m_PX; } }
-		public float PY { get { return m_PY; } }
-		// ********************************************************
-		private float LimitF(float v)
-		{
-			int v2 = (int)(v * 10 + 0.5);
-			return (float)v2 / 10;
-		}
-		// ********************************************************
-		public PPPoint(float x =0, float y= 0, float dpi = 82)
-		{
-			m_X = x;
-			m_Y = y;
-			SetDPI(dpi);
-		}
-		#region Set
-		// ********************************************************
-		public void SetDPI(float dpi = 0)
-		{
-			if(dpi != 0)m_DPI = dpi;
-			m_PX = PP.MM2P(m_X, m_DPI);
-			m_PY = PP.MM2P(m_Y, m_DPI);
-		}
-		// ********************************************************
-		public void CopyFrom(PPPoint p)
-		{
-			m_DPI = p.m_DPI;
-			m_X = p.m_X;
-			m_Y = p.m_Y;
-			m_PX = p.m_PX;
-			m_PY = p.m_PY;
-		}
-		// ********************************************************
-		public void  SetX(float value, float dpi=0)
-		{
-			if(dpi != 0)m_DPI = dpi;
-			m_X = LimitF(value);
-			m_PX = (float)PP.MM2P(value,m_DPI);
-		}
-		// ********************************************************
-		public void  SetY(float value, float dpi=0)
-		{
-			if(dpi != 0)m_DPI = dpi;
-			m_Y = LimitF(value);
-			m_PY = (float)PP.MM2P(value,m_DPI);
-		}
-		// ********************************************************
-		public void  SetPX(float value, float dpi=0)
-		{
-			if(dpi != 0)m_DPI = dpi;
-			m_PX = value;
-			m_X = LimitF((float)PP.P2MM(value,m_DPI));
-		}
-		// ********************************************************
-		public void  SetPY(float value, float dpi=0)
-		{
-			if(dpi != 0)m_DPI = dpi;
-			m_PY = value;
-			m_Y = LimitF((float)PP.P2MM(value,m_DPI));
-		}
-		#endregion
-
-		// ********************************************************
-		public bool InMouseDown(int mx, int my)
-		{
-			bool ret = false;
-
-			int v = 5;
-			ret = ((m_PX - v < mx) && (m_PX + v > mx) && (m_PY - v < my) && (m_PY + v > my));
-			Selected = ret;
-			return ret;
-		}
-		// ********************************************************
-		public void Draw(Graphics g, SolidBrush sb, Pen p)
-		{
-			g.FillEllipse(sb, m_PX - 3, m_PY - 3, 6, 6);
-
-			if (Selected == true)
-			{
-				float pb = p.Width;
-				p.Width = 1;
-				g.DrawEllipse(p, m_PX - 6, m_PY - 6, 12, 12);
-				p.Width = pb;
-			}
-		}
-		// ********************************************************
-		public PointF ToPointF
-		{
-			get { return new PointF(m_PX, m_PY); }
-		}
-		// ********************************************************
-
-	}
+	
 
 	public class PPWing :Component
 	{
-		#region mode
-		public enum MODE
+		public enum WING_MODE
 		{
-			POINT4 = 0,
-			POINT6
+			MAIN=0,
+			HOR_TAIL,
+			VER_TAIL,
+			TWIN_TAIL,
+			V_TAIL
+
 		}
-		private MODE m_MODE = MODE.POINT4;
-		public MODE Wing_MODE
+		#region event
+		/// <summary>
+		/// リドロウリクエスト
+		/// </summary>
+		public event EventHandler RequestRedraw;
+
+		protected virtual void OnRequestRedraw(EventArgs e)
 		{
-			get { return m_MODE; }
-			set
+			if (RequestRedraw != null)
 			{
-				if (m_MODE != value)
-				{
-					m_MODE = value;
-					MakePooints();
-					SelectIndex = -1;
-				}
+				RequestRedraw(this, e);
 			}
+		}
+		#endregion
+		#region mode
+		private WING_MODE m_WingMode = WING_MODE.MAIN;
+
+		public WING_MODE Wing_MODE
+		{
+			get { return m_WingMode; }
+		}
+		public void SetWingMode(WING_MODE value)
+		{
+			if (m_WingMode != value)
+			{
+				m_WingMode = value;
+				MakePooints();
+				SelectIndex = -1;
+			}
+
 		}
 		#endregion
 
 		private int m_SelectedIndex = -1;
+		/// <summary>
+		/// 選ばれた点
+		/// </summary>
 		public int SelectIndex
 		{
 			get { return m_SelectedIndex; }
@@ -158,8 +77,19 @@ namespace PaperPlanes
 				}
 			}
 		}
+		private Color m_LineColor = Color.FromArgb(0,0,0);
+		public Color LineColor { get { return m_LineColor; } set { m_LineColor = value; OnRequestRedraw(new EventArgs()); } }
+		private Color m_OriColor = Color.FromArgb(128,128,128);
+		public Color OriColor { get { return m_OriColor; } set { m_OriColor = value; OnRequestRedraw(new EventArgs()); } }
+
+
+		private Color m_HorColor = Color.FromArgb(150,150,100);
+		public Color HorColor { get { return m_HorColor; } set { m_HorColor = value; OnRequestRedraw(new EventArgs()); } }
+		private Color m_VerColor = Color.FromArgb(100,150,150);
+		public Color VerColor { get { return m_VerColor; } set { m_VerColor = value; OnRequestRedraw(new EventArgs()); } }
 
 		private PointF m_DispLocasion = new PointF(10,120);
+
 		public PointF DispLocation
 		{
 			get { return m_DispLocasion; }
@@ -232,20 +162,43 @@ namespace PaperPlanes
 		/// <summary>
 		/// 上反角
 		/// </summary>
+		///
+		#region WingDihedral
 		private float m_WingDihedral = 15;
 		public float WingDihedral
 		{
-			get { return m_WingDihedral; }
+			get
+			{
+				switch(m_WingMode)
+				{
+					case WING_MODE.MAIN:
+					case WING_MODE.V_TAIL:
+						return m_WingDihedral;
+					default:
+						return 0;
+				}
+			}
 			set
 			{
-				value = LimitF(value);
-				if (m_WingDihedral != value)
+				switch(m_WingMode)
 				{
-					m_WingDihedral = value;
-					MakePooints();
+					case WING_MODE.MAIN:
+					case WING_MODE.V_TAIL:
+						value = LimitF(value);
+						if (m_WingDihedral != value)
+						{
+							m_WingDihedral = value;
+							if (m_WingDihedral < 0) m_WingDihedral = 0;
+							MakePooints();
+						}
+						break;
+					default:
+						m_WingDihedral = 0;
+						break;
 				}
 			}
 		}
+		#endregion
 		/// <summary>
 		/// 翼根
 		/// </summary>
@@ -259,6 +212,7 @@ namespace PaperPlanes
 				if (m_WingRoot != value)
 				{
 					m_WingRoot = value;
+					if (m_WingRoot < 10) m_WingRoot = 10;
 					MakePooints();
 				}
 			}
@@ -337,12 +291,22 @@ namespace PaperPlanes
 		private float m_WingTip2 = 20;
 		public float WingTip2
 		{
-			get { return m_WingTip2; }
+			get
+			{
+				if (m_WingMode == WING_MODE.TWIN_TAIL)
+				{
+					return m_WingTip2;
+				}
+				else
+				{
+					return 0;
+				}
+			}
 			set
 			{
-				if (m_MODE == MODE.POINT6)
+				if (m_WingMode ==WING_MODE.TWIN_TAIL)
 				{
-				value = LimitF(value);
+					value = LimitF(value);
 					if (m_WingTip2 != value)
 					{
 						m_WingTip2 = value;
@@ -354,10 +318,20 @@ namespace PaperPlanes
 		private float m_WingTipOffset2 = 10;
 		public float WingTipOffset2
 		{
-			get { return m_WingTipOffset2; }
+			get
+			{
+				if (m_WingMode == WING_MODE.TWIN_TAIL)
+				{
+					return m_WingTipOffset2;
+				}
+				else
+				{
+					return 0;
+				}
+			}
 			set
 			{
-				if (m_MODE == MODE.POINT6)
+				if (m_WingMode == WING_MODE.TWIN_TAIL)
 				{
 				value = LimitF(value);
 					if (m_WingTipOffset2 != value)
@@ -371,12 +345,22 @@ namespace PaperPlanes
 		private float m_WingSpan2 = 10;
 		public float WingSpan2
 		{
-			get { return m_WingSpan2; }
+			get
+			{
+				if (m_WingMode == WING_MODE.TWIN_TAIL)
+				{
+					return m_WingSpan2;
+				}
+				else
+				{
+					return 0;
+				}
+			}
 			set
 			{
-				value = LimitF(value);
-				if (m_MODE == MODE.POINT6)
+				if (m_WingMode == WING_MODE.TWIN_TAIL)
 				{
+					value = LimitF(value);
 					if (m_WingSpan2 != value)
 					{
 						m_WingSpan2 = value;
@@ -416,77 +400,179 @@ namespace PaperPlanes
 			}
 		}
 		// ******************************************
+		private void MakePooints_4Points()
+		{
+			float x = m_DispLocasion.X + m_WingPos;
+			float y = m_DispLocasion.Y;
+			m_Points[0].SetX(x);
+			m_Points[0].SetY(y);
+			x += m_WingTipOffset;
+			y -= m_WingSpan / 2;
+			m_Points[1].SetX(x);
+			m_Points[1].SetY(y);
+			x += m_WingTip;
+			m_Points[2].SetX(x);
+			m_Points[2].SetY(y);
+			x = m_DispLocasion.X + m_WingPos + m_WingRoot;
+			y = m_DispLocasion.Y;
+			m_Points[3].SetX(x);
+			m_Points[3].SetY(y);
+
+			MAC mm = new MAC(m_WingSpan, m_WingRoot, m_WingTip, m_WingTipOffset);
+			m_HorMAC[0] = new PPPoint(m_WingPos + m_DispLocasion.X + mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
+			m_HorMAC[1] = new PPPoint(m_WingPos + m_DispLocasion.X + mm.MacLine[1].X, m_DispLocasion.Y - mm.MacLine[1].Y);
+		}
+		// ******************************************
+		private void MakePooints_6Points()
+		{
+			float x = m_DispLocasion.X + m_WingPos;
+			float y = m_DispLocasion.Y;
+			m_Points[0].SetX(x);
+			m_Points[0].SetY(y);
+			x += m_WingTipOffset;
+			y -= m_WingSpan / 2;
+			m_Points[1].SetX(x);
+			m_Points[1].SetY(y);
+
+			x += m_WingTipOffset2;
+			y -= m_WingSpan2;
+			m_Points[2].SetX(x);
+			m_Points[2].SetY(y);
+			x += m_WingTip2;
+			m_Points[3].SetX(x);
+			m_Points[3].SetY(y);
+			x = m_Points[1].X + m_WingTip;
+			y = m_Points[1].Y;
+			m_Points[4].SetX(x);
+			m_Points[4].SetY(y);
+
+			x = m_DispLocasion.X + m_WingPos + m_WingRoot;
+			y = m_DispLocasion.Y;
+			m_Points[5].SetX(x);
+			m_Points[5].SetY(y);
+
+			MAC mm = new MAC(m_WingSpan, m_WingRoot, m_WingTip, m_WingTipOffset);
+			m_HorMAC[0] = new PPPoint(m_WingPos+ m_DispLocasion.X + mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
+			m_HorMAC[1] = new PPPoint(m_WingPos+ m_DispLocasion.X + mm.MacLine[1].X, m_DispLocasion.Y - mm.MacLine[1].Y);
+
+
+			x = m_DispLocasion.X + m_WingPos + m_WingTipOffset;
+			y = m_DispLocasion.Y;
+			m_VerPoints[0].SetX(x);
+			m_VerPoints[0].SetY(y);
+			x += m_WingTipOffset2;
+			y -= m_WingSpan2;
+			m_VerPoints[1].SetX(x);
+			m_VerPoints[1].SetY(y);
+			x += m_WingTip2;
+			m_VerPoints[2].SetX(x);
+			m_VerPoints[2].SetY(y);
+			x = m_DispLocasion.X + m_WingPos + +m_WingTipOffset+ m_WingTip;
+			y = m_DispLocasion.Y;
+			m_VerPoints[3].SetX(x);
+			m_VerPoints[3].SetY(y);
+
+			mm = new MAC(m_WingSpan2*2, m_WingTip, m_WingTip2, m_WingTipOffset2);
+			m_VerMAC[0] = new PPPoint(m_WingTipOffset + m_WingPos+ m_DispLocasion.X +  mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
+			m_VerMAC[1] = new PPPoint(m_WingTipOffset + m_WingPos+ m_DispLocasion.X +  mm.MacLine[1].X, m_DispLocasion.Y - mm.MacLine[1].Y);
+		}
+		// ******************************************
+		private void MakePooints_HorPoint()
+		{
+			float spanH = (float)((m_WingSpan/2) * Math.Cos(m_WingDihedral * Math.PI / 180));
+
+			float x = m_DispLocasion.X + m_WingPos;
+			float y = m_DispLocasion.Y;
+			m_HorPoints[0].SetX(x);
+			m_HorPoints[0].SetY(y);
+			x += m_WingTipOffset;
+			y -= spanH;
+			m_HorPoints[1].SetX(x);
+			m_HorPoints[1].SetY(y);
+			x += m_WingTip;
+			m_HorPoints[2].SetX(x);
+			m_HorPoints[2].SetY(y);
+			x = m_DispLocasion.X + m_WingPos + m_WingRoot;
+			y = m_DispLocasion.Y;
+			m_HorPoints[3].SetX(x);
+			m_HorPoints[3].SetY(y);
+
+			MAC mm = new MAC(spanH * 2, m_WingRoot, m_WingTip, m_WingTipOffset);
+			m_HorMAC[0] = new PPPoint(m_WingPos+ m_DispLocasion.X +  mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
+			m_HorMAC[1] = new PPPoint(m_WingPos+  m_DispLocasion.X +  mm.MacLine[1].X,m_DispLocasion.Y - mm.MacLine[1].Y);
+		}
+			// ******************************************
+		private void MakePooints_VerPoint()
+		{
+			float spanV = (float)((m_WingSpan/2) * Math.Sin(m_WingDihedral * Math.PI / 180));
+			float x = m_DispLocasion.X + m_WingPos;
+			float y = m_DispLocasion.Y;
+			m_VerPoints[0].SetX(x);
+			m_VerPoints[0].SetY(y);
+			x += m_WingTipOffset;
+			y -= spanV;
+			m_VerPoints[1].SetX(x);
+			m_VerPoints[1].SetY(y);
+			x += m_WingTip;
+			m_VerPoints[2].SetX(x);
+			m_VerPoints[2].SetY(y);
+			x = m_DispLocasion.X + m_WingPos + m_WingRoot;
+			y = m_DispLocasion.Y;
+			m_VerPoints[3].SetX(x);
+			m_VerPoints[3].SetY(y);
+
+			MAC mm = new MAC(spanV * 2, m_WingRoot, m_WingTip, m_WingTipOffset);
+			m_VerMAC[0] = new PPPoint(m_WingPos+ m_DispLocasion.X +  mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
+			m_VerMAC[1] = new PPPoint(m_WingPos+  m_DispLocasion.X +  mm.MacLine[1].X,m_DispLocasion.Y - mm.MacLine[1].Y);
+		}
+		// ******************************************
 		public void MakePooints()
 		{
-			if(m_MODE == MODE.POINT4)
+			for (int i = 0; i < 2; i++) m_HorMAC[i] = new PPPoint(0, 0);
+			for (int i = 0; i < 2; i++) m_VerMAC[i] = new PPPoint(0, 0);
+			for (int i = 0; i < 4; i++) m_VerPoints[i] = new PPPoint(0, 0);
+			for (int i = 0; i < 4; i++) m_HorPoints[i] = new PPPoint(0, 0);
+
+
+			switch(m_WingMode)
 			{
-				float x = m_DispLocasion.X + m_WingPos;
-				float y = m_DispLocasion.Y;
-				m_Points[0].SetX(x);
-				m_Points[0].SetY(y);
-				x += m_WingTipOffset;
-				y -= m_WingSpan / 2;
-				m_Points[1].SetX(x);
-				m_Points[1].SetY(y);
-				x += m_WingTip;
-				m_Points[2].SetX(x);
-				m_Points[2].SetY(y);
-				x = m_DispLocasion.X + m_WingPos + m_WingRoot;
-				y = m_DispLocasion.Y;
-				m_Points[3].SetX(x);
-				m_Points[3].SetY(y);
+				case WING_MODE.MAIN:
+				case WING_MODE.HOR_TAIL:
+				case WING_MODE.VER_TAIL:
+					MakePooints_4Points();
+					MakePooints_HorPoint();
+					break;
+				case WING_MODE.TWIN_TAIL:
+					MakePooints_6Points();
+					break;
+				case WING_MODE.V_TAIL:
+					MakePooints_4Points();
+					MakePooints_HorPoint();
+					MakePooints_VerPoint();
+					break;
+			}
+		}
+		
+		// ******************************************
+		public PointF [] OriPoints()
+		{
+			if (m_WingMode == PPWing.WING_MODE.TWIN_TAIL)
+			{
+				PointF[] p = new PointF[2];
+				p[0] = m_Points[1].ToPointF;
+				p[1] = m_Points[4].ToPointF;
+				return p;
 			}
 			else
 			{
-				float x = m_DispLocasion.X + m_WingPos;
-				float y = m_DispLocasion.Y;
-				m_Points[0].SetX(x);
-				m_Points[0].SetY(y);
-				x += m_WingTipOffset;
-				y -= m_WingSpan / 2;
-				m_Points[1].SetX(x);
-				m_Points[1].SetY(y);
-
-				x += m_WingTipOffset2;
-				y -= m_WingSpan2;
-				m_Points[2].SetX(x);
-				m_Points[2].SetY(y);
-				x += m_WingTip2;
-				m_Points[3].SetX(x);
-				m_Points[3].SetY(y);
-				x = m_Points[1].X + m_WingTip;
-				y = m_Points[1].Y;
-				m_Points[4].SetX(x);
-				m_Points[4].SetY(y);
-
-				x = m_DispLocasion.X + m_WingPos + m_WingRoot;
-				y = m_DispLocasion.Y;
-				m_Points[5].SetX(x);
-				m_Points[5].SetY(y);
-			}
-		}
-		public PointF [] OriPoints
-		{
-			get
-			{
-				if (m_MODE == MODE.POINT4)
-				{
-					return new PointF[0];
-				}
-				else
-				{
-					PointF[] p = new PointF[2];
-					p[0] = m_Points[1].ToPointF;
-					p[1] = m_Points[4].ToPointF;
-					return p;
-				}
+				return new PointF[0];
 			}
 		}
 		// ******************************************
 		public PointF [] Points()
 		{
 			PointF[] ret = new PointF[0];
-			if (m_MODE == MODE.POINT4)
+			if (m_WingMode != WING_MODE.TWIN_TAIL)
 			{
 				ret = new PointF[4];
 				ret[0] = m_Points[0].ToPointF;
@@ -508,16 +594,75 @@ namespace PaperPlanes
 
 			return ret;
 		}
+		public PointF [] VerPoints()
+		{
+			PointF[] ret = new PointF[4];
+			ret[0] = m_VerPoints[0].ToPointF;
+			ret[1] = m_VerPoints[1].ToPointF;
+			ret[2] = m_VerPoints[2].ToPointF;
+			ret[3] = m_VerPoints[3].ToPointF;
+			return ret;
+		}
+		public PointF [] HorPoints()
+		{
+			PointF[] ret = new PointF[4];
+			ret[0] = m_HorPoints[0].ToPointF;
+			ret[1] = m_HorPoints[1].ToPointF;
+			ret[2] = m_HorPoints[2].ToPointF;
+			ret[3] = m_HorPoints[3].ToPointF;
+			return ret;
+		}
 		// ******************************************
 		public void Draw(Graphics g,SolidBrush sb, Pen p)
 		{
-			g.DrawLines(p, Points());
 
+			switch(m_WingMode)
+			{
+				case WING_MODE.MAIN:
+					//hor
+					p.Color = m_HorColor;
+					p.Width = 1;
+					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
+					g.DrawLines(p, HorPoints());
+					p.Color = m_LineColor;
+					g.DrawLines(p, Points());
+
+					break;
+
+				case WING_MODE.HOR_TAIL:
+				case WING_MODE.VER_TAIL:
+					p.Color = m_HorColor;
+					p.Width = 1;
+					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
+					p.Color = m_LineColor;
+					g.DrawLines(p, Points());
+					break;
+				case WING_MODE.TWIN_TAIL:
+					p.Color = m_VerColor;
+					g.DrawLines(p, VerPoints());
+					p.Color = m_OriColor;
+					p.Width = 1;
+					g.DrawLines(p, OriPoints());
+					p.Color = m_LineColor;
+					g.DrawLines(p, Points());
+					break;
+				case WING_MODE.V_TAIL:
+					p.Width = 1;
+					p.Color = m_VerColor;
+					g.DrawLines(p, VerPoints());
+					p.Color = m_HorColor;
+					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
+					g.DrawLines(p, HorPoints());
+					break;
+			}
+
+
+			sb.Color = m_LineColor;
 			m_Points[0].Draw(g, sb, p);
 			m_Points[1].Draw(g, sb, p);
 			m_Points[2].Draw(g, sb, p);
 			m_Points[3].Draw(g, sb, p);
-			if(m_MODE == PPWing.MODE.POINT6)
+			if (m_WingMode == PPWing.WING_MODE.TWIN_TAIL)
 			{
 				m_Points[4].Draw(g, sb, p);
 				m_Points[5].Draw(g, sb, p);
@@ -529,13 +674,13 @@ namespace PaperPlanes
 		{
 			bool ret = false;
 			int cnt = 4;
-			if (m_MODE == MODE.POINT4)
+			if (m_WingMode == WING_MODE.TWIN_TAIL)
 			{
-				cnt = 4;
+				cnt = 6;
 			}
 			else
 			{
-				cnt = 6;
+				cnt = 4;
 			}
 			int idx = -1;
 			for(int i=0; i<cnt;i++)
@@ -569,7 +714,7 @@ namespace PaperPlanes
 			float x = PP.P2MM(pos.X,m_DPI) - m_DispLocasion.X;
 			float y = m_DispLocasion.Y - PP.P2MM(pos.Y,m_DPI);
 
-			if (m_MODE ==  MODE.POINT4)
+			if (m_WingMode !=  PPWing.WING_MODE.TWIN_TAIL)
 			{
 				switch (m_SelectedIndex)
 				{
@@ -634,30 +779,6 @@ namespace PaperPlanes
 		// ******************************************
 		// ******************************************
 		
-		public void CalcStatus()
-		{
-			//HorPointsの計算
-			if (m_MODE == MODE.POINT4)
-			{
-				if (m_WingDihedral == 0)
-				{
-					for (int i = 0; i < 4; i++) m_VerPoints[i] = new PPPoint(0, 0);
-					for (int i = 0; i < 2; i++) m_VerMAC[i] = new PPPoint(0, 0);
-					for (int i = 0; i < 4; i++) m_HorPoints[i] = m_Points[i];
-				}
-				else
-				{
-
-				}
-
-
-			}
-			else
-			{
-
-			}
-
-
-		}
+		
 	}
 }

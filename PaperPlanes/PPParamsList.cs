@@ -109,7 +109,7 @@ namespace PaperPlanes
 		#endregion
 
 		#region mode
-		public DrawWings.EDITMODE EditMode
+		public DrawWings.EDIT_MODE EditMode
 		{
 			get { return m_CmbEditMode.EditMode; }
 			set
@@ -118,11 +118,11 @@ namespace PaperPlanes
 				{
 					m_CmbEditMode.EditMode = value;
 				}
-				bool b = (m_CmbEditMode.EditMode == DrawWings.EDITMODE.TWINTAIL);
+				bool b = (m_CmbEditMode.EditMode == DrawWings.EDIT_MODE.TWINTAIL);
 				m_WingTip2.Visible = b;
 				m_WingTipOffset2.Visible = b;
 				m_WingSpan2.Visible = b;
-				if (m_CmbEditMode.EditMode != DrawWings.EDITMODE.NORMAL)
+				if (m_CmbEditMode.EditMode != DrawWings.EDIT_MODE.NORMAL)
 				{
 					if (TargetWing >= 2)
 					{
@@ -140,7 +140,7 @@ namespace PaperPlanes
 				int v = value;
 				if (v >= 0)
 				{
-					if((v>=2)&&(EditMode != DrawWings.EDITMODE.NORMAL))
+					if((v>=2)&&(EditMode != DrawWings.EDIT_MODE.NORMAL))
 					{
 						v = 0;
 					}
@@ -228,7 +228,7 @@ namespace PaperPlanes
 
 		private void M_CmbSelectWing_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if( (m_CmbSelectWing.SelectedIndex==2)&&(EditMode!= DrawWings.EDITMODE.NORMAL))
+			if( (m_CmbSelectWing.SelectedIndex==2)&&(EditMode!= DrawWings.EDIT_MODE.NORMAL))
 			{
 				m_CmbSelectWing.SelectedIndex = 0;
 				return;

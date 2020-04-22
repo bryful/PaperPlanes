@@ -28,8 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			PaperPlanes.PPWing ppTailVer;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-			PaperPlanes.PPWing ppVTail;
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,11 +42,42 @@
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.ppParamsList1 = new PaperPlanes.PPParamsList();
 			this.drawWings1 = new PaperPlanes.DrawWings();
-			this.ppHTail = new PaperPlanes.PPWing();
+			this.ppTailHor = new PaperPlanes.PPWing();
 			this.ppMain = new PaperPlanes.PPWing();
-			ppVTail = new PaperPlanes.PPWing();
+			this.ppTwin = new PaperPlanes.PPWing();
+			this.ppV_Tail = new PaperPlanes.PPWing();
+			ppTailVer = new PaperPlanes.PPWing();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// ppTailVer
+			// 
+			ppTailVer.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppTailVer.DispLocation")));
+			ppTailVer.DPI = 82F;
+			ppTailVer.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			ppTailVer.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			ppTailVer.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+			ppTailVer.Params = new float[] {
+        158.8F,
+        31.6F,
+        15.8F,
+        15.8F,
+        55.4F,
+        15F,
+        15F,
+        20F,
+        10F};
+			ppTailVer.SelectIndex = -1;
+			ppTailVer.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			ppTailVer.WingDihedral = 15F;
+			ppTailVer.WingPos = 158.8F;
+			ppTailVer.WingRoot = 31.6F;
+			ppTailVer.WingSpan = 55.4F;
+			ppTailVer.WingSpan2 = 0F;
+			ppTailVer.WingTip = 15.8F;
+			ppTailVer.WingTip2 = 0F;
+			ppTailVer.WingTipOffset = 15.8F;
+			ppTailVer.WingTipOffset2 = 0F;
 			// 
 			// menuStrip1
 			// 
@@ -128,7 +159,7 @@
 			// 
 			// ppParamsList1
 			// 
-			this.ppParamsList1.EditMode = PaperPlanes.DrawWings.EDITMODE.NORMAL;
+			this.ppParamsList1.EditMode = PaperPlanes.DrawWings.EDIT_MODE.NORMAL;
 			this.ppParamsList1.Location = new System.Drawing.Point(12, 27);
 			this.ppParamsList1.Name = "ppParamsList1";
 			this.ppParamsList1.Size = new System.Drawing.Size(151, 315);
@@ -154,23 +185,28 @@
 			this.drawWings1.BaseLine = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
 			this.drawWings1.DispLocation = ((System.Drawing.PointF)(resources.GetObject("drawWings1.DispLocation")));
 			this.drawWings1.DPI = 82F;
-			this.drawWings1.EditMode = PaperPlanes.DrawWings.EDITMODE.NORMAL;
+			this.drawWings1.EditMode = PaperPlanes.DrawWings.EDIT_MODE.NORMAL;
 			this.drawWings1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-			this.drawWings1.HTail = this.ppHTail;
 			this.drawWings1.Location = new System.Drawing.Point(169, 27);
 			this.drawWings1.MainWing = this.ppMain;
 			this.drawWings1.Name = "drawWings1";
 			this.drawWings1.ParamList = this.ppParamsList1;
 			this.drawWings1.Size = new System.Drawing.Size(772, 445);
 			this.drawWings1.TabIndex = 2;
+			this.drawWings1.TailH = this.ppTailHor;
+			this.drawWings1.TailV = ppTailVer;
 			this.drawWings1.Text = "drawWings1";
-			this.drawWings1.VTail = ppVTail;
+			this.drawWings1.TwinTail = this.ppTwin;
+			this.drawWings1.V_Tail = this.ppV_Tail;
 			// 
-			// ppHTail
+			// ppTailHor
 			// 
-			this.ppHTail.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppHTail.DispLocation")));
-			this.ppHTail.DPI = 82F;
-			this.ppHTail.Params = new float[] {
+			this.ppTailHor.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppTailHor.DispLocation")));
+			this.ppTailHor.DPI = 82F;
+			this.ppTailHor.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			this.ppTailHor.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.ppTailHor.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+			this.ppTailHor.Params = new float[] {
         182.4F,
         30.3F,
         17F,
@@ -180,22 +216,25 @@
         15F,
         20F,
         10F};
-			this.ppHTail.SelectIndex = -1;
-			this.ppHTail.Wing_MODE = PaperPlanes.PPWing.MODE.POINT4;
-			this.ppHTail.WingDihedral = 15F;
-			this.ppHTail.WingPos = 182.4F;
-			this.ppHTail.WingRoot = 30.3F;
-			this.ppHTail.WingSpan = 104.9F;
-			this.ppHTail.WingSpan2 = 15F;
-			this.ppHTail.WingTip = 17F;
-			this.ppHTail.WingTip2 = 20F;
-			this.ppHTail.WingTipOffset = 14.2F;
-			this.ppHTail.WingTipOffset2 = 10F;
+			this.ppTailHor.SelectIndex = -1;
+			this.ppTailHor.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			this.ppTailHor.WingDihedral = 0F;
+			this.ppTailHor.WingPos = 182.4F;
+			this.ppTailHor.WingRoot = 30.3F;
+			this.ppTailHor.WingSpan = 104.9F;
+			this.ppTailHor.WingSpan2 = 0F;
+			this.ppTailHor.WingTip = 17F;
+			this.ppTailHor.WingTip2 = 0F;
+			this.ppTailHor.WingTipOffset = 14.2F;
+			this.ppTailHor.WingTipOffset2 = 0F;
 			// 
 			// ppMain
 			// 
 			this.ppMain.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppMain.DispLocation")));
 			this.ppMain.DPI = 82F;
+			this.ppMain.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			this.ppMain.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.ppMain.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
 			this.ppMain.Params = new float[] {
         45F,
         50F,
@@ -207,22 +246,25 @@
         20F,
         10F};
 			this.ppMain.SelectIndex = -1;
-			this.ppMain.Wing_MODE = PaperPlanes.PPWing.MODE.POINT4;
-			this.ppMain.WingDihedral = 15F;
+			this.ppMain.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			this.ppMain.WingDihedral = 0F;
 			this.ppMain.WingPos = 45F;
 			this.ppMain.WingRoot = 50F;
 			this.ppMain.WingSpan = 176.2F;
-			this.ppMain.WingSpan2 = 15F;
+			this.ppMain.WingSpan2 = 0F;
 			this.ppMain.WingTip = 23.9F;
-			this.ppMain.WingTip2 = 20F;
+			this.ppMain.WingTip2 = 0F;
 			this.ppMain.WingTipOffset = 7.9F;
-			this.ppMain.WingTipOffset2 = 10F;
+			this.ppMain.WingTipOffset2 = 0F;
 			// 
-			// ppVTail
+			// ppTwin
 			// 
-			ppVTail.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppVTail.DispLocation")));
-			ppVTail.DPI = 82F;
-			ppVTail.Params = new float[] {
+			this.ppTwin.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppTwin.DispLocation")));
+			this.ppTwin.DPI = 82F;
+			this.ppTwin.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			this.ppTwin.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.ppTwin.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+			this.ppTwin.Params = new float[] {
         158.8F,
         31.6F,
         15.8F,
@@ -232,17 +274,46 @@
         15F,
         20F,
         10F};
-			ppVTail.SelectIndex = -1;
-			ppVTail.Wing_MODE = PaperPlanes.PPWing.MODE.POINT4;
-			ppVTail.WingDihedral = 15F;
-			ppVTail.WingPos = 158.8F;
-			ppVTail.WingRoot = 31.6F;
-			ppVTail.WingSpan = 55.4F;
-			ppVTail.WingSpan2 = 15F;
-			ppVTail.WingTip = 15.8F;
-			ppVTail.WingTip2 = 20F;
-			ppVTail.WingTipOffset = 15.8F;
-			ppVTail.WingTipOffset2 = 10F;
+			this.ppTwin.SelectIndex = -1;
+			this.ppTwin.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
+			this.ppTwin.WingDihedral = 0F;
+			this.ppTwin.WingPos = 158.8F;
+			this.ppTwin.WingRoot = 31.6F;
+			this.ppTwin.WingSpan = 55.4F;
+			this.ppTwin.WingSpan2 = 15F;
+			this.ppTwin.WingTip = 15.8F;
+			this.ppTwin.WingTip2 = 20F;
+			this.ppTwin.WingTipOffset = 15.8F;
+			this.ppTwin.WingTipOffset2 = 10F;
+			// 
+			// ppV_Tail
+			// 
+			this.ppV_Tail.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppV_Tail.DispLocation")));
+			this.ppV_Tail.DPI = 82F;
+			this.ppV_Tail.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			this.ppV_Tail.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.ppV_Tail.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+			this.ppV_Tail.Params = new float[] {
+        158.8F,
+        31.6F,
+        15.8F,
+        15.8F,
+        55.4F,
+        15F,
+        15F,
+        20F,
+        10F};
+			this.ppV_Tail.SelectIndex = -1;
+			this.ppV_Tail.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(150)))), ((int)(((byte)(150)))));
+			this.ppV_Tail.WingDihedral = 15F;
+			this.ppV_Tail.WingPos = 158.8F;
+			this.ppV_Tail.WingRoot = 31.6F;
+			this.ppV_Tail.WingSpan = 55.4F;
+			this.ppV_Tail.WingSpan2 = 0F;
+			this.ppV_Tail.WingTip = 15.8F;
+			this.ppV_Tail.WingTip2 = 0F;
+			this.ppV_Tail.WingTipOffset = 15.8F;
+			this.ppV_Tail.WingTipOffset2 = 0F;
 			// 
 			// Form1
 			// 
@@ -282,8 +353,10 @@
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private DrawWings drawWings1;
 		private PPWing ppMain;
-		private PPWing ppHTail;
+		private PPWing ppTailHor;
 		private PPParamsList ppParamsList1;
+		private PPWing ppTwin;
+		private PPWing ppV_Tail;
 	}
 }
 

@@ -33,13 +33,13 @@ namespace PaperPlanes
 			this.Items.Add("V尾翼");
 			this.SelectedIndex = 0;
 		}
-		public DrawWings.EDITMODE EditMode
+		public DrawWings.EDIT_MODE  EditMode
 		{
 			get
 			{
 				int v = this.SelectedIndex;
 				if (v < 0) v = 0;
-				return (DrawWings.EDITMODE)v;
+				return (DrawWings.EDIT_MODE)v;
 			}
 			set
 			{
