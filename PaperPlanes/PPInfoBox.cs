@@ -209,7 +209,11 @@ namespace PaperPlanes
 				double r = (double)m_OutColor.R * p + (double)m_InColor.R * (1-p);  
 				double g = (double)m_OutColor.G * p + (double)m_InColor.G * (1-p);  
 				double b = (double)m_OutColor.B * p + (double)m_InColor.B * (1-p);
-				TextBox1.BackColor = Color.FromArgb((int)(r+0.5), (int)(g+0.5), (int)(b+0.5));
+				r += 0.5; g += 0.5; b += 0.5;
+				if (r < 0) r = 0; else if (r > 255) r = 255;
+				if (g < 0) g = 0; else if (g > 255) g = 255;
+				if (b < 0) b = 0; else if (b > 255) b = 255;
+				TextBox1.BackColor = Color.FromArgb((int)(r), (int)(g), (int)(b));
 			}
 
 		}

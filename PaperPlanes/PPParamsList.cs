@@ -71,6 +71,7 @@ namespace PaperPlanes
 		#endregion
 
 		#region value
+		
 		public float WingPos
 		{
 			get { return m_WingPos.Value; }
@@ -208,6 +209,7 @@ namespace PaperPlanes
 			m_CmbSelectWing.Size =new Size(200, 20);
 
 			EditMode = EditMode;
+
 
 			m_WingPos.Size = new Size(200, 20);
 			m_WingPos.Caption = "位置(mm)";
@@ -377,17 +379,6 @@ namespace PaperPlanes
 						m_WingTip2.Enabled = true;
 
 					}
-					break;
-				case DrawWings.EDIT_MODE.VTAIL:
-					if (tw>= 2)
-					{
-						m_CmbSelectWing.SelectWing = 0;
-						tw = 0;
-					}
-					m_WingSpan2.Enabled = false;
-					m_WingTipOffset2.Enabled = false;
-					m_WingTip2.Enabled = false;
-					m_WingDihedral.Enabled = true;
 					break;
 			}
 		}

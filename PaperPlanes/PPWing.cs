@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
+using PdfSharp;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+
 namespace PaperPlanes
 {
 	
@@ -20,8 +25,7 @@ namespace PaperPlanes
 			MAIN=0,
 			HOR_TAIL,
 			VER_TAIL,
-			TWIN_TAIL,
-			V_TAIL
+			TWIN_TAIL
 
 		}
 		#region event
@@ -199,7 +203,6 @@ namespace PaperPlanes
 				switch(m_WingMode)
 				{
 					case WING_MODE.MAIN:
-					case WING_MODE.V_TAIL:
 						return m_WingDihedral;
 					default:
 						return 0;
@@ -210,7 +213,6 @@ namespace PaperPlanes
 				switch(m_WingMode)
 				{
 					case WING_MODE.MAIN:
-					case WING_MODE.V_TAIL:
 						value = LimitF(value);
 						if (m_WingDihedral != value)
 						{
@@ -442,6 +444,16 @@ namespace PaperPlanes
 		{
 			get { return m_VerArea; }
 		}
+		private float m_AerodynamicCenterPosH = 0;
+		public float AerodynamicCenterPosH
+		{
+			get { return m_AerodynamicCenterPosH; }
+		}
+		private float m_AerodynamicCenterPosV = 0;
+		public float AerodynamicCenterPosV
+		{
+			get { return m_AerodynamicCenterPosV; }
+		}
 
 		// ******************************************
 		public PPWing()
@@ -484,10 +496,14 @@ namespace PaperPlanes
 			MAC mm = new MAC(m_WingSpan, m_WingRoot, m_WingTip, m_WingTipOffset);
 			m_HorMAC[0] = new PPPoint(m_WingPos + m_DispLocasion.X + mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
 			m_HorMAC[1] = new PPPoint(m_WingPos + m_DispLocasion.X + mm.MacLine[1].X, m_DispLocasion.Y - mm.MacLine[1].Y);
+			m_VerMAC[0] = m_HorMAC[0];
+			m_VerMAC[1] = m_HorMAC[1];
 
-			m_HorArea = (m_WingTip + m_WingRoot) * (m_WingSpan / 2);/* *2/2 */
-			m_VerArea = 0;
-
+			//m_HorArea = (m_WingTip + m_WingRoot) * (m_WingSpan / 2);/* *2/2 */
+			m_HorArea = mm.Area;/* *2/2 */
+			m_VerArea = mm.Area;
+			m_AerodynamicCenterPosH = m_HorMAC[0].X + (mm.MACLength * PP.AerodynamicCenterPar);
+			m_AerodynamicCenterPosV = m_AerodynamicCenterPosH;
 		}
 		// ******************************************
 		private void MakePooints_6Points()
@@ -521,6 +537,10 @@ namespace PaperPlanes
 			MAC mm = new MAC(m_WingSpan, m_WingRoot, m_WingTip, m_WingTipOffset);
 			m_HorMAC[0] = new PPPoint(m_WingPos+ m_DispLocasion.X + mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
 			m_HorMAC[1] = new PPPoint(m_WingPos+ m_DispLocasion.X + mm.MacLine[1].X, m_DispLocasion.Y - mm.MacLine[1].Y);
+			m_AerodynamicCenterPosH = m_HorMAC[0].X + (mm.MACLength * PP.AerodynamicCenterPar);
+			//m_HorArea = (m_WingTip + m_WingRoot) * (m_WingSpan / 2); /* *2/2 */
+			m_HorArea = mm.Area; /* *2/2 */
+			
 
 
 			x = m_DispLocasion.X + m_WingPos + m_WingTipOffset;
@@ -542,9 +562,10 @@ namespace PaperPlanes
 			mm = new MAC(m_WingSpan2*2, m_WingTip, m_WingTip2, m_WingTipOffset2);
 			m_VerMAC[0] = new PPPoint(m_WingTipOffset + m_WingPos+ m_DispLocasion.X +  mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
 			m_VerMAC[1] = new PPPoint(m_WingTipOffset + m_WingPos+ m_DispLocasion.X +  mm.MacLine[1].X, m_DispLocasion.Y - mm.MacLine[1].Y);
+			m_AerodynamicCenterPosV = m_VerMAC[0].X + (mm.MACLength * PP.AerodynamicCenterPar);
 
-			m_HorArea = (m_WingTip + m_WingRoot) * (m_WingSpan / 2); /* *2/2 */
-			m_VerArea = (m_WingTip + m_WingTip2) *m_WingSpan2; /* *2/2 */
+			//m_VerArea = (m_WingTip + m_WingTip2) *m_WingSpan2; /* *2/2 */
+			m_VerArea = mm.Area; /* *2/2 */
 
 		}
 		// ******************************************
@@ -572,7 +593,10 @@ namespace PaperPlanes
 			m_HorMAC[0] = new PPPoint(m_WingPos+ m_DispLocasion.X +  mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
 			m_HorMAC[1] = new PPPoint(m_WingPos+  m_DispLocasion.X +  mm.MacLine[1].X,m_DispLocasion.Y - mm.MacLine[1].Y);
 
-			m_HorArea = (m_WingTip + m_WingRoot) * (spanH); /* *2/2 */
+			//m_HorArea = (m_WingTip + m_WingRoot) * (spanH); /* *2/2 */
+			m_HorArea = mm.Area;/* *2/2 */
+			m_AerodynamicCenterPosH = m_HorMAC[0].X + (mm.MACLength * PP.AerodynamicCenterPar);
+
 
 		}
 			// ******************************************
@@ -599,7 +623,9 @@ namespace PaperPlanes
 			m_VerMAC[0] = new PPPoint(m_WingPos+ m_DispLocasion.X +  mm.MacLine[0].X, m_DispLocasion.Y - mm.MacLine[0].Y);
 			m_VerMAC[1] = new PPPoint(m_WingPos+  m_DispLocasion.X +  mm.MacLine[1].X,m_DispLocasion.Y - mm.MacLine[1].Y);
 
-			m_VerArea = (m_WingTip + m_WingRoot) * (spanV); /* *2/2 */
+			//m_VerArea = (m_WingTip + m_WingRoot) * (spanV); /* *2/2 */
+			m_VerArea = mm.Area;/* *2/2 */
+			m_AerodynamicCenterPosV = m_VerMAC[0].X + (mm.MACLength * PP.AerodynamicCenterPar);
 
 
 		}
@@ -625,11 +651,6 @@ namespace PaperPlanes
 					break;
 				case WING_MODE.TWIN_TAIL:
 					MakePooints_6Points();
-					break;
-				case WING_MODE.V_TAIL:
-					MakePooints_4Points();
-					MakePooints_HorPoint();
-					MakePooints_VerPoint();
 					break;
 			}
 		}
@@ -696,17 +717,37 @@ namespace PaperPlanes
 		// ******************************************
 		public void Draw(Graphics g,SolidBrush sb, Pen p)
 		{
-
+					float x = 0;
+					float y = 0;
+			PointF p0;
+			PointF p1;
 			switch(m_WingMode)
 			{
 				case WING_MODE.MAIN:
 					//hor
 					p.Color = m_HorColor;
 					p.Width = 1;
+					//MACを描画
 					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
+					//空力中心を描画
+					x = PP.MM2P(m_AerodynamicCenterPosH, m_DPI);
+					y = PP.MM2P(m_DispLocasion.Y, m_DPI);
+					p0 = new PointF(x, y);
+					y = PP.MM2P(m_HorMAC[0].Y, m_DPI);
+					p1 = new PointF(x, y);
+					g.DrawLine(p, p0,p1);
+
 					g.DrawLines(p, HorPoints());
 					p.Color = m_LineColor;
 					g.DrawLines(p, Points());
+
+					x = PP.MM2P((float)(m_HorMAC[0].X + (m_HorMAC[1].X - m_HorMAC[0].X) * 0.85),m_DPI);
+					y = PP.MM2P(m_DispLocasion.Y - 3, m_DPI);
+					p0 = new PointF(x, y);
+					y = PP.MM2P(m_DispLocasion.Y + 3, m_DPI);
+					p1 = new PointF(x, y);
+					g.DrawLine(p, p0,p1);
+
 
 					break;
 
@@ -715,31 +756,44 @@ namespace PaperPlanes
 					p.Color = m_HorColor;
 					p.Width = 1;
 					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
+					x = PP.MM2P(m_AerodynamicCenterPosH, m_DPI);
+					y = PP.MM2P(m_DispLocasion.Y, m_DPI);
+					p0 = new PointF(x, y);
+					y = PP.MM2P(m_HorMAC[0].Y, m_DPI);
+					p1 = new PointF(x, y);
+					g.DrawLine(p, p0,p1);
+
 					p.Color = m_LineColor;
 					g.DrawLines(p, Points());
 					break;
 				case WING_MODE.TWIN_TAIL:
+					p.Color = m_HorColor;
+					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
+					x = PP.MM2P(m_AerodynamicCenterPosH, m_DPI);
+					y = PP.MM2P(m_DispLocasion.Y, m_DPI);
+					p0 = new PointF(x, y);
+					y = PP.MM2P(m_HorMAC[0].Y, m_DPI);
+					p1 = new PointF(x, y);
+					g.DrawLine(p, p0,p1);
+
 					p.Color = m_VerColor;
 					g.DrawLine(p, m_VerMAC[0].ToPointF,m_VerMAC[1].ToPointF);
-					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
+					x = PP.MM2P(m_AerodynamicCenterPosV, m_DPI);
+					y = PP.MM2P(m_DispLocasion.Y, m_DPI);
+					p0 = new PointF(x, y);
+					y = PP.MM2P(m_VerMAC[0].Y, m_DPI);
+					p1 = new PointF(x, y);
+					g.DrawLine(p, p0,p1);
+
 					g.DrawLines(p, VerPoints());
+
 					p.Color = m_OriColor;
 					p.Width = 1;
 					g.DrawLines(p, OriPoints());
 					p.Color = m_LineColor;
 					g.DrawLines(p, Points());
 					break;
-				case WING_MODE.V_TAIL:
-					p.Width = 1;
-					p.Color = m_VerColor;
-					g.DrawLine(p, m_VerMAC[0].ToPointF,m_VerMAC[1].ToPointF);
-					g.DrawLines(p, VerPoints());
-					p.Color = m_HorColor;
-					g.DrawLine(p, m_HorMAC[0].ToPointF,m_HorMAC[1].ToPointF);
-					g.DrawLines(p, HorPoints());
-					p.Color = m_LineColor;
-					g.DrawLines(p, Points());
-					break;
+
 			}
 
 
@@ -863,7 +917,104 @@ namespace PaperPlanes
 			}
 		}
 		// ******************************************
-		// ******************************************
+		public void PdfDraw(XGraphics xg,XPen xp,float offsetY=0)
+		{
+			float x = 0;
+			float y = 0;
+			XPoint[] ps = new XPoint[0];
+
+			float w = 0.1f;
+			switch (m_WingMode)
+			{
+				case WING_MODE.VER_TAIL:
+				case WING_MODE.MAIN:
+				case WING_MODE.HOR_TAIL:
+					//センター
+					ps = new XPoint[2];
+					x = m_DispLocasion.X + m_WingPos;
+					y = m_DispLocasion.Y + offsetY;
+					ps[0] = new XPoint(x,y);
+					x += m_WingRoot;
+					ps[1] = new XPoint(x,y);
+					xp.Color = XColor.FromArgb(128, 128, 128);
+					xp.Width = w;
+					xg.DrawLines(xp, ps);
+
+					ps = new XPoint[4];
+					x = m_DispLocasion.X + m_WingPos;
+					y = m_DispLocasion.Y + offsetY;
+					ps[0] = new XPoint(x,y);
+					x += m_WingTipOffset;
+					y -= m_WingSpan / 2;
+					ps[1] = new XPoint(x,y);
+					x += m_WingTip;
+					ps[2] = new XPoint(x,y);
+					x = m_DispLocasion.X + m_WingPos + m_WingRoot;
+					y = m_DispLocasion.Y + offsetY;;
+					ps[3] = new XPoint(x,y);
+					xp.Color = XColor.FromArgb(0, 0, 0);
+					xp.Width = w;
+					xg.DrawLines(xp, ps);
+
+					if(m_WingMode== WING_MODE.MAIN)
+					{
+						ps = new XPoint[2];
+						x = (m_HorMAC[0].X + (m_HorMAC[1].X - m_HorMAC[0].X) * 0.85f);
+						y = m_DispLocasion.Y - 3;
+						ps[0] = new XPoint(x, y);
+						y = m_DispLocasion.Y + 3;
+						ps[1] = new XPoint(x, y);
+						xp.Color = XColor.FromArgb(180, 180, 180);
+						xg.DrawLines(xp, ps);
+					}
+
+					break;
+				case WING_MODE.TWIN_TAIL:
+					//センター
+					ps = new XPoint[2];
+					x = m_DispLocasion.X + m_WingPos;
+					y = m_DispLocasion.Y + offsetY;
+					ps[0] = new XPoint(x,y);
+					x += m_WingRoot;
+					ps[1] = new XPoint(x,y);
+					xp.Color = XColor.FromArgb(128, 128, 128);
+					xp.Width = w;
+					xg.DrawLines(xp, ps);
+
+					x = m_DispLocasion.X + m_WingPos+m_WingTipOffset;
+					y = m_DispLocasion.Y + offsetY - m_WingSpan / 2;
+					ps[0] = new XPoint(x,y);
+					x += m_WingTip; 
+					ps[0] = new XPoint(x,y);
+					xg.DrawLines(xp, ps);
+
+
+
+					ps = new XPoint[6];
+					x = m_DispLocasion.X + m_WingPos;
+					y = m_DispLocasion.Y + offsetY;;
+					ps[0] = new XPoint(x,y);
+					x += m_WingTipOffset;
+					y -= m_WingSpan / 2;
+					ps[1] = new XPoint(x,y);
+					x += m_WingTipOffset2;
+					y -= m_WingSpan2;
+					ps[2] = new XPoint(x,y);
+					x += m_WingTip2;
+					ps[3] = new XPoint(x,y);
+					x = (float)ps[1].X + m_WingTip;
+					y = (float)ps[1].Y;
+					ps[4] = new XPoint(x,y);
+					x = m_DispLocasion.X + m_WingPos + m_WingRoot;
+					y = m_DispLocasion.Y + offsetY;
+					ps[5] = new XPoint(x,y);
+					xp.Color = XColor.FromArgb(0, 0, 0);
+					xp.Width = w;
+					xg.DrawLines(xp, ps);
+
+					break;
+			}
+		}
 		
 		
 	}

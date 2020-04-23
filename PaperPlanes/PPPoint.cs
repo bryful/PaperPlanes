@@ -10,6 +10,11 @@ using System.Windows.Forms;
 using System.IO;
 
 
+using PdfSharp;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+
 namespace PaperPlanes
 {
 	public class PPPoint
@@ -115,6 +120,10 @@ namespace PaperPlanes
 			get { return new PointF(m_PX, m_PY); }
 		}
 		// ********************************************************
+		public XPoint ToXPoint(double dpi)
+		{
+			return new XPoint(PP.MM2P(m_X, (float)dpi), PP.MM2P(m_Y, (float)dpi));
+		}
 
 	}
 }

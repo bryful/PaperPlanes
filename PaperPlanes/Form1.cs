@@ -19,7 +19,8 @@ namespace PaperPlanes
 {
 	public partial class Form1 : Form
 	{
-		private string fileName = "";
+		private string m_FileName = "";
+		private string m_PdfFileName = "";
 		//-------------------------------------------------------------
 		/// <summary>
 		/// コンストラクタ
@@ -54,6 +55,11 @@ namespace PaperPlanes
 				if (ok) this.Size = sz;
 				Point p = pref.GetPoint("Point", out ok);
 				if (ok) this.Location = p;
+				string path = pref.GetString("FileName", out ok);
+				if (ok) m_FileName = path;
+				string pdfpath = pref.GetString("PdfFileName", out ok);
+				if (ok) m_PdfFileName = pdfpath;
+				
 			}
 			this.Text = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
 
@@ -77,8 +83,9 @@ namespace PaperPlanes
 			JsonPref pref = new JsonPref();
 			pref.SetSize("Size", this.Size);
 			pref.SetPoint("Point", this.Location);
+			pref.SetString("FileName", m_FileName);
+			pref.SetString("PdfFileName", m_PdfFileName);
 
-			pref.SetIntArray("IntArray", new int[] { 8, 9, 7 });
 			pref.Save();
 
 			SaveFile(BakFilePath);
@@ -147,14 +154,14 @@ namespace PaperPlanes
 		{
 			SaveFileDialog sfd = new SaveFileDialog();
 
-			sfd.FileName = Path.GetFileName (fileName);
-			if (fileName == "")
+			sfd.FileName = Path.GetFileName (m_FileName);
+			if (m_FileName == "")
 			{
 				sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			}
 			else
 			{
-				sfd.InitialDirectory = Path.GetDirectoryName(fileName);
+				sfd.InitialDirectory = Path.GetDirectoryName(m_FileName);
 
 			}
 			sfd.Filter = "Jsonファイル(*.json)|*.json|すべてのファイル(*.*)|*.*";
@@ -169,7 +176,7 @@ namespace PaperPlanes
 			{
 				if (SaveFile(sfd.FileName))
 				{
-					fileName = sfd.FileName;
+					m_FileName = sfd.FileName;
 				}
 			}
 		}
@@ -180,6 +187,41 @@ namespace PaperPlanes
 		public bool LoadFile(string p)
 		{
 			return drawWings1.Load(p);
+		}
+		public bool ExpoetPDF(string p)
+		{
+			return drawWings1.exportPDF(p);
+		}
+
+		private void exportPDFToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog sfd = new SaveFileDialog();
+
+			sfd.FileName = Path.GetFileName (m_PdfFileName);
+			if (m_PdfFileName == "")
+			{
+				sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			}
+			else
+			{
+				sfd.InitialDirectory = Path.GetDirectoryName(m_PdfFileName);
+
+			}
+			sfd.Filter = "PDFファイル(*.PDF)|*.PDF|すべてのファイル(*.*)|*.*";
+			sfd.FilterIndex = 1;
+			sfd.Title = "保存先のファイルを選択してください";
+			sfd.DefaultExt = "pdf";
+			sfd.RestoreDirectory = true;
+			sfd.OverwritePrompt = true;
+			sfd.CheckPathExists = true;
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+			{
+				if (ExpoetPDF(sfd.FileName))
+				{
+					m_PdfFileName = sfd.FileName;
+				}
+			}
 		}
 	}
 }

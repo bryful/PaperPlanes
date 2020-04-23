@@ -21,7 +21,6 @@ namespace PaperPlanes
 			this.Items.Clear();
 			this.Items.Add("通常尾翼");
 			this.Items.Add("双尾翼");
-			this.Items.Add("V尾翼");
 			this.SelectedIndex = 0;
 		}
 		protected override void InitLayout()
@@ -30,7 +29,6 @@ namespace PaperPlanes
 			this.Items.Clear();
 			this.Items.Add("通常尾翼");
 			this.Items.Add("双尾翼");
-			this.Items.Add("V尾翼");
 			this.SelectedIndex = 0;
 		}
 		public DrawWings.EDIT_MODE  EditMode
@@ -44,6 +42,7 @@ namespace PaperPlanes
 			set
 			{
 				int v = (int)value;
+				if (v > 1) v = 1;
 				if (this.Items.Count > 0)
 				{
 					this.SelectedIndex = v;

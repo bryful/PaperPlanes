@@ -13,11 +13,21 @@ using System.IO;
 
 using Codeplex.Data;
 
+using PdfSharp;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+
 
 namespace PaperPlanes
 {
 	public class DrawWings : Control
 	{
+
+		public float HorVolumeRate = 1.2f;
+		public float VerVolumeRate = 0.05f;
+		
+
 		public float[] MainDef =new float[]		{ 49.8f,48.3f,21.6f,4.9f ,152f ,15f   ,15f  ,20f ,10f};
 		public float[] HTailDef =new float[]	{182.4f,30.3f,17f  ,13.9f,100f ,15f   ,0    ,20f ,10f};
 		public float[] VTailDef =new float[]	{158.8f,31.6f,12.6f,24.8f,54.1f,15f   ,15f  ,20f ,10f};
@@ -47,8 +57,8 @@ namespace PaperPlanes
 		public enum EDIT_MODE
 		{
 			NORMAL =0,
-			TWINTAIL,
-			VTAIL
+			TWINTAIL
+			//VTAIL
 		}
 		private EDIT_MODE m_EditMode = EDIT_MODE.NORMAL;
 		public EDIT_MODE EditMode
@@ -60,7 +70,6 @@ namespace PaperPlanes
 				if (m_TailV != null) m_TailV.SetWingMode(PPWing.WING_MODE.VER_TAIL);
 				if (m_TailH != null) m_TailH.SetWingMode(PPWing.WING_MODE.HOR_TAIL);
 				if (m_TwinTail != null) m_TwinTail.SetWingMode(PPWing.WING_MODE.TWIN_TAIL);
-				if (m_V_Tail != null) m_V_Tail.SetWingMode(PPWing.WING_MODE.V_TAIL);
 				if (m_EditMode != (EDIT_MODE)value)
 				{
 					m_EditMode = (EDIT_MODE)value;
@@ -92,7 +101,6 @@ namespace PaperPlanes
 				if (m_TailH != null) m_TailH.SetDPI(m_DPI);
 				if (m_TailV != null) m_TailV.SetDPI(m_DPI);
 				if (m_TwinTail != null) m_TwinTail.SetDPI(m_DPI);
-				if (m_V_Tail != null) m_V_Tail.SetDPI(m_DPI);
 				this.Invalidate();
 			}
 		}
@@ -106,6 +114,12 @@ namespace PaperPlanes
 		}
 
 		#region color
+
+		private float m_CG = 0;
+		private float m_CG1 = 0;
+		public float CG
+		{ get { return m_CG; } }
+
 
 		private Color m_GridColor = Color.FromArgb(230,230,230);
 		public Color GridColor { get { return m_GridColor; } set { m_GridColor = value; this.Invalidate(); } }
@@ -186,22 +200,6 @@ namespace PaperPlanes
 				}
 			}
 		}
-		private PPWing m_V_Tail = null;
-		public PPWing V_Tail
-		{
-			get { return m_V_Tail; }
-			set
-			{
-				m_V_Tail = value;
-				if(m_V_Tail!=null)
-				{
-					m_V_Tail.SetWingMode(PPWing.WING_MODE.V_TAIL);
-					m_V_Tail.SetLocDPI(m_DPI, m_DispLocation);
-					m_V_Tail.Params = V_TailDef;
-					this.Invalidate();
-				}
-			}
-		}
 		#endregion
 
 		private PPParamsList m_ParamList = null;
@@ -249,7 +247,6 @@ namespace PaperPlanes
 			if (m_TailH != null) m_TailH.Params = HTailDef;
 			if (m_TailV != null) m_TailV.Params = VTailDef;
 			if (m_TwinTail != null) m_TwinTail.Params = TwinTailDef;
-			if (m_V_Tail != null) m_V_Tail.Params = V_TailDef;
 		}
 		// *****************************************************************************
 		private void M_ParamList_EditModeChanged(object sender, EventArgs e)
@@ -297,12 +294,6 @@ namespace PaperPlanes
 					if (m_TwinTail != null)
 					{
 						ret = m_TwinTail.WingPos + m_TwinTail.WingRoot;
-					}
-					break;
-				case DrawWings.EDIT_MODE.VTAIL:
-					if (m_V_Tail != null)
-					{
-						ret = m_V_Tail.WingPos + m_V_Tail.WingRoot;
 					}
 					break;
 
@@ -424,7 +415,7 @@ namespace PaperPlanes
 				g.DrawLine(p, ww, 0, ww, h);
 
 				//全長
-				p.Width = 2;
+				p.Width = 2.5f;
 				p.Color = Color.Black;
 				g.DrawLine(p, new PointF(PP.MM2P(m_DispLocation.X, m_DPI), PP.MM2P(m_DispLocation.Y, m_DPI)), BodyLengthPos());
 
@@ -435,6 +426,8 @@ namespace PaperPlanes
 				if (m_Main != null)
 				{
 					m_Main.Draw(g, sb, p);
+					//cg
+
 				}
 				switch (m_EditMode)
 				{
@@ -445,10 +438,22 @@ namespace PaperPlanes
 					case EDIT_MODE.TWINTAIL:
 						if (m_TwinTail != null) m_TwinTail.Draw(g, sb, p);
 						break;
-					case EDIT_MODE.VTAIL:
-						if (m_V_Tail != null) m_V_Tail.Draw(g, sb, p);
-						break;
 				}
+
+				PointF[] cgl = new PointF[3];
+				x = PP.MM2P( m_CG, m_DPI);
+				y = PP.MM2P(m_DispLocation.Y + 10, m_DPI);
+				cgl[0] = new PointF(x, y);
+				y = PP.MM2P(m_DispLocation.Y,m_DPI);
+				cgl[1] = new PointF(x, y);
+				x += PP.MM2P(3, m_DPI);
+				y += PP.MM2P(5, m_DPI);
+				cgl[2] = new PointF(x, y);
+				//cgl[3] = new PointF(0100, 100);
+				p.Color = Color.Black;
+				p.Width = 1;
+				g.DrawLines(p, cgl);
+				
 
 			}
 			finally
@@ -488,9 +493,6 @@ namespace PaperPlanes
 					break;
 				case EDIT_MODE.TWINTAIL:
 					wing0 = m_TwinTail;
-					break;
-				case EDIT_MODE.VTAIL:
-					wing0 = m_V_Tail;
 					break;
 			}
 			if (wing0 != null)
@@ -560,9 +562,6 @@ namespace PaperPlanes
 							case EDIT_MODE.TWINTAIL:
 								if (m_TwinTail != null) m_TwinTail.SetPointPixel(e.X, e.Y);
 								break;
-							case EDIT_MODE.VTAIL:
-								if (m_V_Tail != null) m_V_Tail.SetPointPixel(e.X, e.Y);
-								break;
 						}
 						break;
 					case 2:
@@ -596,13 +595,9 @@ namespace PaperPlanes
 					{
 						wing = m_TailH;
 					}
-					else if (m_EditMode == EDIT_MODE.TWINTAIL)
+					else
 					{
 						wing = m_TwinTail;
-					}
-					else if (m_EditMode == EDIT_MODE.VTAIL)
-					{
-						wing = m_V_Tail;
 					}
 					break;
 				case 2:
@@ -631,17 +626,63 @@ namespace PaperPlanes
 
 
 		}
+		// *****************************************************************************
 		public void ShowInfo()
 		{
 			if (m_ParamList == null) return;
+			if (m_Main == null) return;
+			float sh = 0;
+			float sv = 0;
+			float kh = 0;
+			float kv = 0;
+			float LO = 0;
+			float L1 = 0;
+
+			switch(m_EditMode)
+			{
+				case EDIT_MODE.NORMAL:
+					if ((m_TailH == null) || (m_TailV == null)) return;
+					//理想的な水平尾翼の大きさを求める
+					sh = HorVolumeRate *m_Main.HorArea * m_Main.HorMacLength  / (m_TailH.AerodynamicCenterPosH - m_Main.AerodynamicCenterPosH);
+					//理想的な垂直尾翼
+					sv = VerVolumeRate * m_Main.HorArea * m_Main.WingSpan / (m_TailV.AerodynamicCenterPosH - m_Main.AerodynamicCenterPosH);
+					kh = m_TailH.HorArea * (m_TailH.AerodynamicCenterPosH - m_Main.AerodynamicCenterPosH) / (m_Main.HorArea * m_Main.HorMacLength);
+					kv = (m_TailV.VerArea/2) * (m_TailV.AerodynamicCenterPosV - m_Main.AerodynamicCenterPosH) / (m_Main.HorArea * m_Main.WingSpan);
+
+					LO = (m_TailH.AerodynamicCenterPosH - m_Main.AerodynamicCenterPosH);
+					L1 =  LO * m_TailH.HorArea / (m_Main.HorArea + m_TailH.HorArea);
+
+					m_CG1 = m_Main.AerodynamicCenterPosH + L1;
+					m_CG = m_Main.AerodynamicCenterPosH + L1 - (LO * 0.103f);
+
+					break;
+				case EDIT_MODE.TWINTAIL:
+					if (m_TwinTail == null) return;
+					sh = m_Main.HorArea * m_Main.HorMacLength * HorVolumeRate / (m_TwinTail.AerodynamicCenterPosH - m_Main.AerodynamicCenterPosH);
+					sv = VerVolumeRate * m_Main.HorArea * m_Main.WingSpan / (m_TwinTail.AerodynamicCenterPosV - m_Main.AerodynamicCenterPosH);
+					kh = m_TwinTail.HorArea * (m_TwinTail.AerodynamicCenterPosH - m_Main.AerodynamicCenterPosH) / (m_Main.HorArea * m_Main.HorMacLength);
+					kv = m_TwinTail.VerArea * (m_TwinTail.AerodynamicCenterPosV - m_Main.AerodynamicCenterPosH) / (m_Main.HorArea * m_Main.WingSpan);
+
+					LO = (m_TwinTail.AerodynamicCenterPosH - m_Main.AerodynamicCenterPosH);
+					L1 =  LO * m_TwinTail.HorArea / (m_Main.HorArea + m_TwinTail.HorArea);
+
+					m_CG1 = m_Main.AerodynamicCenterPosH + L1;
+					m_CG = m_Main.AerodynamicCenterPosH + L1 - LO * 0.103f;
+
+					break;
+			}
+
+			
 			m_ParamList.Body = BodyLength()/10;// mm->cm
 
-			if (m_Main != null) m_ParamList.MainArea = m_Main.HorArea/100;
+			m_ParamList.MainArea = m_Main.HorArea/100;
 			m_ParamList.TailHorArea = TailHorArea()/100;
-			m_ParamList.TailHorAreaIdeal = TailHorArea()/100;
+			m_ParamList.TailHorAreaIdeal = sh/100;
+			m_ParamList.TailHorVolum = kh;
 
 			m_ParamList.TailVerArea = TailVerArea() / 100;
-			m_ParamList.TailVerAreaIdeal = TailVerArea() / 100;
+			m_ParamList.TailVerAreaIdeal = sv / 100;
+			m_ParamList.TailVerVolum = kv;
 		}
 		// *****************************************************************************
 		public float TailHorArea()
@@ -654,9 +695,6 @@ namespace PaperPlanes
 					break;
 				case EDIT_MODE.TWINTAIL:
 					if (m_TwinTail != null) ret = m_TwinTail.HorArea;
-					break;
-				case EDIT_MODE.VTAIL:
-					if (m_V_Tail != null) ret = m_V_Tail.HorArea;
 					break;
 			}
 			return ret;
@@ -672,9 +710,6 @@ namespace PaperPlanes
 					break;
 				case EDIT_MODE.TWINTAIL:
 					if (m_TwinTail != null) ret = m_TwinTail.VerArea;
-					break;
-				case EDIT_MODE.VTAIL:
-					if (m_V_Tail != null) ret = m_V_Tail.VerArea;
 					break;
 			}
 			return ret;
@@ -696,10 +731,6 @@ namespace PaperPlanes
 					else if (m_EditMode == EDIT_MODE.TWINTAIL)
 					{
 						wing = m_TwinTail;
-					}
-					else if (m_EditMode == EDIT_MODE.VTAIL)
-					{
-						wing = m_V_Tail;
 					}
 					break;
 				case 2:
@@ -748,10 +779,6 @@ namespace PaperPlanes
 			if (m_TwinTail != null)
 			{
 				obj.TwinTail = m_TwinTail.Params;
-			}
-			if (m_V_Tail != null)
-			{
-				obj.V_Tail = m_V_Tail.Params;
 			}
 
 			string js = obj.ToString();
@@ -804,13 +831,70 @@ namespace PaperPlanes
 				float[] sa = (float[])obj.TwinTail;
 				if (m_TwinTail != null) m_TwinTail.Params = sa;
 			}
-			if (((DynamicJson)obj).IsDefined("V_Tail"))
-			{
-				float[] sa = (float[])obj.V_Tail;
-				if (m_V_Tail != null) m_V_Tail.Params = sa;
-			}
 			return ret;
 
+		}
+		// ******************************************
+		public bool exportPDF(string path)
+		{
+			bool ret = false;
+
+			PdfDocument document = new PdfDocument();
+			PdfPage page = document.AddPage();
+			page.Size = PageSize.A4;
+			page.Orientation = PageOrientation.Portrait;
+			XGraphics xg = XGraphics.FromPdfPage(page,XGraphicsUnit.Millimeter);
+			XPen xp = new XPen(XColor.FromArgb(16, 16, 16));
+			xp.Width = 0.1f;
+			XPoint[] ps = new XPoint[0];
+
+			double x = 0;
+			double y = 0;
+			try
+			{
+				switch (m_EditMode)
+				{
+					case EDIT_MODE.NORMAL:
+						if (m_Main != null) m_Main.PdfDraw(xg, xp);
+						if (m_TailH != null) m_TailH.PdfDraw(xg, xp);
+						if (m_TailV != null) m_TailV.PdfDraw(xg, xp,(m_TailH.WingSpan/2+10)*-1);
+						break;
+					case EDIT_MODE.TWINTAIL:
+						if (m_Main != null) m_Main.PdfDraw(xg, xp);
+						if (m_TwinTail != null) m_TwinTail.PdfDraw(xg, xp);
+						break;
+				}
+				//body
+				ps = new XPoint[2];
+				ps[0] = new XPoint(m_DispLocation.X, m_DispLocation.Y);
+				ps[1] = new XPoint(m_DispLocation.X + BodyLength(), m_DispLocation.Y);
+				xp.Color = XColor.FromArgb(0, 0, 0);
+				xg.DrawLines(xp, ps);
+
+
+				ps = new XPoint[3];
+				x = m_CG;
+				y = m_DispLocation.Y + 10;
+				ps[0] = new XPoint(x, y);
+				y = m_DispLocation.Y;
+				ps[1] = new XPoint(x, y);
+				x += 3;
+				y += 5;
+				ps[2] = new XPoint(x, y);
+				xp.Color = XColor.FromArgb(180, 180, 180);
+				xg.DrawLines(xp, ps);
+
+
+				document.Save(path);
+				ret = true;
+			}
+			finally
+			{
+				document.Dispose();
+
+			}
+
+			return ret;
 		}
 	}
 }

@@ -24,6 +24,12 @@ namespace PaperPlanes
 		public float Area { get { return m_Area; } }
 		public PointF [] MacLine { get { return m_MACLine; } }
 
+		private float m_MACLength = 0;
+		public float MACLength
+		{
+			get { return m_MACLength; }
+		}
+
 		public float Span
 		{
 			get { return m_Span; }
@@ -138,7 +144,7 @@ namespace PaperPlanes
 			}
 			m_MACLine[0] = mc0;
 			m_MACLine[1] = mc1;
-
+			m_MACLength = mc1.X - mc0.X;
 		}
 
 		private void Update()

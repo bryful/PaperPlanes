@@ -22,7 +22,11 @@ namespace PaperPlanes
 				ValueChanged(this, e);
 			}
 		}
-
+		public bool IsReadonry
+		{
+			get { return NumericUpDown1.ReadOnly; }
+			set { NumericUpDown1.ReadOnly = value; }
+		}
 		Label Label1 = new Label();
 		NumericUpDown NumericUpDown1 = new NumericUpDown();
 		public PPParams()
