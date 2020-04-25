@@ -3,6 +3,9 @@
 の計算式を使用して紙飛行機の設計を行うアプリです。  
   
 普通の尾翼と双尾翼の2種類に対応しています。  
+![PaperPlanes](https://user-images.githubusercontent.com/50650451/80271961-76bbf280-8700-11ea-8f28-d2a6073e182d.png)  
+Windowsバイナリのダウンロード  
+[PaperPlanes_001.zip](https://bit.ly/3eLNn7v)    
  
 # Usage
 1. 尾翼の形式を選ぶ（通常・双尾翼）
