@@ -164,7 +164,7 @@
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
 			this.aboutToolStripMenuItem.Text = "バージョン情報の表示";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 

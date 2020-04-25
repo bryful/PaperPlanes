@@ -52,6 +52,7 @@ namespace PaperPlanes
 			NumericUpDown1.TextAlign = HorizontalAlignment.Right;
 			NumericUpDown1.Minimum = 0;
 			NumericUpDown1.Maximum = 300;
+			NumericUpDown1.Increment = (decimal)0.2;
 
 			this.Controls.Add(Label1);
 			this.Controls.Add(NumericUpDown1);
