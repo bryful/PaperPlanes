@@ -65,6 +65,8 @@ namespace PaperPlanes
 		#endregion
 
 		private int m_SelectedIndex = -1;
+		private int m_SelectedIndexBak = 0;
+
 		/// <summary>
 		/// マウスで選ばれた点
 		/// </summary>
@@ -75,6 +77,11 @@ namespace PaperPlanes
 			{
 				if(m_SelectedIndex != value)
 				{
+					if (m_SelectedIndex >= 0)
+					{
+						m_SelectedIndexBak = m_SelectedIndex;
+						if (m_SelectedIndexBak < 0) m_SelectedIndexBak = 0;
+					}
 					m_SelectedIndex = value;
 					for (int i = 0; i < m_Points.Length; i++) m_Points[i].Selected = false;
 					if (m_SelectedIndex>=0)
@@ -84,7 +91,24 @@ namespace PaperPlanes
 				}
 			}
 		}
-
+		public bool ActiveWing
+		{
+			get { return (m_SelectedIndex >= 0); }
+			set
+			{
+				if (ActiveWing != value)
+				{
+					if (value)
+					{
+						SelectIndex = m_SelectedIndexBak;
+					}
+					else
+					{
+						SelectIndex = -1;
+					}
+				}
+			}
+		}
 		private Color m_LineColor = Color.FromArgb(0,0,0);
 		/// <summary>
 		/// 紙線の色
@@ -831,7 +855,7 @@ namespace PaperPlanes
 					idx = i;
 				}
 			}
-			m_SelectedIndex = idx;
+			SelectIndex = idx;
 			return ret;
 		}
 		// ******************************************
@@ -981,11 +1005,26 @@ namespace PaperPlanes
 					xp.Width = w;
 					xg.DrawLines(xp, ps);
 
+					/*
+					ps = new XPoint[2];
+					x = m_DispLocasion.X + m_WingPos + m_WingTipOffset;
+					y = m_DispLocasion.Y + offsetY + m_WingSpan/2;
+					ps[0] = new XPoint(x,y);
+					x += m_WingTip;
+					ps[1] = new XPoint(x,y);
+					xp.Color = XColor.FromArgb(128, 128, 128);
+					xp.Width = w;
+					xg.DrawLines(xp, ps);
+					*/
+
+
+
+
 					x = m_DispLocasion.X + m_WingPos+m_WingTipOffset;
 					y = m_DispLocasion.Y + offsetY - m_WingSpan / 2;
 					ps[0] = new XPoint(x,y);
 					x += m_WingTip; 
-					ps[0] = new XPoint(x,y);
+					ps[1] = new XPoint(x,y);
 					xg.DrawLines(xp, ps);
 
 

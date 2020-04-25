@@ -38,7 +38,9 @@ namespace BRY
 		public JsonPref(string appName = "")
 		{
 			if (appName == "") appName = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
-			_filePath = Path.Combine(Application.UserAppDataPath, appName + ".json");
+			string ppp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			_filePath = Path.Combine(PrefDir(), appName + ".json");
+
 		}
 		public override string ToString()
 		{
@@ -51,6 +53,25 @@ namespace BRY
 		public void Parse(string js)
 		{
 			json = DynamicJson.Parse(js);
+		}
+		//----------------------------------------------------------------
+		static public string PrefDir()
+		{
+			string ppp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			ppp = Path.Combine(ppp, "bry-ful\\PaperPlanes");
+			if (Directory.Exists(ppp)==false)  Directory.CreateDirectory(ppp);
+			return ppp;
+		}
+		//----------------------------------------------------------------
+		public void MakeDir(string s)
+		{
+			string sp = Path.GetDirectoryName(s);
+			if (Directory.Exists(sp)==false)
+			{
+				MakeDir(sp);
+			}
+			if (Directory.Exists(s) == true) return;
+			Directory.CreateDirectory(s);
 		}
 		//----------------------------------------------------------------
 		/// <summary>

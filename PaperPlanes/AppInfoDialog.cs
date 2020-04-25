@@ -91,12 +91,12 @@ namespace BRY
 			g.DrawImage(ico.ToBitmap(), 0, 0, 128, 128);
 			*/
 
-			Text = appProductName + " のバージョン情報";
-			lbCanpany.Text = appCompanyName;
-			lbProduct.Text = appProductName;
-			lbVersion.Text = "Version " + appVersion;
-			lbCopyright.Text = appCopyright;
-			lbDescription.Text = appDescription;
+			//Text = "PaperPlanes のバージョン情報";
+			//lbCanpany.Text = appCompanyName;
+			//lbProduct.Text = appProductName;
+			//lbVersion.Text = "Version " + appVersion;
+			//lbCopyright.Text = appCopyright;
+			//lbDescription.Text = appDescription;
 		}
 		static public void ShowAppInfoDialog()
 		{

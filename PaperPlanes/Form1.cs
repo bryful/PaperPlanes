@@ -69,7 +69,7 @@ namespace PaperPlanes
 		}
 		private string BakFilePath
 		{
-			get { return Path.Combine(Application.UserAppDataPath, "paperplane_def.json"); }
+			get { return Path.Combine(JsonPref.PrefDir(), "paperplane_def.json"); }
 		}
 		//-------------------------------------------------------------
 		/// <summary>
@@ -130,7 +130,11 @@ namespace PaperPlanes
 			{
 				foreach (string s in cmd)
 				{
-					//listBox1.Items.Add(s);
+					if (LoadFile(s))
+					{
+						m_FileName = s;
+						break;
+					}
 				}
 			}
 		}
@@ -220,6 +224,35 @@ namespace PaperPlanes
 				if (ExpoetPDF(sfd.FileName))
 				{
 					m_PdfFileName = sfd.FileName;
+				}
+			}
+		}
+
+		private void openToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog dlg = new OpenFileDialog();
+
+			dlg.FileName = Path.GetFileName (m_FileName);
+			if (m_FileName == "")
+			{
+				dlg.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			}
+			else
+			{
+				dlg.InitialDirectory = Path.GetDirectoryName(m_FileName);
+
+			}
+			dlg.Filter = "Jsonファイル(*.json)|*.json|すべてのファイル(*.*)|*.*";
+			dlg.FilterIndex = 1;
+			dlg.Title = "保存先のファイルを選択してください";
+			dlg.DefaultExt = "json";
+
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				if (LoadFile(dlg.FileName))
+				{
+					m_FileName = dlg.FileName;
+					drawWings1.Invalidate();
 				}
 			}
 		}

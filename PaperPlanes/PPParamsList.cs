@@ -44,8 +44,8 @@ namespace PaperPlanes
 		#endregion
 
 		#region params
-		private CombEditMode m_CmbEditMode = new CombEditMode();
-		private CombSelectWings m_CmbSelectWing = new CombSelectWings();
+		private EditModeSelect m_EditModeSelect = new EditModeSelect();
+		private SelectWingParts m_CmbSelectWing = new SelectWingParts();
 		private PPParams m_WingPos = new PPParams();
 		private PPParams m_WingSpan = new PPParams();
 		private PPParams m_WingRoot = new PPParams();
@@ -122,19 +122,12 @@ namespace PaperPlanes
 		#region mode
 		public DrawWings.EDIT_MODE EditMode
 		{
-			get { return m_CmbEditMode.EditMode; }
+			get { return m_EditModeSelect.EditMode; }
 			set
 			{
-				if (m_CmbEditMode.EditMode != value)
+				if (m_EditModeSelect.EditMode != value)
 				{
-					m_CmbEditMode.EditMode = value;
-				}
-				if (m_CmbEditMode.EditMode != DrawWings.EDIT_MODE.NORMAL)
-				{
-					if (SelectWing >= 2)
-					{
-						SelectWing = 1;
-					}
+					m_EditModeSelect.EditMode = value;
 				}
 				chkItems();
 
@@ -148,10 +141,6 @@ namespace PaperPlanes
 				int v = value;
 				if (v >= 0)
 				{
-					if((v>=2)&&(EditMode != DrawWings.EDIT_MODE.NORMAL))
-					{
-						v = 0;
-					}
 					m_CmbSelectWing.SelectWing = v;
 					chkItems();
 
@@ -205,7 +194,7 @@ namespace PaperPlanes
 		{
 			this.Size = new Size(210, 410);
 
-			m_CmbEditMode.Size =new Size(200, 20);
+			m_EditModeSelect.Size =new Size(200, 20);
 			m_CmbSelectWing.Size =new Size(200, 20);
 
 			EditMode = EditMode;
@@ -270,7 +259,7 @@ namespace PaperPlanes
 
 
 
-			FlowLayoutPanel1.Controls.Add(m_CmbEditMode);
+			FlowLayoutPanel1.Controls.Add(m_EditModeSelect);
 			FlowLayoutPanel1.Controls.Add(m_CmbSelectWing);
 
 			FlowLayoutPanel1.Controls.Add(m_WingPos);
@@ -292,8 +281,8 @@ namespace PaperPlanes
 
 
 
-			m_CmbEditMode.SelectedIndexChanged += M_CmbEditMode_SelectedIndexChanged;
-			m_CmbSelectWing.SelectedIndexChanged += M_CmbSelectWing_SelectedIndexChanged;
+			m_EditModeSelect.SelectChanged += M_SelectChanged;
+			m_CmbSelectWing.SelectChanged += M_CmbSelectWing_SelectChanged;
 
 			m_WingPos.ValueChanged += M_Wing_ValueChanged;
 			m_WingSpan.ValueChanged += M_Wing_ValueChanged;
@@ -307,6 +296,13 @@ namespace PaperPlanes
 			chkItems();
 		}
 
+		private void M_CmbSelectWing_SelectChanged(object sender, EventArgs e)
+		{
+			chkItems();
+
+			OnSelectWingChanged(new EventArgs());
+		}
+
 		private void M_Wing_ValueChanged(object sender, EventArgs e)
 		{
 			if (EventFlag == true)
@@ -315,22 +311,16 @@ namespace PaperPlanes
 			}
 		}
 
-		private void M_CmbSelectWing_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if( (m_CmbSelectWing.SelectedIndex==2)&&(EditMode!= DrawWings.EDIT_MODE.NORMAL))
-			{
-				m_CmbSelectWing.SelectedIndex = 0;
-				//return;
-			}
-			chkItems();
-
-			OnSelectWingChanged(new EventArgs());
-		}
-
-		private void M_CmbEditMode_SelectedIndexChanged(object sender, EventArgs e)
+		
+		private void M_SelectChanged(object sender, EventArgs e)
 		{
 			chkItems();
+
 			OnEditModeChanged(new EventArgs());
+			if(m_CmbSelectWing != null)
+			{
+				m_CmbSelectWing.EditMode = EditMode;
+			}
 		}
 
 		protected override void InitLayout()
@@ -340,7 +330,7 @@ namespace PaperPlanes
 		private void chkItems()
 		{
 			int tw = m_CmbSelectWing.SelectWing;
-			switch( m_CmbEditMode.EditMode)
+			switch( m_EditModeSelect.EditMode)
 			{
 				case DrawWings.EDIT_MODE.NORMAL:
 					m_WingSpan2.Enabled = false;

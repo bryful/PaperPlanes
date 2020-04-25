@@ -65,9 +65,9 @@
 			this.lbVersion.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.lbVersion.Location = new System.Drawing.Point(155, 106);
 			this.lbVersion.Name = "lbVersion";
-			this.lbVersion.Size = new System.Drawing.Size(167, 19);
+			this.lbVersion.Size = new System.Drawing.Size(115, 19);
 			this.lbVersion.TabIndex = 2;
-			this.lbVersion.Text = "Version 215435454";
+			this.lbVersion.Text = "Version 1.0.0";
 			// 
 			// lbCopyright
 			// 
@@ -75,9 +75,9 @@
 			this.lbCopyright.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.lbCopyright.Location = new System.Drawing.Point(156, 129);
 			this.lbCopyright.Name = "lbCopyright";
-			this.lbCopyright.Size = new System.Drawing.Size(78, 16);
+			this.lbCopyright.Size = new System.Drawing.Size(114, 16);
 			this.lbCopyright.TabIndex = 3;
-			this.lbCopyright.Text = "コピーライト";
+			this.lbCopyright.Text = "bry-ful (c) 2020";
 			// 
 			// lbDescription
 			// 
@@ -85,14 +85,14 @@
 			this.lbDescription.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.lbDescription.Location = new System.Drawing.Point(18, 160);
 			this.lbDescription.Name = "lbDescription";
-			this.lbDescription.Size = new System.Drawing.Size(40, 16);
+			this.lbDescription.Size = new System.Drawing.Size(184, 16);
 			this.lbDescription.TabIndex = 4;
-			this.lbDescription.Text = "説明";
+			this.lbDescription.Text = "紙飛行機の設計を行います";
 			// 
 			// button1
 			// 
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button1.Location = new System.Drawing.Point(289, 170);
+			this.button1.Location = new System.Drawing.Point(289, 173);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(95, 33);
 			this.button1.TabIndex = 5;
@@ -106,9 +106,9 @@
 			this.lbProduct.Font = new System.Drawing.Font("MS UI Gothic", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.lbProduct.Location = new System.Drawing.Point(155, 59);
 			this.lbProduct.Name = "lbProduct";
-			this.lbProduct.Size = new System.Drawing.Size(97, 27);
+			this.lbProduct.Size = new System.Drawing.Size(154, 27);
 			this.lbProduct.TabIndex = 6;
-			this.lbProduct.Text = "bry-ful ";
+			this.lbProduct.Text = "PaperPlanes";
 			// 
 			// pictureBox2
 			// 
@@ -124,7 +124,7 @@
 			this.AcceptButton = this.button1;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(396, 215);
+			this.ClientSize = new System.Drawing.Size(396, 224);
 			this.Controls.Add(this.lbProduct);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.lbDescription);

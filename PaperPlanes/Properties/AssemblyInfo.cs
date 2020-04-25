@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("PaperPlanes")]
-[assembly: AssemblyDescription("アプリのスケルトン")]
+[assembly: AssemblyDescription("紙飛行機の設計")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("bry-ful")]
 [assembly: AssemblyProduct("PaperPlanes")]

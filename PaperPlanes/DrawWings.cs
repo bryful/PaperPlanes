@@ -28,19 +28,18 @@ namespace PaperPlanes
 		public float VerVolumeRate = 0.05f;
 		
 
-		public float[] MainDef =new float[]		{ 49.8f,48.3f,21.6f,4.9f ,152f ,15f   ,15f  ,20f ,10f};
-		public float[] HTailDef =new float[]	{182.4f,30.3f,17f  ,13.9f,100f ,15f   ,0    ,20f ,10f};
-		public float[] VTailDef =new float[]	{158.8f,31.6f,12.6f,24.8f,54.1f,15f   ,15f  ,20f ,10f};
-		public float[] TwinTailDef =new float[] {156.3f,31.6f,18.9f,14.9f,58.5f,15.2f ,16.7f,9.8f,10.5f};
-		public float[] V_TailDef =new float[]	{158.8f,31.6f,15.8f,10.5f,67.2f,15,25f,20f  ,10f};
+		public float[] MainDef =new float[]		{40.2f,33.7f,16.8f,5.2f,178f,15f,15f,20f,10f};
+		public float[] HTailDef =new float[]	{147.7f,22.9f,14.3f,10.2f,79.3f,0f,15f,20f,10f};
+		public float[] VTailDef =new float[]	{127.8f,29.5f,9.9f,24.2f,46.1f,0f,15f,20f,10f};
+		public float[] TwinTailDef =new float[] {137.1f,24.8f,17f,11.2f,65.9f,0f,14.6f,7.4f,12.7f};
 
 		/*
-		"Main":[49.8,48.3,21.6,4.9,152,15,15,20,10],
-"TailH":[182.4,30.3,17,13.9,100,15,0,20,10],
-"TailV":[158.8,31.6,12.6,24.8,54.1,15,15,20,10],
-"TwinTail":[156.3,31.6,18.9,14.9,58.5,15.2,16.7,9.8,10.5],
-"V_Tail":[158.8,31.6,15.8,10.5,67.2,15,25,20,10]}
-		*/
+{"EditMode":1,
+"Main":[40.2f,33.7f,16.8f,5.2f,178f,15f,15f,20f,10f],
+"TailH":[147.7f,22.9f,14.3f,10.2f,79.3f,0f,15f,20f,10f],
+"TailV":[127.8f,29.5f,9.9f,24.2f,46.1f,0f,15f,20f,10f],
+"TwinTail":[137.1f,24.8f,17f,11.2f,65.9f,0f,14.6f,7.4f,12.7f]}		
+*/
 		#region event
 		public event EventHandler SetectWingIndexChanged;
 
@@ -217,7 +216,7 @@ namespace PaperPlanes
 
 					m_ParamList.EditModeChanged += M_ParamList_EditModeChanged;
 					m_ParamList.SelectWing = m_SelectWingIndex;
-					m_ParamList.SelectWingChanged += M_ParamList_TargetWingChanged;
+					m_ParamList.SelectWingChanged += M_ParamList_SelectWingChanged;
 					m_ParamList.ValueChanged += M_ParamList_ValueChanged;
 
 				}
@@ -230,12 +229,18 @@ namespace PaperPlanes
 			this.Invalidate();
 		}
 
-		private void M_ParamList_TargetWingChanged(object sender, EventArgs e)
+		private void M_ParamList_SelectWingChanged(object sender, EventArgs e)
 		{
 			if (m_ParamList == null) return;
 			if(m_SelectWingIndex!= m_ParamList.SelectWing)
 			{
 				m_SelectWingIndex = m_ParamList.SelectWing;
+
+				if(m_Main!=null) { m_Main.ActiveWing = (m_SelectWingIndex == 0); }
+				if(m_TailV!=null) { m_TailV.ActiveWing = (m_SelectWingIndex == 2); }
+				if(m_TailH!=null) { m_TailH.ActiveWing = (m_SelectWingIndex == 1); }
+				if(m_TwinTail!=null) { m_TwinTail.ActiveWing = (m_SelectWingIndex == 1); }
+
 			}
 			ToParamsList();
 			this.Invalidate();
@@ -802,18 +807,29 @@ namespace PaperPlanes
 
 			string js = File.ReadAllText(path);
 
+			if (js == "") return ret;
+
 			dynamic obj = DynamicJson.Parse(js);
 
+			ret = true;
 			if (((DynamicJson)obj).IsDefined("EditMode"))
 			{
 				int v = (int)obj.EditMode;
 				EditMode = (DrawWings.EDIT_MODE)v;
+			}
+			else
+			{
+				ret = false;
 			}
 			if (((DynamicJson)obj).IsDefined("Main"))
 			{
 				float[] sa = (float[])obj.Main;
 				if (m_Main != null) m_Main.Params = sa;
 
+			}
+			else
+			{
+				ret = false;
 			}
 			if (((DynamicJson)obj).IsDefined("TailH"))
 			{
@@ -831,6 +847,8 @@ namespace PaperPlanes
 				float[] sa = (float[])obj.TwinTail;
 				if (m_TwinTail != null) m_TwinTail.Params = sa;
 			}
+			ToParamsList();
+			this.Invalidate();
 			return ret;
 
 		}

@@ -76,7 +76,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Skelton.ico</ApplicationIcon>
+    <ApplicationIcon>PaperPlanes.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -106,10 +106,7 @@
     <Compile Include="AppInfoDialog.Designer.cs">
       <DependentUpon>AppInfoDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="CombEditMode.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CombSelectWings.cs">
+    <Compile Include="EditModeSelect.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EmptyBox.cs">
@@ -143,6 +140,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectWingParts.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WindowsShellAPI.cs" />
     <EmbeddedResource Include="AppInfoDialog.resx">
       <DependentUpon>AppInfoDialog.cs</DependentUpon>
@@ -175,7 +175,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Skelton.ico" />
+    <Content Include="PaperPlanes.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
