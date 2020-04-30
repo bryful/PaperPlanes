@@ -350,6 +350,28 @@ namespace BRY
 			}
 			return ret;
 		}
+		//-********************************************************************************
+		public void SetPointF(string key, PointF p)
+		{
+			var s = new { X = p.X, Y = p.Y };
+			json[key] = s;
+		}
+		public PointF GetPointF(string key, out bool ok)
+		{
+			ok = false;
+			PointF ret = new PointF(0, 0);
+			if (json.IsDefined(key) == true)
+			{
+				var a = json[key];
+				if ((a.IsDefined("X") == true) && (a.IsDefined("Y")))
+				{
+					ret.X = (float)((dynamic)json[key].X);
+					ret.Y = (float)((dynamic)json[key].Y);
+					ok = true;
+				}
+			}
+			return ret;
+		}
 
 	}
 }

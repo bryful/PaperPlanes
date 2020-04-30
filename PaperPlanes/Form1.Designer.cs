@@ -28,8 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			PaperPlanes.PPWing ppTailVer;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+			PaperPlanes.PPWing ppTailVer;
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,46 +42,18 @@
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.backToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ppPos1 = new PaperPlanes.PPPos();
 			this.ppParamsList1 = new PaperPlanes.PPParamsList();
 			this.drawWings1 = new PaperPlanes.DrawWings();
 			this.ppMain = new PaperPlanes.PPWing();
 			this.ppTailHor = new PaperPlanes.PPWing();
 			this.ppTwin = new PaperPlanes.PPWing();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			ppTailVer = new PaperPlanes.PPWing();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// ppTailVer
-			// 
-			ppTailVer.ActiveWing = false;
-			ppTailVer.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppTailVer.DispLocation")));
-			ppTailVer.DPI = 82F;
-			ppTailVer.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
-			ppTailVer.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			ppTailVer.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-			ppTailVer.Params = new float[] {
-        127.8F,
-        29.5F,
-        9.9F,
-        24.2F,
-        46.1F,
-        0F,
-        15F,
-        20F,
-        10F};
-			ppTailVer.SelectIndex = -1;
-			ppTailVer.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
-			ppTailVer.WingDihedral = 0F;
-			ppTailVer.WingPos = 127.8F;
-			ppTailVer.WingRoot = 29.5F;
-			ppTailVer.WingSpan = 46.1F;
-			ppTailVer.WingSpan2 = 0F;
-			ppTailVer.WingTip = 9.9F;
-			ppTailVer.WingTip2 = 0F;
-			ppTailVer.WingTipOffset = 24.2F;
-			ppTailVer.WingTipOffset2 = 0F;
 			// 
 			// menuStrip1
 			// 
@@ -149,6 +121,8 @@
 			// 
 			// editToolStripMenuItem
 			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.backToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
@@ -170,11 +144,47 @@
 			// 
 			// statusStrip1
 			// 
-			this.statusStrip1.Location = new System.Drawing.Point(0, 598);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 610);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(1100, 22);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.BackColor = System.Drawing.Color.Transparent;
+			this.label1.Location = new System.Drawing.Point(10, 529);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(194, 12);
+			this.label1.TabIndex = 8;
+			this.label1.Text = "ただの棒はMAC85%の位置の重心です。";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.BackColor = System.Drawing.Color.Transparent;
+			this.label2.Location = new System.Drawing.Point(10, 544);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(253, 12);
+			this.label2.TabIndex = 9;
+			this.label2.Text = "上矢印の棒はモーメント・アームから求めた重心です。";
+			// 
+			// backToolStripMenuItem
+			// 
+			this.backToolStripMenuItem.Name = "backToolStripMenuItem";
+			this.backToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
+			this.backToolStripMenuItem.Text = "Back";
+			this.backToolStripMenuItem.Click += new System.EventHandler(this.backToolStripMenuItem_Click);
+			// 
+			// ppPos1
+			// 
+			this.ppPos1.Location = new System.Drawing.Point(12, 559);
+			this.ppPos1.Name = "ppPos1";
+			this.ppPos1.Size = new System.Drawing.Size(209, 23);
+			this.ppPos1.TabIndex = 10;
+			this.ppPos1.Text = "ppPos1";
+			this.ppPos1.ButttonClick += new System.EventHandler(this.backToolStripMenuItem_Click);
 			// 
 			// ppParamsList1
 			// 
@@ -184,7 +194,7 @@
 			this.ppParamsList1.MainArea = 51.31384F;
 			this.ppParamsList1.Name = "ppParamsList1";
 			this.ppParamsList1.SelectWing = 0;
-			this.ppParamsList1.Size = new System.Drawing.Size(228, 514);
+			this.ppParamsList1.Size = new System.Drawing.Size(228, 499);
 			this.ppParamsList1.TabIndex = 7;
 			this.ppParamsList1.TailHorArea = 0F;
 			this.ppParamsList1.TailHorAreaIdeal = 0F;
@@ -215,11 +225,13 @@
 			this.drawWings1.EditMode = PaperPlanes.DrawWings.EDIT_MODE.NORMAL;
 			this.drawWings1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
 			this.drawWings1.GridColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(210)))), ((int)(((byte)(210)))));
+			this.drawWings1.ImageFilePath = "";
 			this.drawWings1.Location = new System.Drawing.Point(269, 27);
 			this.drawWings1.MainWing = this.ppMain;
 			this.drawWings1.Name = "drawWings1";
 			this.drawWings1.ParamList = this.ppParamsList1;
-			this.drawWings1.Size = new System.Drawing.Size(819, 568);
+			this.drawWings1.PPPos = this.ppPos1;
+			this.drawWings1.Size = new System.Drawing.Size(819, 580);
 			this.drawWings1.TabIndex = 2;
 			this.drawWings1.TailH = this.ppTailHor;
 			this.drawWings1.TailV = ppTailVer;
@@ -286,6 +298,36 @@
 			this.ppTailHor.WingTipOffset = 10.2F;
 			this.ppTailHor.WingTipOffset2 = 0F;
 			// 
+			// ppTailVer
+			// 
+			ppTailVer.ActiveWing = false;
+			ppTailVer.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppTailVer.DispLocation")));
+			ppTailVer.DPI = 82F;
+			ppTailVer.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			ppTailVer.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			ppTailVer.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+			ppTailVer.Params = new float[] {
+        127.8F,
+        29.5F,
+        9.9F,
+        24.2F,
+        46.1F,
+        0F,
+        15F,
+        20F,
+        10F};
+			ppTailVer.SelectIndex = -1;
+			ppTailVer.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			ppTailVer.WingDihedral = 0F;
+			ppTailVer.WingPos = 127.8F;
+			ppTailVer.WingRoot = 29.5F;
+			ppTailVer.WingSpan = 46.1F;
+			ppTailVer.WingSpan2 = 0F;
+			ppTailVer.WingTip = 9.9F;
+			ppTailVer.WingTip2 = 0F;
+			ppTailVer.WingTipOffset = 24.2F;
+			ppTailVer.WingTipOffset2 = 0F;
+			// 
 			// ppTwin
 			// 
 			this.ppTwin.ActiveWing = false;
@@ -316,32 +358,13 @@
 			this.ppTwin.WingTipOffset = 11.2F;
 			this.ppTwin.WingTipOffset2 = 12.7F;
 			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.BackColor = System.Drawing.Color.Transparent;
-			this.label1.Location = new System.Drawing.Point(10, 529);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(194, 12);
-			this.label1.TabIndex = 8;
-			this.label1.Text = "ただの棒はMAC85%の位置の重心です。";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.BackColor = System.Drawing.Color.Transparent;
-			this.label2.Location = new System.Drawing.Point(10, 544);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(253, 12);
-			this.label2.TabIndex = 9;
-			this.label2.Text = "上矢印の棒はモーメント・アームから求めた重心です。";
-			// 
 			// Form1
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1100, 620);
+			this.ClientSize = new System.Drawing.Size(1100, 632);
+			this.Controls.Add(this.ppPos1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.ppParamsList1);
@@ -385,6 +408,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.ToolStripMenuItem backToolStripMenuItem;
+		private PPPos ppPos1;
 	}
 }
 

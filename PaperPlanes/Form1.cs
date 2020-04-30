@@ -21,6 +21,7 @@ namespace PaperPlanes
 	{
 		private string m_FileName = "";
 		private string m_PdfFileName = "";
+		private string m_BackImagePath = "";
 		//-------------------------------------------------------------
 		/// <summary>
 		/// コンストラクタ
@@ -59,11 +60,18 @@ namespace PaperPlanes
 				if (ok) m_FileName = path;
 				string pdfpath = pref.GetString("PdfFileName", out ok);
 				if (ok) m_PdfFileName = pdfpath;
-				
+				string bip = pref.GetString("BackImagePath", out ok);
+				if (ok)
+				{
+					m_BackImagePath = bip;
+				}
+				PointF pf = pref.GetPointF("BackImagePos", out ok);
+				if (ok) ppPos1.XYPosF = pf;
 			}
 			this.Text = Path.GetFileNameWithoutExtension(Application.ExecutablePath);
 
 			drawWings1.Init();
+			drawWings1.ImageFilePath = m_BackImagePath;
 			LoadFile(BakFilePath);
 			drawWings1.ToParamsList();
 		}
@@ -85,6 +93,8 @@ namespace PaperPlanes
 			pref.SetPoint("Point", this.Location);
 			pref.SetString("FileName", m_FileName);
 			pref.SetString("PdfFileName", m_PdfFileName);
+			pref.SetString("BackImagePath", m_BackImagePath);
+			pref.SetPointF("BackImagePos",ppPos1.XYPosF );
 
 			pref.Save();
 
@@ -254,6 +264,16 @@ namespace PaperPlanes
 					m_FileName = dlg.FileName;
 					drawWings1.Invalidate();
 				}
+			}
+		}
+
+		private void backToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog dlg = new OpenFileDialog();
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				drawWings1.ImageFilePath = dlg.FileName; 
+				m_BackImagePath = dlg.FileName;
 			}
 		}
 	}

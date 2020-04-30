@@ -135,6 +135,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PPPoint.cs" />
+    <Compile Include="PPPos.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PPWing.cs">
       <SubType>Component</SubType>
     </Compile>

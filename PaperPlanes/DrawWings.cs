@@ -419,6 +419,11 @@ namespace PaperPlanes
 				g.DrawLine(p, 0, hh, w, hh);
 				g.DrawLine(p, ww, 0, ww, h);
 
+				if ((m_Bitmap!=null)&&(m_PPPos!=null))
+				{
+					g.DrawImage(m_Bitmap,m_PPPos.XYPosP(m_DPI));
+				}
+
 				//全長
 				p.Width = 2.5f;
 				p.Color = Color.Black;
@@ -914,5 +919,65 @@ namespace PaperPlanes
 
 			return ret;
 		}
+		// ******************************************
+		private string m_ImageFilePath = "";
+		private Bitmap m_Bitmap = null;
+		public string ImageFilePath
+		{
+			get { return m_ImageFilePath; }
+			set
+			{
+				try
+				{
+					if (File.Exists(value) == true)
+					{
+						Bitmap bmp = new Bitmap(value);
+						if (bmp != null)
+						{
+							int w = (int)(bmp.Width * m_DPI / 300);
+							int h = (int)(bmp.Height *m_DPI / 300);
+							m_Bitmap = new Bitmap(w , h);
+							Graphics g = Graphics.FromImage(m_Bitmap);
+							try
+							{
+								g.DrawImage(bmp, 0, 0,w,h);
+							}
+							finally
+							{
+								g.Dispose();
+							}
+
+							m_ImageFilePath = value;
+							this.Invalidate();
+						}
+
+					}
+				}
+				catch
+				{
+					m_Bitmap = null;
+					m_ImageFilePath = "";
+				}
+			}
+		}
+		private PPPos m_PPPos = null;
+		public  PPPos PPPos
+		{
+			get { return m_PPPos; }
+			set
+			{
+				m_PPPos = value;
+				if(m_PPPos !=null)
+				{
+					m_PPPos.ValueChanged += M_PPPos_ValueChanged;
+				}
+			}
+		}
+
+		private void M_PPPos_ValueChanged(object sender, EventArgs e)
+		{
+			this.Invalidate();
+		}
+
 	}
 }
