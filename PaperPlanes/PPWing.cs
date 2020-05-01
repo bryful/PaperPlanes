@@ -648,7 +648,7 @@ namespace PaperPlanes
 			m_VerMAC[1] = new PPPoint(m_WingPos+  m_DispLocasion.X +  mm.MacLine[1].X,m_DispLocasion.Y - mm.MacLine[1].Y);
 
 			//m_VerArea = (m_WingTip + m_WingRoot) * (spanV); /* *2/2 */
-			m_VerArea = mm.Area;/* *2/2 */
+			m_VerArea = mm.Area/2;/* *2/2 */
 			m_AerodynamicCenterPosV = m_VerMAC[0].X + (mm.MACLength * PP.AerodynamicCenterPar);
 
 
@@ -670,8 +670,12 @@ namespace PaperPlanes
 					MakePooints_HorPoint();
 					break;
 				case WING_MODE.HOR_TAIL:
+					MakePooints_4Points();
+					break;
 				case WING_MODE.VER_TAIL:
 					MakePooints_4Points();
+					m_HorArea /= 2;
+					m_VerArea /= 2;
 					break;
 				case WING_MODE.TWIN_TAIL:
 					MakePooints_6Points();
