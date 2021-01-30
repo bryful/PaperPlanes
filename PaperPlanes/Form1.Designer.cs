@@ -28,8 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			PaperPlanes.PPWing ppTailVer;
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,12 +39,12 @@
 			this.exportPDFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.backToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.backToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ppPos1 = new PaperPlanes.PPPos();
 			this.ppParamsList1 = new PaperPlanes.PPParamsList();
 			this.drawWings1 = new PaperPlanes.DrawWings();
@@ -54,6 +54,36 @@
 			ppTailVer = new PaperPlanes.PPWing();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// ppTailVer
+			// 
+			ppTailVer.ActiveWing = false;
+			ppTailVer.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppTailVer.DispLocation")));
+			ppTailVer.DPI = 82F;
+			ppTailVer.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			ppTailVer.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			ppTailVer.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+			ppTailVer.Params = new float[] {
+        127.8F,
+        29.5F,
+        9.9F,
+        24.2F,
+        46.1F,
+        0F,
+        15F,
+        20F,
+        10F};
+			ppTailVer.SelectIndex = -1;
+			ppTailVer.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
+			ppTailVer.WingDihedral = 0F;
+			ppTailVer.WingPos = 127.8F;
+			ppTailVer.WingRoot = 29.5F;
+			ppTailVer.WingSpan = 46.1F;
+			ppTailVer.WingSpan2 = 0F;
+			ppTailVer.WingTip = 9.9F;
+			ppTailVer.WingTip2 = 0F;
+			ppTailVer.WingTipOffset = 24.2F;
+			ppTailVer.WingTipOffset2 = 0F;
 			// 
 			// menuStrip1
 			// 
@@ -127,6 +157,13 @@
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
 			// 
+			// backToolStripMenuItem
+			// 
+			this.backToolStripMenuItem.Name = "backToolStripMenuItem";
+			this.backToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
+			this.backToolStripMenuItem.Text = "Back";
+			this.backToolStripMenuItem.Click += new System.EventHandler(this.backToolStripMenuItem_Click);
+			// 
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -170,21 +207,16 @@
 			this.label2.TabIndex = 9;
 			this.label2.Text = "上矢印の棒はモーメント・アームから求めた重心です。";
 			// 
-			// backToolStripMenuItem
-			// 
-			this.backToolStripMenuItem.Name = "backToolStripMenuItem";
-			this.backToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
-			this.backToolStripMenuItem.Text = "Back";
-			this.backToolStripMenuItem.Click += new System.EventHandler(this.backToolStripMenuItem_Click);
-			// 
 			// ppPos1
 			// 
 			this.ppPos1.Location = new System.Drawing.Point(12, 559);
 			this.ppPos1.Name = "ppPos1";
-			this.ppPos1.Size = new System.Drawing.Size(209, 23);
+			this.ppPos1.Size = new System.Drawing.Size(228, 23);
 			this.ppPos1.TabIndex = 10;
 			this.ppPos1.Text = "ppPos1";
-			this.ppPos1.ButttonClick += new System.EventHandler(this.backToolStripMenuItem_Click);
+			this.ppPos1.XYPosF = ((System.Drawing.PointF)(resources.GetObject("ppPos1.XYPosF")));
+			this.ppPos1.SetButttonClick += new System.EventHandler(this.backToolStripMenuItem_Click);
+			this.ppPos1.ClearButttonClick += new System.EventHandler(this.ppPos1_ClearButttonClick);
 			// 
 			// ppParamsList1
 			// 
@@ -297,36 +329,6 @@
 			this.ppTailHor.WingTip2 = 0F;
 			this.ppTailHor.WingTipOffset = 10.2F;
 			this.ppTailHor.WingTipOffset2 = 0F;
-			// 
-			// ppTailVer
-			// 
-			ppTailVer.ActiveWing = false;
-			ppTailVer.DispLocation = ((System.Drawing.PointF)(resources.GetObject("ppTailVer.DispLocation")));
-			ppTailVer.DPI = 82F;
-			ppTailVer.HorColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
-			ppTailVer.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			ppTailVer.OriColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-			ppTailVer.Params = new float[] {
-        127.8F,
-        29.5F,
-        9.9F,
-        24.2F,
-        46.1F,
-        0F,
-        15F,
-        20F,
-        10F};
-			ppTailVer.SelectIndex = -1;
-			ppTailVer.VerColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(100)))));
-			ppTailVer.WingDihedral = 0F;
-			ppTailVer.WingPos = 127.8F;
-			ppTailVer.WingRoot = 29.5F;
-			ppTailVer.WingSpan = 46.1F;
-			ppTailVer.WingSpan2 = 0F;
-			ppTailVer.WingTip = 9.9F;
-			ppTailVer.WingTip2 = 0F;
-			ppTailVer.WingTipOffset = 24.2F;
-			ppTailVer.WingTipOffset2 = 0F;
 			// 
 			// ppTwin
 			// 

@@ -21,16 +21,26 @@ namespace PaperPlanes
 				ValueChanged(this, e);
 			}
 		}
-		public event EventHandler ButttonClick;
+		public event EventHandler SetButttonClick;
 
-		protected virtual void OnButttonClicked(EventArgs e)
+		protected virtual void OnSetButttonClicked(EventArgs e)
 		{
-			if (ButttonClick != null)
+			if (SetButttonClick != null)
 			{
-				ButttonClick(this, e);
+				SetButttonClick(this, e);
+			}
+		}
+		public event EventHandler ClearButttonClick;
+
+		protected virtual void OnClearButttonClicked(EventArgs e)
+		{
+			if (ClearButttonClick != null)
+			{
+				ClearButttonClick(this, e);
 			}
 		}
 		private Button m_Button = new Button();
+		private Button m_ClearButton = new Button();
 		private NumericUpDown m_numX = new NumericUpDown();
 		private NumericUpDown m_numY = new NumericUpDown();
 		private FlowLayoutPanel fl = new FlowLayoutPanel();
@@ -48,6 +58,9 @@ namespace PaperPlanes
 
 			m_Button.Size = new Size(40, 20);
 			m_Button.Text = "Back";
+			m_ClearButton.Size = new Size(40, 20);
+			m_ClearButton.Text = "Claer";
+
 
 			m_numX.Size = new Size(50, 20);
 			m_numX.DecimalPlaces = 2;
@@ -62,6 +75,7 @@ namespace PaperPlanes
 			m_numY.Maximum = 30;
 
 			fl.Controls.Add(m_Button);
+			fl.Controls.Add(m_ClearButton);
 			fl.Controls.Add(m_numX);
 			fl.Controls.Add(m_numY);
 
@@ -70,12 +84,18 @@ namespace PaperPlanes
 			m_numY.ValueChanged += M_num_ValueChanged;
 
 			m_Button.Click += M_Button_Click;
+			m_ClearButton.Click += M_ClearButton_Click; ;
 
+		}
+
+		private void M_ClearButton_Click(object sender, EventArgs e)
+		{
+			OnClearButttonClicked(new EventArgs());
 		}
 
 		private void M_Button_Click(object sender, EventArgs e)
 		{
-			OnButttonClicked(new EventArgs());
+			OnSetButttonClicked(new EventArgs());
 		}
 
 		private void M_num_ValueChanged(object sender, EventArgs e)

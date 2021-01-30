@@ -927,8 +927,10 @@ namespace PaperPlanes
 			get { return m_ImageFilePath; }
 			set
 			{
+				bool b = false;
 				try
 				{
+
 					if (File.Exists(value) == true)
 					{
 						Bitmap bmp = new Bitmap(value);
@@ -941,6 +943,7 @@ namespace PaperPlanes
 							try
 							{
 								g.DrawImage(bmp, 0, 0,w,h);
+								b = true;
 							}
 							finally
 							{
@@ -948,7 +951,6 @@ namespace PaperPlanes
 							}
 
 							m_ImageFilePath = value;
-							this.Invalidate();
 						}
 
 					}
@@ -957,7 +959,14 @@ namespace PaperPlanes
 				{
 					m_Bitmap = null;
 					m_ImageFilePath = "";
+					b = false;
 				}
+				if( b==false)
+				{
+					m_Bitmap = null;
+					m_ImageFilePath = "";
+				}
+				this.Invalidate();
 			}
 		}
 		private PPPos m_PPPos = null;

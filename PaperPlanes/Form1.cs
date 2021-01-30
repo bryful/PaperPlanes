@@ -276,5 +276,12 @@ namespace PaperPlanes
 				m_BackImagePath = dlg.FileName;
 			}
 		}
+
+		private void ppPos1_ClearButttonClick(object sender, EventArgs e)
+		{
+			drawWings1.ImageFilePath = "";
+			m_BackImagePath = "";
+
+		}
 	}
 }
