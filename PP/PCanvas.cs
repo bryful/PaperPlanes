@@ -45,6 +45,7 @@ namespace PP
 			{
 				m_Dpi = value;
 				m_Main.Dpi = value;
+				m_Tail.Dpi = value;	
 
 				this.Invalidate(); 
 			}
@@ -94,6 +95,22 @@ namespace PP
 				this.Invalidate();
 			}
 		}
+		private PointF m_DispP = new Point(0, 0);
+		private PointF m_DispPF = new PointF(10.0f, 10.0f);
+		public PointF DispPF
+		{
+			get { return m_DispPF; }
+			set 
+			{ 
+				m_DispPF = value; ;
+				if (m_DispPF.X < 0) m_DispPF.X = 0;
+				if (m_DispPF.Y < 0) m_DispPF.Y = 0;
+
+				m_DispP.X = PPoint.Mm2Px(m_DispPF.X, m_Dpi);
+				m_DispP.Y = PPoint.Mm2Px(m_DispPF.Y, m_Dpi);
+			}
+		}
+
 		private PointF m_GridSize = new PointF(10.0f,10.0f);
 		[Category("PaperPlane")]
 		public PointF GridSize
@@ -124,16 +141,18 @@ namespace PP
 		{
 			base.DoubleBuffered = true;
 			base.BackColor = Color.White;
+			Dpi = 83.0f;
+			DispPF = new PointF(10, 10);
 		}
 		// ********************************************************************
 		private void DrawMain(Graphics g,Pen p)
 		{
 
 			PointF[] pnts = m_Main.Lines(m_GridSize);
-			g.DrawPolygon(p, pnts);
+			g.DrawLines(p, pnts);
 
 			pnts = m_Tail.HorLines(m_GridSize);
-			g.DrawPolygon(p, pnts);
+			g.DrawLines(p, pnts);
 			if (m_Tail.IsTwin)
 			{
 				PointF d2 = new PointF(m_GridSize.X + m_Main.Span, m_GridSize.Y);
@@ -144,7 +163,7 @@ namespace PP
 				pnts = m_Tail.VurLines(m_GridSize);
 
 			}
-			g.DrawPolygon(p, pnts);
+			g.DrawLines(p, pnts);
 		}
 		// ********************************************************************
 		protected override void OnPaint(PaintEventArgs e)
@@ -194,9 +213,45 @@ namespace PP
 			base.OnResize(e);
 			this.Invalidate();
 		}
+		private bool m_IsMd = false;
+		private Point m_md = new Point(0,0);
+		// **************************************************************
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			int idx = -1;
+
+			float x = e.X - m_DispP.X;
+			float y = e.Y - m_DispP.Y;
+
+			idx = m_Main.IsIn(x, y);
+			if (idx<0) idx = m_Tail.IsIn(x, y);
+			Debug.WriteLine($"idx:{idx}");
+			if(idx>=0)
+			{
+				m_IsMd=true;
+				m_md.X = e.X;
+				m_md.Y = e.Y;
+			}
+			else
+			{
+				m_IsMd = false;
+				m_md.X = 0;
+				m_md.Y = 0;
+			}
+			base.OnMouseDown(e);
+
+		}
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			if(m_IsMd)
+			{
+
+			}
+			base.OnMouseMove(e);
+		}
 		// **************************************************************
 		#region Porp
-		[Browsable(false)]
+			[Browsable(false)]
 		public new System.String AccessibleDefaultActionDescription
 		{
 			get { return base.AccessibleDefaultActionDescription; }

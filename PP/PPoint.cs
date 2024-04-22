@@ -21,6 +21,7 @@ namespace PP
 			return (float)(((double)m * (double)dpi / 25.4));
 		}
 
+		public int Index { get; set; } = -1;
 		public bool Selected = false;
 		public bool IsIn(float x,float y)
 		{
@@ -106,12 +107,6 @@ namespace PP
 			m_PF.X = Mm2Px(m_Xmm, m_Dpi);
 			m_PF.Y = Mm2Px(m_Ymm, m_Dpi);
 		}
-		public void Add(PPoint pp)
-		{
-			m_Xmm += pp.Xmm;
-			m_Ymm += pp.Ymm;
-			m_PF.X = Mm2Px(m_Xmm, m_Dpi);
-			m_PF.Y = Mm2Px(m_Ymm, m_Dpi);
-		}
+
 	}
 }

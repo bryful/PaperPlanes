@@ -54,13 +54,14 @@
 			this.pTailEdit1.Location = new System.Drawing.Point(22, 186);
 			this.pTailEdit1.Name = "pTailEdit1";
 			this.pTailEdit1.PCanvas = this.pCanvas1;
-			this.pTailEdit1.Size = new System.Drawing.Size(210, 319);
+			this.pTailEdit1.Size = new System.Drawing.Size(210, 337);
 			this.pTailEdit1.TabIndex = 2;
 			this.pTailEdit1.Text = "Tail";
 			// 
 			// pCanvas1
 			// 
 			this.pCanvas1.BackColor = System.Drawing.Color.White;
+			this.pCanvas1.DispPF = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.DispPF")));
 			this.pCanvas1.Dpi = 83F;
 			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.pCanvas1.GridSize = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.GridSize")));
@@ -75,22 +76,22 @@
 			this.pCanvas1.Main = pMain1;
 			this.pCanvas1.MainPosition = 10F;
 			this.pCanvas1.Name = "pCanvas1";
-			this.pCanvas1.Size = new System.Drawing.Size(609, 512);
-			this.pCanvas1.SizeMM = new System.Drawing.SizeF(186.3687F, 156.6843F);
+			this.pCanvas1.Size = new System.Drawing.Size(609, 511);
+			this.pCanvas1.SizeMM = new System.Drawing.SizeF(186.3687F, 156.3783F);
 			this.pCanvas1.TabIndex = 0;
 			pTail1.Dpi = 83F;
 			pTail1.IsTwin = false;
-			pTail1.Position = 100F;
+			pTail1.PosY = 100F;
 			pTail1.Root = 20F;
 			pTail1.Span = 40F;
 			pTail1.Swept = 5F;
 			pTail1.SweptLength = 3.499547F;
 			pTail1.Tip = 10F;
-			pTail1.VPosition = 80F;
+			pTail1.VPosY = 90F;
 			pTail1.VRoot = 20F;
 			pTail1.VSpan = 30F;
-			pTail1.VSwept = 10F;
-			pTail1.VSweptLength = 5.289809F;
+			pTail1.VSwept = 15F;
+			pTail1.VSweptLength = 8.038476F;
 			pTail1.VTip = 10F;
 			this.pCanvas1.Tail = pTail1;
 			// 

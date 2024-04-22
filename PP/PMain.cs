@@ -13,13 +13,6 @@ namespace PP
 	public class PMain
 	{
 		private PWing m_main = new PWing();
-		/*
-		public PWing Main
-		{
-			get { return m_main; }
-			set { m_main = value; }
-		}
-		*/
 		public float Dpi
 		{
 			get { return (float)m_main.Dpi; }
@@ -30,8 +23,8 @@ namespace PP
 		}
 		public float Position
 		{
-			get { return m_main.Position; }
-			set{m_main.Position = value;}
+			get { return m_main.PosY; }
+			set{m_main.PosY = value;}
 		}
 		public float Span
 		{
@@ -64,6 +57,20 @@ namespace PP
 		}
 		public PMain() 
 		{
+			m_main.SetIndex(0);
+		}
+		public int IsIn(float x, float y)
+		{
+			int ret = -1;
+			for(int i=0; i<4;i++)
+			{
+				if (m_main.IsInPoint(i,x,y))
+				{
+					ret = i;
+					break;
+				}
+			}
+			return ret;
 		}
 
 	}

@@ -20,8 +20,14 @@ namespace PP
 				m_IsTwin = value;
 				if (m_IsTwin)
 				{
-					m_Vur.Position = m_Hor.Position + m_Hor.SweptLength;
-					m_Vur.Root = m_Hor.Tip;
+					m_Vur.SetPosXYRoot(
+						m_Hor.Span, 
+						m_Hor.PosY + m_Hor.SweptLength,
+						m_Hor.Tip);
+				}
+				else
+				{
+					m_Vur.PosX = 0;
 				}
 			}
 		}
@@ -36,25 +42,46 @@ namespace PP
 				m_Vur.Dpi = value;
 			}
 		}
-		public float Position
+		public float PosY
 		{
-			get { return m_Hor.Position; }
-			set { m_Hor.Position = value; }
+			get { return m_Hor.PosY; }
+			set { m_Hor.PosY = value; }
 		}
 		public float Span
 		{
 			get { return m_Hor.Span; }
-			set { m_Hor.Span = value; }
+			set 
+			{ 
+				m_Hor.Span = value;
+				if(m_IsTwin)
+				{
+					m_Vur.PosX = m_Hor.Span;
+				}
+				else
+				{
+					m_Vur.PosX = 0;
+				}
+			}
 		}
 		public float Root
 		{
 			get { return m_Hor.Root; }
-			set { m_Hor.Root = value; }
+			set 
+			{ 
+				m_Hor.Root = value;
+			}
 		}
 		public float Tip
 		{
 			get { return m_Hor.Tip; }
-			set { m_Hor.Tip = value; }
+			set 
+			{ 
+				m_Hor.Tip = value; 
+				if(m_IsTwin )
+				{
+					m_Vur.Root = m_Hor.Root;
+				}
+			}
 		}
 		public float Swept
 		{
@@ -66,27 +93,33 @@ namespace PP
 			get { return m_Hor.SweptLength; }
 			set { m_Hor.SweptLength = value; }
 		}
-		public float VPosition
+		public float VPosY
 		{
 			get 
 			{
 				if (m_IsTwin)
 				{
-					float f = m_Hor.Position + m_Vur.SweptLength;
-					if (f != m_Vur.Position) m_Vur.Position = f;
+					float f = m_Hor.PosY + m_Vur.SweptLength;
+					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
+					{
+						m_Vur.SetPosXYRoot(m_Hor.Span, f, m_Hor.Tip);
+					} 
 				}
-				return m_Vur.Position;
+				return m_Vur.PosY;
 			}
 			set 
 			{
 				if (m_IsTwin)
 				{
-					float f = m_Hor.Position + m_Vur.SweptLength;
-					if (m_Vur.Position != f) m_Vur.Position = f;
+					float f = m_Hor.PosY + m_Vur.SweptLength;
+					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
+					{
+						m_Vur.SetPosXYRoot(m_Hor.Span, f, m_Hor.Tip);
+					}
 				}
 				else
 				{
-					m_Vur.Position = value;
+					m_Vur.PosY = value;
 				}
 			}
 		}
@@ -105,14 +138,23 @@ namespace PP
 					{
 						m_Vur.Root = m_Hor.Tip;
 					}
-					return m_Vur.Root;
+				}
+				return m_Vur.Root;
+			}
+			set 
+			{
+				if (m_IsTwin)
+				{
+					if (m_Vur.Root != m_Hor.Tip)
+					{
+						m_Vur.Root = m_Hor.Tip;
+					}
 				}
 				else
 				{
-					return m_Vur.Root;
+					m_Vur.Root = value;
 				}
 			}
-			set { m_Hor.Root = value; }
 		}
 		public float VTip
 		{
@@ -139,17 +181,59 @@ namespace PP
 		}
 		public PTail() 
 		{
-			m_Hor.Position = 100;
+			m_Hor.PosY = 100;
 			m_Hor.Span = 40;
 			m_Hor.Root = 20;
 			m_Hor.Tip = 10;
 			m_Hor.Swept = 5;
 
-			m_Vur.Position = 80;
+			m_Vur.PosY = 80;
 			m_Vur.Span = 30;
 			m_Vur.Root = 20;
 			m_Vur.Tip = 10;
 			m_Vur.Swept = 10;
+			m_Hor.SetIndex(4);
+			m_Vur.SetIndex(8);
+		}
+		public int IsIn(float x, float y)
+		{
+			int ret = -1;
+			for (int i = 0; i < 4; i++)
+			{
+				if (m_Hor.IsInPoint(i, x, y))
+				{
+					ret = i + 4;
+					break;
+				}
+
+			}
+			if (ret == -1)
+			{
+				if (m_IsTwin)
+				{
+					if (m_Vur.IsInPoint(1, x, y))
+					{
+						ret = 9;
+					}
+					else if (m_Vur.IsInPoint(1, x, y))
+					{
+						ret = 10;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						if (m_Vur.IsInPoint(i, x, y))
+						{
+							ret = i + 8;
+							break;
+						}
+
+					}
+				}
+			}
+			return ret;
 		}
 	}
 }

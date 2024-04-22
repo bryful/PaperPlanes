@@ -60,6 +60,7 @@ namespace PP
 				}
 			}
 		}
+		private ComboBox m_cmbMode = new ComboBox();
 		// **************************************************
 		public PTailEdit()
 		{
@@ -68,6 +69,14 @@ namespace PP
 			m_label.TextAlign = ContentAlignment.MiddleRight;
 			m_label.Location = new Point(0, 0);
 			this.Controls.Add(m_label);
+			m_cmbMode.Items.AddRange(new string[] { "Normal","Twin" });
+			m_cmbMode.DropDownStyle = ComboBoxStyle.DropDownList;
+			m_cmbMode.SelectedIndex = 0;
+			m_cmbMode.SelectedIndexChanged += (sender, e) =>
+			{
+			};
+			this.Controls.Add(m_cmbMode);
+
 			for (int i = 0; i < m_edits.Length; i++)
 			{
 				m_edits[i] = new PEdit();
@@ -85,7 +94,7 @@ namespace PP
 							switch ((int)((PEdit)sender).Tag)
 							{
 								case 0:
-									m_PCanvas.Tail.Position = e.Value;
+									m_PCanvas.Tail.PosY = e.Value;
 									break;
 								case 1:
 									m_PCanvas.Tail.Span = e.Value;
@@ -106,7 +115,7 @@ namespace PP
 									break;
 
 								case 6:
-									m_PCanvas.Tail.VPosition = e.Value;
+									m_PCanvas.Tail.VPosY = e.Value;
 									break;
 								case 7:
 									m_PCanvas.Tail.VSpan = e.Value;
@@ -135,6 +144,8 @@ namespace PP
 				this.Controls.Add(m_edits[i]);
 			}
 			m_label.Size = new Size(m_edits[0].CaptionWidth, 24);
+			m_cmbMode.Location = new Point(m_edits[0].CaptionWidth, 0);
+			m_cmbMode.Width = this.Width - m_edits[0].CaptionWidth;
 
 			m_edits[0].Text = "H_Pos";
 			m_edits[1].Text = "H_Span";
@@ -157,6 +168,8 @@ namespace PP
 		protected override void OnResize(EventArgs e)
 		{
 			m_label.Width = m_edits[0].CaptionWidth;
+			m_cmbMode.Location = new Point(m_edits[0].CaptionWidth,0);
+			m_cmbMode.Width = this.Width - m_cmbMode.Left;
 			for (int i = 0; i < m_edits.Length; i++)
 			{
 				m_edits[(int)i].Width = this.Width;
@@ -172,13 +185,13 @@ namespace PP
 			if (refFlag) return;
 			refFlag = true;
 
-			m_edits[0].Value = pTail.Position;
+			m_edits[0].Value = pTail.PosY;
 			m_edits[1].Value = pTail.Span;
 			m_edits[2].Value = pTail.Root;
 			m_edits[3].Value = pTail.Tip;
 			m_edits[4].Value = pTail.Swept;
 			m_edits[5].Value = pTail.SweptLength;
-			m_edits[6].Value = pTail.VPosition;
+			m_edits[6].Value = pTail.VPosY;
 			m_edits[7].Value = pTail.VSpan;
 			m_edits[8].Value = pTail.VRoot;
 			m_edits[9].Value = pTail.VTip;

@@ -5,32 +5,58 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PP
 {
 	public class PWing
 	{
 
-		private float m_pos = 10;
+		private float m_posY = 0;
+		private float m_posX = 0;
 		private float m_span = 90;
 		private float m_root = 40;
 		private float m_tip = 30;
 		private float m_Swept = 0;
 		private float m_SweptLen = 0;
-		private float m_Dihedral = 0;
 		// ******************************
-		public float Position
+		public float PosY
 		{
 			get
 			{
-				return m_pos;
+				return m_posY;
 			}
 			set
 			{
-				m_pos = value;
-				if (m_pos < 0) m_pos = 0;
+				m_posY = value;
+				if (m_posY < 0) m_posY = 0;
 				Calc();
 			}
+		}
+		// ******************************
+		public float PosX
+		{
+			get
+			{
+				return m_posX;
+			}
+			set
+			{
+				m_posX = value;
+				if (m_posX < 0) m_posX = 0;
+				Calc();
+			}
+		}
+		// ******************************
+		public void SetPosXYRoot(float x, float y,float rt)
+		{
+			m_posX = x;
+			if (m_posX < 0) m_posX = 0;
+			m_posY = y;
+			if (m_posY < 0) m_posY = 0;
+			m_root = rt;
+			if (m_root < 10) m_root = 10;
+			Calc();
 		}
 		// ******************************
 		public float Span
@@ -150,8 +176,8 @@ namespace PP
 		}
 		private void Calc()
 		{
-			m_points[0].Xmm = 0;
-			m_points[0].Ymm = m_pos;
+			m_points[0].Xmm = m_posX;
+			m_points[0].Ymm = m_posY;
 			m_points[1].Xmm = m_points[0].Xmm + m_span;
 			m_points[1].Ymm = m_points[0].Ymm + m_SweptLen;
 			m_points[2].Xmm = m_points[1].Xmm;
@@ -178,6 +204,25 @@ namespace PP
 			m_points[3] = new PPoint();
 			Dpi = 83.0f;
 			Calc();
+		}
+		public void SetIndex(int start=0)
+		{
+			int idx = start;
+            for (int i = 0; i < m_points.Length; i++)
+            {
+				m_points[0].Index = idx;
+				idx++;
+			}
+		}
+
+		public bool IsInPoint(int idx, float x, float y)
+		{
+			bool ret = false;
+			if ((idx >= 0) && (idx < 4))
+			{
+				ret = m_points[idx].IsIn(x, y);
+			}
+			return ret;
 		}
 	}
 }
