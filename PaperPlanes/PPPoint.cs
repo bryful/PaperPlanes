@@ -19,6 +19,7 @@ namespace PaperPlanes
 {
 	public class PPPoint
 	{
+
 		public bool Selected = false;
 
 		private float m_DPI = 82;
