@@ -38,24 +38,12 @@
 			// 
 			// pTailEdit1
 			// 
-			this.pTailEdit1.Captions = new string[] {
-        "H_Pos",
-        "H_Span",
-        "H_Root",
-        "H_Tip",
-        "H_Swept",
-        "H_SweptLen",
-        "V_Pos",
-        "V_Span",
-        "V_Root",
-        "V_Tip",
-        "V_Swept",
-        "V_SweptLen"};
 			this.pTailEdit1.Location = new System.Drawing.Point(22, 186);
 			this.pTailEdit1.Name = "pTailEdit1";
 			this.pTailEdit1.PCanvas = this.pCanvas1;
-			this.pTailEdit1.Size = new System.Drawing.Size(210, 337);
+			this.pTailEdit1.Size = new System.Drawing.Size(210, 249);
 			this.pTailEdit1.TabIndex = 2;
+			this.pTailEdit1.TailMode = PP.TailMode.Twin;
 			this.pTailEdit1.Text = "Tail";
 			// 
 			// pCanvas1
@@ -65,35 +53,33 @@
 			this.pCanvas1.Dpi = 83F;
 			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.pCanvas1.GridSize = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.GridSize")));
-			this.pCanvas1.Location = new System.Drawing.Point(258, 12);
+			this.pCanvas1.Location = new System.Drawing.Point(263, 12);
 			pMain1.Dpi = 83F;
 			pMain1.Position = 10F;
 			pMain1.Root = 40F;
 			pMain1.Span = 90F;
 			pMain1.Swept = 0F;
-			pMain1.SweptLength = 0F;
 			pMain1.Tip = 30F;
 			this.pCanvas1.Main = pMain1;
 			this.pCanvas1.MainPosition = 10F;
 			this.pCanvas1.Name = "pCanvas1";
-			this.pCanvas1.Size = new System.Drawing.Size(609, 511);
-			this.pCanvas1.SizeMM = new System.Drawing.SizeF(186.3687F, 156.3783F);
+			this.pCanvas1.Size = new System.Drawing.Size(609, 510);
+			this.pCanvas1.SizeMM = new System.Drawing.SizeF(186.3687F, 156.0723F);
 			this.pCanvas1.TabIndex = 0;
 			pTail1.Dpi = 83F;
-			pTail1.IsTwin = false;
 			pTail1.PosY = 100F;
 			pTail1.Root = 20F;
 			pTail1.Span = 40F;
 			pTail1.Swept = 5F;
-			pTail1.SweptLength = 3.499547F;
+			pTail1.TailMode = PP.TailMode.Twin;
 			pTail1.Tip = 10F;
-			pTail1.VPosY = 90F;
-			pTail1.VRoot = 20F;
+			pTail1.VPosY = 108.0385F;
+			pTail1.VRoot = 10F;
 			pTail1.VSpan = 30F;
 			pTail1.VSwept = 15F;
-			pTail1.VSweptLength = 8.038476F;
 			pTail1.VTip = 10F;
 			this.pCanvas1.Tail = pTail1;
+			this.pCanvas1.TailMode = PP.TailMode.Twin;
 			// 
 			// pMainEdit2
 			// 
@@ -102,8 +88,7 @@
         "幅",
         "翼根長",
         "翼端長",
-        "後退角",
-        "後退"};
+        "後退角"};
 			this.pMainEdit2.Location = new System.Drawing.Point(42, 12);
 			this.pMainEdit2.Name = "pMainEdit2";
 			this.pMainEdit2.PCanvas = this.pCanvas1;

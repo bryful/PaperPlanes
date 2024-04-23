@@ -11,23 +11,25 @@ namespace PP
 {
 	public class PTail
 	{
-		private bool m_IsTwin=false;
-		public bool IsTwin
+		private TailMode m_TailMode = TailMode.Normal;
+		public TailMode TailMode
 		{
-			get { return m_IsTwin; }
+			get { return m_TailMode; }
 			set
 			{
-				m_IsTwin = value;
-				if (m_IsTwin)
+				m_TailMode = value;
+				switch(m_TailMode)
 				{
-					m_Vur.SetPosXYRoot(
-						m_Hor.Span, 
-						m_Hor.PosY + m_Hor.SweptLength,
-						m_Hor.Tip);
-				}
-				else
-				{
-					m_Vur.PosX = 0;
+					case TailMode.Twin:
+						m_Vur.SetPosXYRoot(
+							m_Hor.Span,
+							m_Hor.PosY + m_Hor.SweptLength,
+							m_Hor.Tip);
+						break;
+					case TailMode.Normal:
+						m_Vur.PosX = 0;
+						break;
+
 				}
 			}
 		}
@@ -53,13 +55,14 @@ namespace PP
 			set 
 			{ 
 				m_Hor.Span = value;
-				if(m_IsTwin)
+				switch(m_TailMode)
 				{
-					m_Vur.PosX = m_Hor.Span;
-				}
-				else
-				{
-					m_Vur.PosX = 0;
+					case TailMode.Normal :
+						m_Vur.PosX = 0;
+						break;
+					case TailMode.Twin:
+						m_Vur.PosX = m_Hor.Span;
+						break;
 				}
 			}
 		}
@@ -77,9 +80,12 @@ namespace PP
 			set 
 			{ 
 				m_Hor.Tip = value; 
-				if(m_IsTwin )
+				switch(m_TailMode)
 				{
-					m_Vur.Root = m_Hor.Root;
+					case TailMode.Twin :
+						m_Vur.Root = m_Hor.Tip;
+						break;
+
 				}
 			}
 		}
@@ -91,13 +97,12 @@ namespace PP
 		public float SweptLength
 		{
 			get { return m_Hor.SweptLength; }
-			set { m_Hor.SweptLength = value; }
 		}
 		public float VPosY
 		{
 			get 
 			{
-				if (m_IsTwin)
+				if (m_TailMode== TailMode.Twin)
 				{
 					float f = m_Hor.PosY + m_Vur.SweptLength;
 					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
@@ -109,7 +114,7 @@ namespace PP
 			}
 			set 
 			{
-				if (m_IsTwin)
+				if (m_TailMode == TailMode.Twin)
 				{
 					float f = m_Hor.PosY + m_Vur.SweptLength;
 					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
@@ -132,7 +137,7 @@ namespace PP
 		{
 			get 
 			{
-				if(m_IsTwin)
+				if(m_TailMode == TailMode.Twin)
 				{
 					if (m_Vur.Root != m_Hor.Tip)
 					{
@@ -143,7 +148,7 @@ namespace PP
 			}
 			set 
 			{
-				if (m_IsTwin)
+				if (m_TailMode == TailMode.Twin)
 				{
 					if (m_Vur.Root != m_Hor.Tip)
 					{
@@ -169,7 +174,6 @@ namespace PP
 		public float VSweptLength
 		{
 			get { return m_Vur.SweptLength; }
-			set { m_Vur.SweptLength = value; }
 		}
 		public PointF[] HorLines(PointF d)
 		{
@@ -209,7 +213,7 @@ namespace PP
 			}
 			if (ret == -1)
 			{
-				if (m_IsTwin)
+				if (m_TailMode == TailMode.Twin)
 				{
 					if (m_Vur.IsInPoint(1, x, y))
 					{
@@ -235,5 +239,10 @@ namespace PP
 			}
 			return ret;
 		}
+	}
+	public enum TailMode
+	{
+		Normal=0,
+		Twin
 	}
 }

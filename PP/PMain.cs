@@ -49,7 +49,6 @@ namespace PP
 		public float SweptLength
 		{
 			get { return m_main.SweptLength; }
-			set { m_main.SweptLength = value; }
 		}
 		public PointF[] Lines(PointF d)
 		{

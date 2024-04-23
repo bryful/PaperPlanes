@@ -20,9 +20,13 @@ namespace PP
 			{
 				m_PCanvas = value;
 				GetParams();
+				if (m_PCanvas != null)
+				{
+					SetTailMode(m_PCanvas.TailMode);
+				}
 			}
 		}
-		private PEdit[] m_edits = new PEdit[12];
+		private PEdit[] m_edits = new PEdit[10];
 		[Category("paperPlane")]
 		public PEdit[] Edits
 		{
@@ -39,25 +43,27 @@ namespace PP
 				m_label.Text = value;
 			}
 		}
-		[Category("paperPlane")]
-		public string[] Captions
+
+		public TailMode TailMode
 		{
 			get
 			{
-				string[] result = new string[12];
-				for (int i = 0; i < 12; i++)
+				if (m_PCanvas != null)
 				{
-					result[i] = m_edits[i].Text;
+					return m_PCanvas.TailMode;
 				}
-				return result;
+				else
+				{
+					return TailMode.Normal;
+				}
 			}
 			set
 			{
-				if (value.Length <= 0) return;
-				for (int i = 0; i < value.Length; i++)
+				if (m_PCanvas != null)
 				{
-					m_edits[i].Text = value[i];
+					m_PCanvas.TailMode = value;
 				}
+				SetTailMode(value);
 			}
 		}
 		private ComboBox m_cmbMode = new ComboBox();
@@ -74,6 +80,9 @@ namespace PP
 			m_cmbMode.SelectedIndex = 0;
 			m_cmbMode.SelectedIndexChanged += (sender, e) =>
 			{
+				if (m_cmbMode.SelectedIndex < 0) return;
+				TailMode tm = (TailMode)m_cmbMode.SelectedIndex;
+				SetTailMode(tm);
 			};
 			this.Controls.Add(m_cmbMode);
 
@@ -107,34 +116,22 @@ namespace PP
 									break;
 								case 4:
 									m_PCanvas.Tail.Swept = e.Value;
-									m_edits[5].Value = m_PCanvas.Tail.SweptLength;
 									break;
 								case 5:
-									m_PCanvas.Tail.SweptLength = e.Value;
-									m_edits[4].Value = m_PCanvas.Tail.Swept;
-									break;
-
-								case 6:
 									m_PCanvas.Tail.VPosY = e.Value;
 									break;
-								case 7:
+								case 6:
 									m_PCanvas.Tail.VSpan = e.Value;
 									break;
-								case 8:
+								case 7:
 									m_PCanvas.Tail.VRoot = e.Value;
 									break;
-								case 9:
+								case 8:
 									m_PCanvas.Tail.VTip = e.Value;
 									break;
-								case 10:
+								case 9:
 									m_PCanvas.Tail.VSwept = e.Value;
-									m_edits[11].Value = m_PCanvas.Tail.VSweptLength;
 									break;
-								case 11:
-									m_PCanvas.Tail.VSweptLength = e.Value;
-									m_edits[10].Value = m_PCanvas.Tail.VSwept;
-									break;
-
 							}
 							m_PCanvas.Invalidate();
 							refFlag = false;
@@ -154,16 +151,14 @@ namespace PP
 			m_edits[4].Text = "H_Swept";
 			m_edits[4].Minimum = -60;
 			m_edits[4].Maximum = 60;
-			m_edits[5].Text = "H_SweptLen";
 
-			m_edits[6].Text = "V_Pos";
-			m_edits[7].Text = "V_Span";
-			m_edits[8].Text = "V_Root";
-			m_edits[9].Text = "V_Tip";
-			m_edits[10].Text = "V_Swept";
-			m_edits[10].Minimum = -60;
-			m_edits[10].Maximum = 60;
-			m_edits[11].Text = "V_SweptLen";
+			m_edits[5].Text = "V_Pos";
+			m_edits[6].Text = "V_Span";
+			m_edits[7].Text = "V_Root";
+			m_edits[8].Text = "V_Tip";
+			m_edits[9].Text = "V_Swept";
+			m_edits[9].Minimum = -60;
+			m_edits[9].Maximum = 60;
 		}
 		protected override void OnResize(EventArgs e)
 		{
@@ -190,16 +185,50 @@ namespace PP
 			m_edits[2].Value = pTail.Root;
 			m_edits[3].Value = pTail.Tip;
 			m_edits[4].Value = pTail.Swept;
-			m_edits[5].Value = pTail.SweptLength;
-			m_edits[6].Value = pTail.VPosY;
-			m_edits[7].Value = pTail.VSpan;
-			m_edits[8].Value = pTail.VRoot;
-			m_edits[9].Value = pTail.VTip;
-			m_edits[10].Value = pTail.VSwept;
-			m_edits[11].Value = pTail.VSweptLength;
+			m_edits[5].Value = pTail.VPosY;
+			m_edits[6].Value = pTail.VSpan;
+			m_edits[7].Value = pTail.VRoot;
+			m_edits[8].Value = pTail.VTip;
+			m_edits[9].Value = pTail.VSwept;
 			refFlag = false;
 		}
-
+		// **************************************************************
+		public void SetTailMode(TailMode tm)
+		{
+			switch (tm)
+			{
+				case TailMode.Normal:
+					for(int i = 0; i < m_edits.Length;i++)
+					{
+						m_edits[i].Top = m_edits[0].Top + i * 24;
+						m_edits[i].Visible = true;
+					}
+					break;
+				case TailMode.Twin:
+					m_edits[5].Visible = false;
+					m_edits[7].Visible = false;
+					int y = m_edits[0].Top;
+					for (int i = 0; i < m_edits.Length; i++)
+					{
+						if (m_edits[i].Visible)
+						{
+							m_edits[i].Top = y;
+							y += 24;
+						}
+					}
+					break;
+			}
+			int idx = (int)tm;
+			if (m_cmbMode.SelectedIndex!=idx)
+				m_cmbMode.SelectedIndex = idx;
+			if(m_PCanvas!=null)
+			{
+				if (m_PCanvas.TailMode!=tm)
+				{
+					m_PCanvas.TailMode = tm;
+				}
+			}
+		}
 		// **************************************************************
 
 		// **************************************************************

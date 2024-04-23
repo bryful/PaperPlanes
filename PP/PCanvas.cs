@@ -46,7 +46,6 @@ namespace PP
 				m_Dpi = value;
 				m_Main.Dpi = value;
 				m_Tail.Dpi = value;	
-
 				this.Invalidate(); 
 			}
 		}
@@ -97,6 +96,7 @@ namespace PP
 		}
 		private PointF m_DispP = new Point(0, 0);
 		private PointF m_DispPF = new PointF(10.0f, 10.0f);
+		[Category("PaperPlane")]
 		public PointF DispPF
 		{
 			get { return m_DispPF; }
@@ -136,6 +136,16 @@ namespace PP
 			get { return m_Tail; }
 			set { m_Tail = value; }
 		}
+		[Category("PaperPlane")]
+		public TailMode TailMode
+		{
+			get { return m_Tail.TailMode; }
+			set
+			{
+				m_Tail.TailMode = value;
+				this.Invalidate();
+			}
+		}
 		// ********************************************************************
 		public PCanvas() 
 		{
@@ -153,15 +163,14 @@ namespace PP
 
 			pnts = m_Tail.HorLines(m_GridSize);
 			g.DrawLines(p, pnts);
-			if (m_Tail.IsTwin)
+			switch(m_Tail.TailMode)
 			{
-				PointF d2 = new PointF(m_GridSize.X + m_Main.Span, m_GridSize.Y);
-				pnts = m_Tail.VurLines(d2);
-			}
-			else
-			{
-				pnts = m_Tail.VurLines(m_GridSize);
-
+				case TailMode.Normal:
+					pnts = m_Tail.VurLines(m_GridSize);
+					break;
+				case TailMode.Twin:
+					pnts = m_Tail.VurLines(m_GridSize);
+					break;
 			}
 			g.DrawLines(p, pnts);
 		}

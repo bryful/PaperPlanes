@@ -91,6 +91,7 @@ namespace PP
 			Edit.Location = new Point(60, 0);
 			Edit.Size = new Size(60, h);
 			Edit.DecimalPlaces = 3;
+			Edit.Maximum = 5000;
 			this.Controls.Add(Label);
 			this.Controls.Add(Edit);
 			base.Size = new Size(120, h);

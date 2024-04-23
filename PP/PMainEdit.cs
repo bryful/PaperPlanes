@@ -23,7 +23,7 @@ namespace PP
 			}
 		}
 
-		private PEdit[] m_edits = new PEdit[6];
+		private PEdit[] m_edits = new PEdit[5];
 		[Category("paperPlane")]
 		public PEdit[] Edits
 		{
@@ -45,8 +45,8 @@ namespace PP
 		{
 			get
 			{
-				string[] result = new string[6];
-				for(int i=0; i<6; i++)
+				string[] result = new string[m_edits.Length];
+				for(int i=0; i<result.Length; i++)
 				{
 					result[i] = m_edits[i].Text;
 				}
@@ -99,11 +99,6 @@ namespace PP
 									break;
 								case 4:
 									m_PCanvas.Main.Swept = e.Value;
-									m_edits[5].Value = m_PCanvas.Main.SweptLength;
-									break;
-								case 5:
-									m_PCanvas.Main.SweptLength = e.Value;
-									m_edits[4].Value = m_PCanvas.Main.Swept;
 									break;
 
 							}
@@ -121,7 +116,6 @@ namespace PP
 			m_edits[2].Text = "Root";
 			m_edits[3].Text = "Tip";
 			m_edits[4].Text = "Swept";
-			m_edits[5].Text = "SweptLen";
 			m_edits[4].Minimum = -60;
 			m_edits[4].Maximum = 60;
 		}
@@ -148,7 +142,6 @@ namespace PP
 			m_edits[2].Value = pMain.Root;
 			m_edits[3].Value = pMain.Tip;
 			m_edits[4].Value = pMain.Swept;
-			m_edits[5].Value = pMain.SweptLength;
 			refFlag = false;
 		}
 		// ******************************************************************

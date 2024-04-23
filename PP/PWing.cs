@@ -82,7 +82,7 @@ namespace PP
 			set
 			{
 				m_root = value;
-				if (m_root < 20) m_root = 20;
+				if (m_root < 0) m_root = 0;
 				Calc();
 			}
 		}
@@ -109,7 +109,8 @@ namespace PP
 			}
 			set
 			{
-				SetSwept(value);
+				m_Swept = value;
+				Calc();
 			}
 		}
 		// ******************************
@@ -118,10 +119,6 @@ namespace PP
 			get
 			{
 				return m_SweptLen;
-			}
-			set
-			{
-				SetSweptLength(value);
 			}
 		}
 		private PPoint [] m_points = new PPoint[4];
@@ -148,34 +145,15 @@ namespace PP
 			}
 		}
 	
-		public void SetSwept(float r)
-		{
-			if (r < -60) r = -60;
-			else if (r > 60) r = 60;
 
-			bool b = (r < 0);
-			r = Math.Abs(r);
-			m_Swept = r;
-			m_SweptLen =  (float)(m_span* Math.Tan(r*Math.PI/180));
-			if (b) { m_SweptLen *= -1; }
-			Calc();
-		}
-		public void SetSweptLength(float len)
-		{
-			bool b = (len < 0);
-			float l = Math.Abs(len);
-
-			float sw = (float)(Math.Atan2(l, m_span) * 180 / Math.PI);
-			if (b)
-			{
-				sw *= -1;
-			}
-			m_Swept = sw;
-			m_SweptLen = len;
-			Calc();
-		}
 		private void Calc()
 		{
+			if (m_Swept < -60) m_Swept = -60;
+			else if (m_Swept > 60) m_Swept = 60;
+			float r = Math.Abs(m_Swept);
+			m_SweptLen = (float)(m_span * Math.Tan(r * Math.PI / 180));
+			if (m_Swept < 0) m_SweptLen *= -1;
+
 			m_points[0].Xmm = m_posX;
 			m_points[0].Ymm = m_posY;
 			m_points[1].Xmm = m_points[0].Xmm + m_span;
