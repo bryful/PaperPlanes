@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -11,196 +13,346 @@ namespace PP
 {
 	public class PWing
 	{
+		public event EventHandler MainChanged;
+		public event EventHandler TailChanged;
 
-		private float m_posY = 0;
-		private float m_posX = 0;
-		private float m_span = 90;
-		private float m_root = 40;
-		private float m_tip = 30;
-		private float m_Swept = 0;
-		private float m_SweptLen = 0;
-		// ******************************
-		public float PosY
+		protected virtual void OnMainChanged(EventArgs e)
 		{
-			get
+			Debug.WriteLine("OnMainChanged");
+			if (MainChanged != null)
 			{
-				return m_posY;
+				Debug.WriteLine("OnMainChanged2");
+				MainChanged(this, e);
 			}
+		}
+		protected virtual void OnTailChanged(EventArgs e)
+		{
+			Debug.WriteLine("OnTailChanged");
+			if (TailChanged != null)
+			{
+				Debug.WriteLine("OnTailChanged2");
+				TailChanged(this, e);
+			}
+		}
+		private PWingBase m_Main = new PWingBase();
+		private PWingBase m_Hor = new PWingBase();
+		private PWingBase m_Vur = new PWingBase();
+
+		public void SyncTwin()
+		{
+			if (m_TailMode == TailMode.Twin)
+			{
+				m_Vur.SetPosXYRoot(m_Hor.Span, m_Hor.PosY + m_Hor.SweptLength, m_Hor.Tip);
+			}
+		}
+		private TailMode m_TailMode = TailMode.Normal;
+		public TailMode TailMode
+		{
+			get { return m_TailMode; }
 			set
 			{
-				m_posY = value;
-				if (m_posY < 0) m_posY = 0;
-				Calc();
+				m_TailMode = value;
+				switch (m_TailMode)
+				{
+					case TailMode.Twin:
+						m_Vur.SetPosXYRoot(
+							m_Hor.Span,
+							m_Hor.PosY + m_Hor.SweptLength,
+							m_Hor.Tip);
+						break;
+					case TailMode.Normal:
+						m_Vur.PosX = 0;
+						break;
+
+				}
+				OnTailChanged(new EventArgs());
 			}
-		}
-		// ******************************
-		public float PosX
-		{
-			get
-			{
-				return m_posX;
-			}
-			set
-			{
-				m_posX = value;
-				if (m_posX < 0) m_posX = 0;
-				Calc();
-			}
-		}
-		// ******************************
-		public void SetPosXYRoot(float x, float y,float rt)
-		{
-			m_posX = x;
-			if (m_posX < 0) m_posX = 0;
-			m_posY = y;
-			if (m_posY < 0) m_posY = 0;
-			m_root = rt;
-			if (m_root < 10) m_root = 10;
-			Calc();
-		}
-		// ******************************
-		public float Span
-		{
-			get
-			{
-				return m_span;
-			}
-			set
-			{
-				m_span = value;
-				if (m_span < 10) m_span = 10;
-				Calc();
-			}
-		}
-		// ******************************
-		public float Root
-		{
-			get
-			{
-				return m_root;
-			}
-			set
-			{
-				m_root = value;
-				if (m_root < 0) m_root = 0;
-				Calc();
-			}
-		}
-		// ******************************
-		public float Tip
-		{
-			get
-			{
-				return m_tip;
-			}
-			set
-			{
-				m_tip = value;
-				if (m_tip < 0) m_tip = 0;
-				Calc();
-			}
-		}
-		// ******************************
-		public float Swept
-		{
-			get
-			{
-				return m_Swept;
-			}
-			set
-			{
-				m_Swept = value;
-				Calc();
-			}
-		}
-		// ******************************
-		public float SweptLength
-		{
-			get
-			{
-				return m_SweptLen;
-			}
-		}
-		private PPoint [] m_points = new PPoint[4];
-		public PointF[] lines(PointF d)
-		{
-			PointF [] ret = new PointF[4];
-			ret[0] = m_points[0].GetPixel(d);
-			ret[1] = m_points[1].GetPixel(d);
-			ret[2] = m_points[2].GetPixel(d);
-			ret[3] = m_points[3].GetPixel(d);
-			return ret;
 		}
 		public float Dpi
 		{
-			get { return m_points[0].Dpi; }
+			get { return m_Main.Dpi; }
 			set
 			{
-				float f = value;
-				if (f < 72) f = 72;
-				m_points[0].SetDPI(f);
-				m_points[1].SetDPI(f);
-				m_points[2].SetDPI(f);
-				m_points[3].SetDPI(f);
+				m_Main.Dpi = value;
+				m_Hor.Dpi = value;
+				m_Vur.Dpi = value;
 			}
 		}
-	
-
-		private void Calc()
+		public float MainPos
 		{
-			if (m_Swept < -60) m_Swept = -60;
-			else if (m_Swept > 60) m_Swept = 60;
-			float r = Math.Abs(m_Swept);
-			m_SweptLen = (float)(m_span * Math.Tan(r * Math.PI / 180));
-			if (m_Swept < 0) m_SweptLen *= -1;
-
-			m_points[0].Xmm = m_posX;
-			m_points[0].Ymm = m_posY;
-			m_points[1].Xmm = m_points[0].Xmm + m_span;
-			m_points[1].Ymm = m_points[0].Ymm + m_SweptLen;
-			m_points[2].Xmm = m_points[1].Xmm;
-			m_points[2].Ymm = m_points[1].Ymm + m_tip;
-			m_points[3].Xmm = m_points[0].Xmm;
-			m_points[3].Ymm = m_points[0].Ymm + m_root;
+			get { return m_Main.PosY; }
+			set{m_Main.PosY = value;}
 		}
-		public bool IsSelected(int idx)
+		public float MainSpan
 		{
-			if ((idx>=0)&&(idx<4))
-			{
-				return m_points[idx].Selected;
-			}
-			else
-			{
-				return false;
-			}
+			get { return m_Main.Span; }
+			set { m_Main.Span = value; }
 		}
-		public PWing()
+		public float MainRoot
 		{
-			m_points[0] = new PPoint();
-			m_points[1] = new PPoint();
-			m_points[2] = new PPoint();
-			m_points[3] = new PPoint();
-			Dpi = 83.0f;
-			Calc();
+			get { return m_Main.Root; }
+			set { m_Main.Root = value; }
 		}
-		public void SetIndex(int start=0)
+		public float MainTip
 		{
-			int idx = start;
-            for (int i = 0; i < m_points.Length; i++)
-            {
-				m_points[0].Index = idx;
-				idx++;
-			}
+			get { return m_Main.Tip; }
+			set { m_Main.Tip = value; }
+		}
+		public float MainSwept
+		{
+			get { return m_Main.Swept; }
+			set { m_Main.Swept = value; }
+		}
+		public float MainSweptLength
+		{
+			get { return m_Main.SweptLength; }
+		}
+		public PointF[] MainLines(PointF d)
+		{
+			return m_Main.Lines(d);
+		}
+		public PointF[] HTailLines(PointF d)
+		{
+			return m_Hor.Lines(d);
+		}
+		public PointF[] VTailLines(PointF d)
+		{
+			return m_Vur.Lines(d);
 		}
 
-		public bool IsInPoint(int idx, float x, float y)
+		public float HTailPos
 		{
-			bool ret = false;
-			if ((idx >= 0) && (idx < 4))
+			get { return m_Hor.PosY; }
+			set { m_Hor.PosY = value; SyncTwin(); }
+		}
+		public float HTailSpan
+		{
+			get { return m_Hor.Span; }
+			set { m_Hor.Span = value; SyncTwin(); }
+		}
+		public float HTailRoot
+		{
+			get { return m_Hor.Root; }
+			set { m_Hor.Root = value; }
+		}
+		public float HTailTip
+		{
+			get { return m_Hor.Tip; }
+			set
 			{
-				ret = m_points[idx].IsIn(x, y);
+				m_Hor.Tip = value;
+				SyncTwin();
 			}
+		}
+		public float HTailSwept
+		{
+			get { return m_Hor.Swept; }
+			set { m_Hor.Swept = value; SyncTwin(); }
+		}
+		public float HTailSweptLength
+		{
+			get { return m_Hor.SweptLength; }
+		}
+		// ********************************
+		public float VTailPos
+		{
+			get
+			{
+				if (m_TailMode == TailMode.Twin)
+				{
+					float f = m_Hor.PosY + m_Vur.SweptLength;
+					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
+					{
+						m_Vur.SetPosXYRoot(m_Hor.Span, f, m_Hor.Tip);
+					}
+				}
+				return m_Vur.PosY;
+			}
+			set
+			{
+				if (m_TailMode == TailMode.Twin)
+				{
+					float f = m_Hor.PosY + m_Vur.SweptLength;
+					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
+					{
+						m_Vur.SetPosXYRoot(m_Hor.Span, f, m_Hor.Tip);
+					}
+				}
+				else
+				{
+					m_Vur.PosY = value;
+				}
+			}
+		}
+		public float VTailSpan
+		{
+			get { return m_Vur.Span; }
+			set { m_Vur.Span = value; }
+		}
+		public float VTailRoot
+		{
+			get
+			{
+				if (m_TailMode == TailMode.Twin)
+				{
+					if (m_Vur.Root != m_Hor.Tip)
+					{
+						m_Vur.Root = m_Hor.Tip;
+					}
+				}
+				return m_Vur.Root;
+			}
+			set
+			{
+				if (m_TailMode == TailMode.Twin)
+				{
+					if (m_Vur.Root != m_Hor.Tip)
+					{
+						m_Vur.Root = m_Hor.Tip;
+					}
+				}
+				else
+				{
+					m_Vur.Root = value;
+				}
+			}
+		}
+		public float VTailTip
+		{
+			get { return m_Vur.Tip; }
+			set { m_Vur.Tip = value; }
+		}
+		public float VTailSwept
+		{
+			get { return m_Vur.Swept; }
+			set { m_Vur.Swept = value; }
+		}
+		public float VTailSweptLength
+		{
+			get { return m_Vur.SweptLength; }
+		}
+		public PWing() 
+		{
+			m_Main.CreateIndex(0);
+			m_Hor.CreateIndex(4);
+			m_Vur.CreateIndex(8);
+			m_Hor.PosY = 100;
+			m_Hor.Span = 40;
+			m_Hor.Root = 20;
+			m_Hor.Tip = 10;
+			m_Hor.Swept = 5;
+
+			m_Vur.PosY = 80;
+			m_Vur.Span = 30;
+			m_Vur.Root = 20;
+			m_Vur.Tip = 10;
+			m_Vur.Swept = 10;
+
+
+			SyncTwin();
+			m_Main.WingChanged += (sender, e) => { OnMainChanged(new EventArgs()); };
+			m_Hor.WingChanged += (sender, e) => { OnTailChanged(new EventArgs()); };
+			m_Vur.WingChanged += (sender, e) => { OnTailChanged(new EventArgs()); };
+		}
+		private int m_SelectedIndex = -1;
+		public int SelectedIndex { get { return m_SelectedIndex; } }
+
+		public int IsIn(float x, float y)
+		{
+			int ret = -1;
+			m_SelectedIndex = -1;
+			for (int i = 0; i < 4; i++)
+			{
+				if (m_Main.IsInPoint(i, x, y))
+				{
+					ret = i;
+					break;
+				}
+			}
+			if (ret < 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (m_Hor.IsInPoint(i, x, y))
+					{
+						ret = i + 4;
+						break;
+					}
+				}
+			}
+			if (ret < 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					if (m_Vur.IsInPoint(i, x, y))
+					{
+						ret = i + 8;
+						break;
+					}
+				}
+			}
+
+			m_SelectedIndex = ret;
 			return ret;
 		}
+		public void PushPrm()
+		{
+			m_Main.PushPrm();
+			m_Hor.PushPrm();
+			m_Vur.PushPrm();
+		}
+		public void Move(float x,float y)
+		{
+			if (m_SelectedIndex<0) return;
+			switch(m_SelectedIndex)
+			{
+				case 0:
+					m_Main.AddPosY(y);
+					break;
+				case 1:
+					m_Main.AddWingEdge(x,y);
+					break;
+				case 2:
+					m_Main.AddTip(y);
+					break;
+				case 3:
+					m_Main.AddRoot(y);
+					break;
+				case 4:
+					m_Hor.AddPosY(y);
+					SyncTwin();
+					break;
+				case 5:
+					m_Hor.AddWingEdge(x,y);
+					SyncTwin();
+					break;
+				case 6:
+					m_Hor.AddTip(y);
+					SyncTwin();
+					break;
+				case 7:
+					m_Hor.AddRoot(y);
+					SyncTwin();
+					break;
+				case 8:
+					m_Vur.AddPosY(y);
+					break;
+				case 9:
+					m_Vur.AddWingEdge(x,y);
+					break;
+				case 10:
+					m_Vur.AddTip(y);
+					break;
+				case 11:
+					m_Vur.AddRoot(y);
+					break;
+			}
+		}
+
+	}
+	public enum TailMode
+	{
+		Normal = 0,
+		Twin
 	}
 }

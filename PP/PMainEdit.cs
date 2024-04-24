@@ -19,7 +19,11 @@ namespace PP
 			set 
 			{
 				m_PCanvas = value;
-				GetParams();
+				if (m_PCanvas != null)
+				{
+					m_PCanvas.MainChanged += (sender, e) => { GetParams(); };
+					GetParams();
+				}
 			}
 		}
 
@@ -78,7 +82,7 @@ namespace PP
 				m_edits[i].ValueChanged += (sender, e) =>
 				{
 					if (refFlag == true) return;
-					if ((m_PCanvas != null) && (m_PCanvas.Main != null))
+					if ((m_PCanvas != null) && (m_PCanvas.Wing != null))
 					{
 						if (sender is PEdit)
 						{
@@ -86,19 +90,19 @@ namespace PP
 							switch ((int)((PEdit)sender).Tag)
 							{
 								case 0:
-									m_PCanvas.Main.Position = e.Value;
+									m_PCanvas.Wing.MainPos = e.Value;
 									break;
 								case 1:
-									m_PCanvas.Main.Span = e.Value;
+									m_PCanvas.Wing.MainSpan = e.Value;
 									break;
 								case 2:
-									m_PCanvas.Main.Root = e.Value;
+									m_PCanvas.Wing.MainRoot = e.Value;
 									break;
 								case 3:
-									m_PCanvas.Main.Tip = e.Value;
+									m_PCanvas.Wing.MainTip = e.Value;
 									break;
 								case 4:
-									m_PCanvas.Main.Swept = e.Value;
+									m_PCanvas.Wing.MainSwept = e.Value;
 									break;
 
 							}
@@ -132,16 +136,16 @@ namespace PP
 		private void GetParams()
 		{
 			if (m_PCanvas == null) return;
-			PMain pMain = m_PCanvas.Main;
+			PWing pMain = m_PCanvas.Wing;
 			if (pMain == null) return;
 			if (refFlag) return;
 			refFlag = true;
 
-			m_edits[0].Value = pMain.Position;
-			m_edits[1].Value = pMain.Span;
-			m_edits[2].Value = pMain.Root;
-			m_edits[3].Value = pMain.Tip;
-			m_edits[4].Value = pMain.Swept;
+			m_edits[0].Value = pMain.MainPos;
+			m_edits[1].Value = pMain.MainSpan;
+			m_edits[2].Value = pMain.MainRoot;
+			m_edits[3].Value = pMain.MainTip;
+			m_edits[4].Value = pMain.MainSwept;
 			refFlag = false;
 		}
 		// ******************************************************************

@@ -14,6 +14,27 @@ namespace PP
 {
 	public class PCanvas : Control
 	{
+		public event EventHandler MainChanged;
+		public event EventHandler TailChanged;
+
+		protected virtual void OnMainChanged(EventArgs e)
+		{
+			Debug.WriteLine("OnMainChangedAA");
+			if (MainChanged != null)
+			{
+				Debug.WriteLine("OnMainChangedAA2");
+				MainChanged(this, e);
+			}
+		}
+		protected virtual void OnTailChanged(EventArgs e)
+		{
+			Debug.WriteLine("OnTailChangedAA");
+			if (TailChanged != null)
+			{
+				Debug.WriteLine("OnTailChangedAA2");
+				TailChanged(this, e);
+			}
+		}
 		public static string GetProps(Type ct)
 		{
 			// DateTimeのプロパティ一覧を取得する
@@ -44,8 +65,7 @@ namespace PP
 			set 
 			{
 				m_Dpi = value;
-				m_Main.Dpi = value;
-				m_Tail.Dpi = value;	
+				m_Wing.Dpi = value;
 				this.Invalidate(); 
 			}
 		}
@@ -56,8 +76,8 @@ namespace PP
 			get 
 			{
 				return new SizeF(
-					PPoint.Px2Mm(Width,m_Dpi), 
-					PPoint.Px2Mm(Height, m_Dpi)); 
+					P.Px2Mm(Width,m_Dpi), 
+					P.Px2Mm(Height, m_Dpi)); 
 			}
 			set
 			{
@@ -66,19 +86,19 @@ namespace PP
 		}
 		public void SetWidthMM(float w)
 		{
-			base.Width = (int)(PPoint.Mm2Px(w,m_Dpi));
+			base.Width = (int)(P.Mm2Px(w,m_Dpi));
 			this.Invalidate();
 		}
 		public void SetHeightMM(float h)
 		{
-			base.Height = (int)(PPoint.Mm2Px(h, m_Dpi) + 0.5);
+			base.Height = (int)(P.Mm2Px(h, m_Dpi) + 0.5);
 			this.Invalidate();
 		}
 		public void SetSizeMM(SizeF sz)
 		{
 			base.Size = new Size(
-				(int)(PPoint.Mm2Px(sz.Width, m_Dpi)),
-				(int)(PPoint.Mm2Px(sz.Height, m_Dpi))
+				(int)(P.Mm2Px(sz.Width, m_Dpi)),
+				(int)(P.Mm2Px(sz.Height, m_Dpi))
 				);
 			this.Invalidate();
 		}
@@ -106,8 +126,8 @@ namespace PP
 				if (m_DispPF.X < 0) m_DispPF.X = 0;
 				if (m_DispPF.Y < 0) m_DispPF.Y = 0;
 
-				m_DispP.X = PPoint.Mm2Px(m_DispPF.X, m_Dpi);
-				m_DispP.Y = PPoint.Mm2Px(m_DispPF.Y, m_Dpi);
+				m_DispP.X = P.Mm2Px(m_DispPF.X, m_Dpi);
+				m_DispP.Y = P.Mm2Px(m_DispPF.Y, m_Dpi);
 			}
 		}
 
@@ -122,27 +142,20 @@ namespace PP
 				this.Invalidate();
 			}
 		}
-		private PMain m_Main = new PMain();
+		private PWing m_Wing = new PWing();
 		[Category("PaperPlane")]
-		public PMain Main
+		public PWing Wing
 		{
-			get { return m_Main; }
-			set{ m_Main = value;}
-		}
-		private PTail m_Tail = new PTail();
-		[Category("PaperPlane")]
-		public PTail Tail
-		{
-			get { return m_Tail; }
-			set { m_Tail = value; }
+			get { return m_Wing; }
+			set{ m_Wing = value;}
 		}
 		[Category("PaperPlane")]
 		public TailMode TailMode
 		{
-			get { return m_Tail.TailMode; }
+			get { return m_Wing.TailMode; }
 			set
 			{
-				m_Tail.TailMode = value;
+				m_Wing.TailMode = value;
 				this.Invalidate();
 			}
 		}
@@ -153,26 +166,45 @@ namespace PP
 			base.BackColor = Color.White;
 			Dpi = 83.0f;
 			DispPF = new PointF(10, 10);
+			m_Wing.MainChanged += (sender, e) => { OnMainChanged(new EventArgs()); };
+			m_Wing.TailChanged += (sender, e) => { OnTailChanged(new EventArgs()); };
+			m_Wing.SyncTwin();
 		}
 		// ********************************************************************
-		private void DrawMain(Graphics g,Pen p)
+		private void DrawMain(Graphics g,Pen p,SolidBrush sb)
 		{
 
-			PointF[] pnts = m_Main.Lines(m_GridSize);
+			PointF[] pnts = m_Wing.MainLines(m_GridSize);
 			g.DrawLines(p, pnts);
+			sb.Color = ForeColor;
+			int si = m_Wing.SelectedIndex;
+			if ((si>=0)&&(si<4))
+			{
+				P.FillDot(g, sb, pnts[si], 5);
+			}
 
-			pnts = m_Tail.HorLines(m_GridSize);
+			pnts = Wing.HTailLines(m_GridSize);
 			g.DrawLines(p, pnts);
-			switch(m_Tail.TailMode)
+			si = m_Wing.SelectedIndex - 4;
+			if (( si >= 0)&&(si<4))
+			{
+				P.FillDot(g, sb, pnts[si], 5);
+			}
+			switch (m_Wing.TailMode)
 			{
 				case TailMode.Normal:
-					pnts = m_Tail.VurLines(m_GridSize);
+					pnts = m_Wing.VTailLines(m_GridSize);
 					break;
 				case TailMode.Twin:
-					pnts = m_Tail.VurLines(m_GridSize);
+					pnts = m_Wing.VTailLines(m_GridSize);
 					break;
 			}
 			g.DrawLines(p, pnts);
+			si = m_Wing.SelectedIndex - 8;
+			if ((si >= 0) && (si < 4))
+			{
+				P.FillDot(g, sb, pnts[si], 5);
+			}
 		}
 		// ********************************************************************
 		protected override void OnPaint(PaintEventArgs e)
@@ -188,25 +220,25 @@ namespace PP
 				// hor
 				p.Color = m_GridColor;
 				float h = 0.0f;
-				float hh = PPoint.Mm2Px(this.Height, m_Dpi);
+				float hh = P.Mm2Px(this.Height, m_Dpi);
 				while(h<hh)
 				{
-					float h2 = PPoint.Mm2Px(h, m_Dpi);
+					float h2 = P.Mm2Px(h, m_Dpi);
 					g.DrawLine(p, 0, h2, this.Width, h2);
 					h += m_GridSize.Y;
 				}
 				// Vur
 				float w = 0.0f;
-				float ww = PPoint.Mm2Px(this.Width, m_Dpi);
+				float ww = P.Mm2Px(this.Width, m_Dpi);
 				while (w < ww)
 				{
-					float w2 = PPoint.Mm2Px(w, m_Dpi);
+					float w2 = P.Mm2Px(w, m_Dpi);
 					g.DrawLine(p, w2, 0, w2, this.Height);
 					w += m_GridSize.X;
 				}
 				p.Color = ForeColor;
-				p.Width = 2;
-				DrawMain(g, p);
+				p.Width = 1;
+				DrawMain(g, p,sb);
 
 				p.Width = 1;
 				p.Color = ForeColor;
@@ -227,17 +259,14 @@ namespace PP
 		// **************************************************************
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			int idx = -1;
-
 			float x = e.X - m_DispP.X;
 			float y = e.Y - m_DispP.Y;
 
-			idx = m_Main.IsIn(x, y);
-			if (idx<0) idx = m_Tail.IsIn(x, y);
-			Debug.WriteLine($"idx:{idx}");
+			int idx = m_Wing.IsIn(x, y);
 			if(idx>=0)
 			{
 				m_IsMd=true;
+				m_Wing.PushPrm();
 				m_md.X = e.X;
 				m_md.Y = e.Y;
 			}
@@ -248,19 +277,29 @@ namespace PP
 				m_md.Y = 0;
 			}
 			base.OnMouseDown(e);
+			this.Invalidate();
 
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			if(m_IsMd)
 			{
-
+				float x = e.X - m_md.X;
+				float y = e.Y - m_md.Y;
+				m_Wing.Move(P.Px2Mm(x,Dpi), P.Px2Mm(y,Dpi));
+				this.Invalidate();
 			}
 			base.OnMouseMove(e);
 		}
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			m_IsMd = false;
+			m_md = new Point(0, 0);
+			base.OnMouseUp(e);
+		}
 		// **************************************************************
 		#region Porp
-			[Browsable(false)]
+		[Browsable(false)]
 		public new System.String AccessibleDefaultActionDescription
 		{
 			get { return base.AccessibleDefaultActionDescription; }
@@ -271,10 +310,10 @@ namespace PP
 		[Category ("PapePlane_Main")]
 		public float MainPosition
 		{
-			get { return m_Main.Position; }
+			get { return m_Wing.MainPos; }
 			set 
 			{
-				m_Main.Position = value;
+				m_Wing.MainPos = value;
 				this.Invalidate ();
 			}
 		}

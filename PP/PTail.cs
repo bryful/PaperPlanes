@@ -33,8 +33,8 @@ namespace PP
 				}
 			}
 		}
-		private PWing m_Hor = new PWing();
-		private PWing m_Vur = new PWing();
+		private PWingBase m_Hor = new PWingBase();
+		private PWingBase m_Vur = new PWingBase();
 		public float Dpi
 		{
 			get { return (float)m_Hor.Dpi; }
@@ -177,11 +177,11 @@ namespace PP
 		}
 		public PointF[] HorLines(PointF d)
 		{
-			return m_Hor.lines(d);
+			return m_Hor.Lines(d);
 		}
 		public PointF[] VurLines(PointF d)
 		{
-			return m_Vur.lines(d);
+			return m_Vur.Lines(d);
 		}
 		public PTail() 
 		{
@@ -196,12 +196,16 @@ namespace PP
 			m_Vur.Root = 20;
 			m_Vur.Tip = 10;
 			m_Vur.Swept = 10;
-			m_Hor.SetIndex(4);
-			m_Vur.SetIndex(8);
+			m_Hor.CreateIndex(4);
+			m_Vur.CreateIndex(8);
 		}
+
+		private int m_SelectedIndex = -1;
+		public int SelectedIndex { get { return m_SelectedIndex; } }
 		public int IsIn(float x, float y)
 		{
 			int ret = -1;
+			m_SelectedIndex = -1;
 			for (int i = 0; i < 4; i++)
 			{
 				if (m_Hor.IsInPoint(i, x, y))
@@ -237,12 +241,9 @@ namespace PP
 					}
 				}
 			}
+			m_SelectedIndex = ret;
 			return ret;
 		}
 	}
-	public enum TailMode
-	{
-		Normal=0,
-		Twin
-	}
+
 }

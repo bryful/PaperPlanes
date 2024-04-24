@@ -29,8 +29,7 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-			PP.PMain pMain1 = new PP.PMain();
-			PP.PTail pTail1 = new PP.PTail();
+			PP.PWing pWing1 = new PP.PWing();
 			this.pTailEdit1 = new PP.PTailEdit();
 			this.pCanvas1 = new PP.PCanvas();
 			this.pMainEdit2 = new PP.PMainEdit();
@@ -38,13 +37,13 @@
 			// 
 			// pTailEdit1
 			// 
-			this.pTailEdit1.Location = new System.Drawing.Point(22, 186);
+			this.pTailEdit1.Location = new System.Drawing.Point(42, 156);
 			this.pTailEdit1.Name = "pTailEdit1";
 			this.pTailEdit1.PCanvas = this.pCanvas1;
-			this.pTailEdit1.Size = new System.Drawing.Size(210, 249);
+			this.pTailEdit1.Size = new System.Drawing.Size(190, 287);
 			this.pTailEdit1.TabIndex = 2;
 			this.pTailEdit1.TailMode = PP.TailMode.Twin;
-			this.pTailEdit1.Text = "Tail";
+			this.pTailEdit1.Text = "pTailEdit1";
 			// 
 			// pCanvas1
 			// 
@@ -54,32 +53,30 @@
 			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.pCanvas1.GridSize = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.GridSize")));
 			this.pCanvas1.Location = new System.Drawing.Point(263, 12);
-			pMain1.Dpi = 83F;
-			pMain1.Position = 10F;
-			pMain1.Root = 40F;
-			pMain1.Span = 90F;
-			pMain1.Swept = 0F;
-			pMain1.Tip = 30F;
-			this.pCanvas1.Main = pMain1;
 			this.pCanvas1.MainPosition = 10F;
 			this.pCanvas1.Name = "pCanvas1";
 			this.pCanvas1.Size = new System.Drawing.Size(609, 510);
 			this.pCanvas1.SizeMM = new System.Drawing.SizeF(186.3687F, 156.0723F);
 			this.pCanvas1.TabIndex = 0;
-			pTail1.Dpi = 83F;
-			pTail1.PosY = 100F;
-			pTail1.Root = 20F;
-			pTail1.Span = 40F;
-			pTail1.Swept = 5F;
-			pTail1.TailMode = PP.TailMode.Twin;
-			pTail1.Tip = 10F;
-			pTail1.VPosY = 108.0385F;
-			pTail1.VRoot = 10F;
-			pTail1.VSpan = 30F;
-			pTail1.VSwept = 15F;
-			pTail1.VTip = 10F;
-			this.pCanvas1.Tail = pTail1;
 			this.pCanvas1.TailMode = PP.TailMode.Twin;
+			pWing1.Dpi = 83F;
+			pWing1.HTailPos = 100F;
+			pWing1.HTailRoot = 20F;
+			pWing1.HTailSpan = 40F;
+			pWing1.HTailSwept = 5F;
+			pWing1.HTailTip = 10F;
+			pWing1.MainPos = 10F;
+			pWing1.MainRoot = 40F;
+			pWing1.MainSpan = 90F;
+			pWing1.MainSwept = 0F;
+			pWing1.MainTip = 30F;
+			pWing1.TailMode = PP.TailMode.Twin;
+			pWing1.VTailPos = 105.2898F;
+			pWing1.VTailRoot = 10F;
+			pWing1.VTailSpan = 30F;
+			pWing1.VTailSwept = 10F;
+			pWing1.VTailTip = 10F;
+			this.pCanvas1.Wing = pWing1;
 			// 
 			// pMainEdit2
 			// 

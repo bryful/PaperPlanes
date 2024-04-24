@@ -19,10 +19,11 @@ namespace PP
 			set
 			{
 				m_PCanvas = value;
-				GetParams();
 				if (m_PCanvas != null)
 				{
+					GetParams();
 					SetTailMode(m_PCanvas.TailMode);
+					m_PCanvas.Wing.TailChanged += (sender, e) => { GetParams(); };
 				}
 			}
 		}
@@ -95,7 +96,7 @@ namespace PP
 				m_edits[i].ValueChanged += (sender, e) =>
 				{
 					if (refFlag == true) return;
-					if ((m_PCanvas != null) && (m_PCanvas.Tail != null))
+					if (m_PCanvas != null)
 					{
 						if (sender is PEdit)
 						{
@@ -103,34 +104,34 @@ namespace PP
 							switch ((int)((PEdit)sender).Tag)
 							{
 								case 0:
-									m_PCanvas.Tail.PosY = e.Value;
+									m_PCanvas.Wing.HTailPos = e.Value;
 									break;
 								case 1:
-									m_PCanvas.Tail.Span = e.Value;
+									m_PCanvas.Wing.HTailSpan = e.Value;
 									break;
 								case 2:
-									m_PCanvas.Tail.Root = e.Value;
+									m_PCanvas.Wing.HTailRoot= e.Value;
 									break;
 								case 3:
-									m_PCanvas.Tail.Tip = e.Value;
+									m_PCanvas.Wing.HTailTip = e.Value;
 									break;
 								case 4:
-									m_PCanvas.Tail.Swept = e.Value;
+									m_PCanvas.Wing.HTailSwept = e.Value;
 									break;
 								case 5:
-									m_PCanvas.Tail.VPosY = e.Value;
+									m_PCanvas.Wing.VTailPos = e.Value;
 									break;
 								case 6:
-									m_PCanvas.Tail.VSpan = e.Value;
+									m_PCanvas.Wing.VTailSpan = e.Value;
 									break;
 								case 7:
-									m_PCanvas.Tail.VRoot = e.Value;
+									m_PCanvas.Wing.VTailRoot = e.Value;
 									break;
 								case 8:
-									m_PCanvas.Tail.VTip = e.Value;
+									m_PCanvas.Wing.VTailTip = e.Value;
 									break;
 								case 9:
-									m_PCanvas.Tail.VSwept = e.Value;
+									m_PCanvas.Wing.VTailSwept = e.Value;
 									break;
 							}
 							m_PCanvas.Invalidate();
@@ -159,6 +160,7 @@ namespace PP
 			m_edits[9].Text = "V_Swept";
 			m_edits[9].Minimum = -60;
 			m_edits[9].Maximum = 60;
+
 		}
 		protected override void OnResize(EventArgs e)
 		{
@@ -175,21 +177,20 @@ namespace PP
 		private void GetParams()
 		{
 			if (m_PCanvas == null) return;
-			PTail pTail = m_PCanvas.Tail;
-			if (pTail == null) return;
 			if (refFlag) return;
 			refFlag = true;
-
-			m_edits[0].Value = pTail.PosY;
-			m_edits[1].Value = pTail.Span;
-			m_edits[2].Value = pTail.Root;
-			m_edits[3].Value = pTail.Tip;
-			m_edits[4].Value = pTail.Swept;
-			m_edits[5].Value = pTail.VPosY;
-			m_edits[6].Value = pTail.VSpan;
-			m_edits[7].Value = pTail.VRoot;
-			m_edits[8].Value = pTail.VTip;
-			m_edits[9].Value = pTail.VSwept;
+			PWing pw = m_PCanvas.Wing;
+			SetTailMode(pw.TailMode);
+			m_edits[0].Value = pw.HTailPos;
+			m_edits[1].Value = pw.HTailSpan;
+			m_edits[2].Value = pw.HTailRoot;
+			m_edits[3].Value = pw.HTailTip;
+			m_edits[4].Value = pw.HTailSwept;
+			m_edits[5].Value = pw.VTailPos;
+			m_edits[6].Value = pw.VTailSpan;
+			m_edits[7].Value = pw.VTailRoot;
+			m_edits[8].Value = pw.VTailTip;
+			m_edits[9].Value = pw.VTailSwept;
 			refFlag = false;
 		}
 		// **************************************************************

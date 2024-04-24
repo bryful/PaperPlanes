@@ -15,7 +15,7 @@ namespace PP
 		public Form1()
 		{
 			InitializeComponent();
-			Clipboard.SetText(PCanvas.GetProps(typeof(PTailEdit)));
+			Clipboard.SetText(PCanvas.GetProps(typeof(Control)));
 		}
 	}
 }
