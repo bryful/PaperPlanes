@@ -18,19 +18,15 @@ namespace PP
 
 		protected virtual void OnMainChanged(EventArgs e)
 		{
-			Debug.WriteLine("OnMainChanged");
 			if (MainChanged != null)
 			{
-				Debug.WriteLine("OnMainChanged2");
 				MainChanged(this, e);
 			}
 		}
 		protected virtual void OnTailChanged(EventArgs e)
 		{
-			Debug.WriteLine("OnTailChanged");
 			if (TailChanged != null)
 			{
-				Debug.WriteLine("OnTailChanged2");
 				TailChanged(this, e);
 			}
 		}
@@ -42,7 +38,11 @@ namespace PP
 		{
 			if (m_TailMode == TailMode.Twin)
 			{
-				m_Vur.SetPosXYRoot(m_Hor.Span, m_Hor.PosY + m_Hor.SweptLength, m_Hor.Tip);
+				m_Vur.SetPosXYRoot(m_Hor.Span, m_Hor.PosY + m_Hor.TipOffset, m_Hor.Tip);
+			}
+			else
+			{
+				m_Vur.PosX = 0;
 			}
 		}
 		private TailMode m_TailMode = TailMode.Normal;
@@ -51,21 +51,11 @@ namespace PP
 			get { return m_TailMode; }
 			set
 			{
+				bool b = (m_TailMode != value);
 				m_TailMode = value;
-				switch (m_TailMode)
-				{
-					case TailMode.Twin:
-						m_Vur.SetPosXYRoot(
-							m_Hor.Span,
-							m_Hor.PosY + m_Hor.SweptLength,
-							m_Hor.Tip);
-						break;
-					case TailMode.Normal:
-						m_Vur.PosX = 0;
-						break;
-
-				}
-				OnTailChanged(new EventArgs());
+				SyncTwin();
+				if (b)
+					OnTailChanged(new EventArgs());
 			}
 		}
 		public float Dpi
@@ -103,13 +93,17 @@ namespace PP
 			get { return m_Main.Swept; }
 			set { m_Main.Swept = value; }
 		}
-		public float MainSweptLength
+		public float MainTipOffset
 		{
-			get { return m_Main.SweptLength; }
+			get { return m_Main.TipOffset; }
 		}
 		public PointF[] MainLines(PointF d)
 		{
 			return m_Main.Lines(d);
+		}
+		public PointF[] MainMACLines(PointF d)
+		{
+			return m_Main.MACLines(d);
 		}
 		public PointF[] HTailLines(PointF d)
 		{
@@ -133,7 +127,7 @@ namespace PP
 		public float HTailRoot
 		{
 			get { return m_Hor.Root; }
-			set { m_Hor.Root = value; }
+			set { m_Hor.Root = value; SyncTwin(); }
 		}
 		public float HTailTip
 		{
@@ -149,30 +143,23 @@ namespace PP
 			get { return m_Hor.Swept; }
 			set { m_Hor.Swept = value; SyncTwin(); }
 		}
-		public float HTailSweptLength
+		public float HTailTipOffset
 		{
-			get { return m_Hor.SweptLength; }
+			get { return m_Hor.TipOffset; }
 		}
 		// ********************************
 		public float VTailPos
 		{
 			get
 			{
-				if (m_TailMode == TailMode.Twin)
-				{
-					float f = m_Hor.PosY + m_Vur.SweptLength;
-					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
-					{
-						m_Vur.SetPosXYRoot(m_Hor.Span, f, m_Hor.Tip);
-					}
-				}
+				SyncTwin();
 				return m_Vur.PosY;
 			}
 			set
 			{
 				if (m_TailMode == TailMode.Twin)
 				{
-					float f = m_Hor.PosY + m_Vur.SweptLength;
+					float f = m_Hor.PosY + m_Hor.TipOffset;
 					if ((m_Vur.PosY != f) || (m_Vur.PosX != m_Hor.Span))
 					{
 						m_Vur.SetPosXYRoot(m_Hor.Span, f, m_Hor.Tip);
@@ -187,7 +174,7 @@ namespace PP
 		public float VTailSpan
 		{
 			get { return m_Vur.Span; }
-			set { m_Vur.Span = value; }
+			set { m_Vur.Span = value; SyncTwin(); }
 		}
 		public float VTailRoot
 		{
@@ -227,9 +214,9 @@ namespace PP
 			get { return m_Vur.Swept; }
 			set { m_Vur.Swept = value; }
 		}
-		public float VTailSweptLength
+		public float VTailTipOffset
 		{
-			get { return m_Vur.SweptLength; }
+			get { return m_Vur.TipOffset; }
 		}
 		public PWing() 
 		{

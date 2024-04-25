@@ -97,6 +97,13 @@ namespace PP
 			m_PF.X = P.Mm2Px(m_Xmm, m_Dpi);
 			m_PF.Y = P.Mm2Px(m_Ymm, m_Dpi);
 		}
+		public void SetMM(float xm,float ym)
+		{
+			m_Xmm = xm;
+			m_Ymm = ym;
+			m_PF.X = P.Mm2Px(m_Xmm, m_Dpi);
+			m_PF.Y = P.Mm2Px(m_Ymm, m_Dpi);
+		}
 
 	}
 }

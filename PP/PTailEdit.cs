@@ -196,31 +196,17 @@ namespace PP
 		// **************************************************************
 		public void SetTailMode(TailMode tm)
 		{
-			/*
 			switch (tm)
 			{
 				case TailMode.Normal:
-					for(int i = 0; i < m_edits.Length;i++)
-					{
-						m_edits[i].Top = m_edits[0].Top + i * 24;
-						m_edits[i].Visible = true;
-					}
+					m_edits[5].Enabled = true;
+					m_edits[7].Enabled = true;
 					break;
 				case TailMode.Twin:
-					m_edits[5].Visible = false;
-					m_edits[7].Visible = false;
-					int y = m_edits[0].Top;
-					for (int i = 0; i < m_edits.Length; i++)
-					{
-						if (m_edits[i].Visible)
-						{
-							m_edits[i].Top = y;
-							y += 24;
-						}
-					}
+					m_edits[5].Enabled = false;
+					m_edits[7].Enabled = false;
 					break;
 			}
-			*/
 			int idx = (int)tm;
 			if (m_cmbMode.SelectedIndex!=idx)
 				m_cmbMode.SelectedIndex = idx;

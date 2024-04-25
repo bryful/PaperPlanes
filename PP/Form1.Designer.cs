@@ -30,10 +30,20 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			PP.PWing pWing1 = new PP.PWing();
+			this.pTailEdit1 = new PP.PTailEdit();
 			this.pCanvas1 = new PP.PCanvas();
 			this.pMainEdit1 = new PP.PMainEdit();
-			this.pTailEdit1 = new PP.PTailEdit();
 			this.SuspendLayout();
+			// 
+			// pTailEdit1
+			// 
+			this.pTailEdit1.Location = new System.Drawing.Point(13, 219);
+			this.pTailEdit1.Name = "pTailEdit1";
+			this.pTailEdit1.PCanvas = this.pCanvas1;
+			this.pTailEdit1.Size = new System.Drawing.Size(191, 315);
+			this.pTailEdit1.TabIndex = 2;
+			this.pTailEdit1.TailMode = PP.TailMode.Twin;
+			this.pTailEdit1.Text = "pTailEdit1";
 			// 
 			// pCanvas1
 			// 
@@ -42,11 +52,11 @@
 			this.pCanvas1.Dpi = 83F;
 			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.pCanvas1.GridSize = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.GridSize")));
-			this.pCanvas1.Location = new System.Drawing.Point(210, 53);
+			this.pCanvas1.Location = new System.Drawing.Point(211, 53);
 			this.pCanvas1.MainPosition = 0F;
 			this.pCanvas1.Name = "pCanvas1";
-			this.pCanvas1.Size = new System.Drawing.Size(644, 453);
-			this.pCanvas1.SizeMM = new System.Drawing.SizeF(197.0795F, 138.6289F);
+			this.pCanvas1.Size = new System.Drawing.Size(643, 452);
+			this.pCanvas1.SizeMM = new System.Drawing.SizeF(196.7735F, 138.3229F);
 			this.pCanvas1.TabIndex = 0;
 			this.pCanvas1.TailMode = PP.TailMode.Twin;
 			pWing1.Dpi = 83F;
@@ -61,7 +71,7 @@
 			pWing1.MainSwept = 0F;
 			pWing1.MainTip = 30F;
 			pWing1.TailMode = PP.TailMode.Twin;
-			pWing1.VTailPos = 105.2898F;
+			pWing1.VTailPos = 103.4995F;
 			pWing1.VTailRoot = 10F;
 			pWing1.VTailSpan = 30F;
 			pWing1.VTailSwept = 10F;
@@ -76,22 +86,12 @@
         "Root",
         "Tip",
         "Swept"};
-			this.pMainEdit1.Location = new System.Drawing.Point(13, 63);
+			this.pMainEdit1.Location = new System.Drawing.Point(13, 53);
 			this.pMainEdit1.Name = "pMainEdit1";
 			this.pMainEdit1.PCanvas = this.pCanvas1;
 			this.pMainEdit1.Size = new System.Drawing.Size(180, 180);
 			this.pMainEdit1.TabIndex = 1;
 			this.pMainEdit1.Text = "pMainEdit1";
-			// 
-			// pTailEdit1
-			// 
-			this.pTailEdit1.Location = new System.Drawing.Point(13, 219);
-			this.pTailEdit1.Name = "pTailEdit1";
-			this.pTailEdit1.PCanvas = this.pCanvas1;
-			this.pTailEdit1.Size = new System.Drawing.Size(191, 315);
-			this.pTailEdit1.TabIndex = 2;
-			this.pTailEdit1.TailMode = PP.TailMode.Twin;
-			this.pTailEdit1.Text = "pTailEdit1";
 			// 
 			// Form1
 			// 

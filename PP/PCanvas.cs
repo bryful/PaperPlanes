@@ -176,12 +176,16 @@ namespace PP
 
 			PointF[] pnts = m_Wing.MainLines(m_GridSize);
 			g.DrawLines(p, pnts);
+
 			sb.Color = ForeColor;
 			int si = m_Wing.SelectedIndex;
 			if ((si>=0)&&(si<4))
 			{
 				P.FillDot(g, sb, pnts[si], 5);
 			}
+			pnts = m_Wing.MainMACLines(m_GridSize);
+			Debug.WriteLine($"x0:{pnts[0].X},y0:{pnts[0].Y},x1:{pnts[1].X},y1:{pnts[1].Y}");
+			g.DrawLines(p, pnts);
 
 			pnts = Wing.HTailLines(m_GridSize);
 			g.DrawLines(p, pnts);

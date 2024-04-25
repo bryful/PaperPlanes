@@ -36,9 +36,10 @@ namespace PP
 		private float m_span = 90;
 		private float m_root = 40;
 		private float m_tip = 30;
-		private float m_Swept = 0;
-		private float m_SweptLen = 0;
+		private float m_swept = 0;
+		private float m_tipOffset = 0;
 
+		private float m_area = 0;
 		//private float[] Prm = new float[(int)PRM.Count];
 		private float[] PrmBak = new float[(int)PRM.Count]; 
 
@@ -155,26 +156,34 @@ namespace PP
 		{
 			get
 			{
-				return m_Swept;
+				return m_swept;
 			}
 			set
 			{
 				if (value < -60) value = -60;
 				else if (value > 60) value = 60;
-				if (m_Swept != value)
+				if (m_swept != value)
 				{
-					m_Swept = value;
+					m_swept = value;
 					Calc();
 					OnWingChanged(new EventArgs());
 				}
 			}
 		}
 		// ******************************
-		public float SweptLength
+		public float TipOffset
 		{
 			get
 			{
-				return m_SweptLen;
+				return m_tipOffset;
+			}
+		}
+		// ******************************
+		public float Area
+		{
+			get
+			{
+				return m_area;
 			}
 		}
 		// ******************************
@@ -185,8 +194,8 @@ namespace PP
 			PrmBak[(int)PRM.Span] = m_span;
 			PrmBak[(int)PRM.Root] = m_root;
 			PrmBak[(int)PRM.Tip] = m_tip;
-			PrmBak[(int)PRM.Swept] = m_Swept;
-			PrmBak[(int)PRM.SweptLen] = m_SweptLen;
+			PrmBak[(int)PRM.Swept] = m_swept;
+			PrmBak[(int)PRM.SweptLen] = m_tipOffset;
 		}
 		// ******************************
 		public void AddPosY(float y)
@@ -209,7 +218,7 @@ namespace PP
 				float y3 = Math.Abs(y2);
 				float rr = (float)(Math.Atan(y3 / m_span) * 180 / Math.PI);
 				if (y2 < 0) { rr *= -1; }
-				m_Swept = rr;
+				m_swept = rr;
 				Calc();
 				OnWingChanged(new EventArgs());
 			}
@@ -237,59 +246,122 @@ namespace PP
 			}
 		}
 		// ******************************
-		private PPoint [] m_points = new PPoint[4];
+		private PPoint [] m_lines = new PPoint[4];
 		public PointF[] Lines(PointF d)
 		{
 			PointF [] ret = new PointF[4];
-			ret[0] = m_points[0].GetPixel(d);
-			ret[1] = m_points[1].GetPixel(d);
-			ret[2] = m_points[2].GetPixel(d);
-			ret[3] = m_points[3].GetPixel(d);
+			ret[0] = m_lines[0].GetPixel(d);
+			ret[1] = m_lines[1].GetPixel(d);
+			ret[2] = m_lines[2].GetPixel(d);
+			ret[3] = m_lines[3].GetPixel(d);
+			return ret;
+		}
+		private PPoint[] m_MACLine = new PPoint[2];
+		private float m_MACLineLength = 0;
+		public PointF[] MACLines(PointF d)
+		{
+			PointF[] ret = new PointF[2];
+			ret[0] = m_MACLine[0].GetPixel(d);
+			ret[1] = m_MACLine[1].GetPixel(d);
 			return ret;
 		}
 		public float Dpi
 		{
-			get { return m_points[0].Dpi; }
+			get { return m_lines[0].Dpi; }
 			set
 			{
 				float f = value;
 				if (f < 72) f = 72;
-				m_points[0].SetDPI(f);
-				m_points[1].SetDPI(f);
-				m_points[2].SetDPI(f);
-				m_points[3].SetDPI(f);
+				m_lines[0].SetDPI(f);
+				m_lines[1].SetDPI(f);
+				m_lines[2].SetDPI(f);
+				m_lines[3].SetDPI(f);
+				m_MACLine[0].SetDPI(f);
+				m_MACLine[1].SetDPI(f);
+
 			}
 		}
 	
 
 		private void Calc()
 		{
-			if (m_Swept < -60) m_Swept = -60;
-			else if (m_Swept > 60) m_Swept = 60;
-			float r = Math.Abs(m_Swept);
-			m_SweptLen = (float)(m_span * Math.Tan(r * Math.PI / 180));
-			if (m_Swept < 0) m_SweptLen *= -1;
-
+			// 値の確認
 			if (m_posX < 0) m_posX = 0;
 			if (m_span < 5) m_span = 5;
 			if (m_root < 5) m_root = 5;
 			if (m_tip < 5) m_tip = 5;
 
-			m_points[0].Xmm = m_posX;
-			m_points[0].Ymm = m_posY;
-			m_points[1].Xmm = m_points[0].Xmm + m_span;
-			m_points[1].Ymm = m_points[0].Ymm + m_SweptLen;
-			m_points[2].Xmm = m_points[1].Xmm;
-			m_points[2].Ymm = m_points[1].Ymm + m_tip;
-			m_points[3].Xmm = m_points[0].Xmm;
-			m_points[3].Ymm = m_points[0].Ymm + m_root;
+			if (m_swept < -60) m_swept = -60;
+			else if (m_swept > 60) m_swept = 60;
+			float r = Math.Abs(m_swept);
+			m_tipOffset = (float)(m_span * Math.Tan(r * Math.PI / 180));
+			if (m_swept < 0) m_tipOffset *= -1;
+
+			// 線
+			m_lines[0].Xmm = m_posX;
+			m_lines[0].Ymm = m_posY;
+			m_lines[1].Xmm = m_lines[0].Xmm + m_span;
+			m_lines[1].Ymm = m_lines[0].Ymm + m_tipOffset;
+			m_lines[2].Xmm = m_lines[1].Xmm;
+			m_lines[2].Ymm = m_lines[1].Ymm + m_tip;
+			m_lines[3].Xmm = m_lines[0].Xmm;
+			m_lines[3].Ymm = m_lines[0].Ymm + m_root;
+
+			// 面積
+			m_area = (m_root + m_tip) * (m_span )/2;
+
+			// MAC
+			CalcMAC();
+			
+		}
+		private void CalcMAC()
+		{
+			m_MACLine[0].SetMM(0, 0);
+			m_MACLine[1].SetMM(0, 0);
+
+			PointF[] Line0 = new PointF[2];
+			Line0[0] = new PointF(0,m_root / 2);
+			Line0[1] = new PointF(m_span,m_tipOffset + m_tip / 2);
+
+			PointF[] Line1 = new PointF[2];
+			Line1[0] = new PointF(0,m_root + m_tip);
+			Line1[1] = new PointF(m_span,m_tipOffset - m_root);
+			//交点を求める
+			PointF mc = new PointF(0, 0);
+			if (CrossPoint(Line0, Line1, ref mc) == false)
+			{
+				return;
+			}
+			//交点の水平線と翼の交点を求めてMACを得る
+			Line0[0] = new PointF(mc.X, -m_root*2);
+			Line0[1] = new PointF(mc.X, m_root * 3);
+
+			Line1[0] = new PointF(0, 0);
+			Line1[1] = new PointF(m_span, m_tipOffset);
+			PointF mc0 = new PointF(0, 0);
+			if (CrossPoint(Line0, Line1, ref mc0) == false)
+			{
+				return;
+			}
+			Line1[0] = new PointF(0,m_root);
+			Line1[1] = new PointF(m_span, m_tipOffset + m_tip);
+			PointF mc1 = new PointF(0, 0);
+			if (CrossPoint(Line0, Line1, ref mc1) == false)
+			{
+				return;
+			}
+			m_MACLine[0].SetMM(mc0.X, mc0.Y);
+			m_MACLine[1].SetMM(mc1.X, mc1.Y);
+			m_MACLineLength = mc1.Y - mc0.Y;
 		}
 		public PWingBase()
 		{
-			m_points[0] = new PPoint();
-			m_points[1] = new PPoint();
-			m_points[2] = new PPoint();
-			m_points[3] = new PPoint();
+			m_lines[0] = new PPoint();
+			m_lines[1] = new PPoint();
+			m_lines[2] = new PPoint();
+			m_lines[3] = new PPoint();
+			m_MACLine[0] = new PPoint();
+			m_MACLine[1] = new PPoint();
 			Dpi = 83.0f;
 			Calc();
 			PushPrm();
@@ -297,9 +369,9 @@ namespace PP
 		public void CreateIndex(int start=0)
 		{
 			int idx = start;
-            for (int i = 0; i < m_points.Length; i++)
+            for (int i = 0; i < m_lines.Length; i++)
             {
-				m_points[0].Index = idx;
+				m_lines[0].Index = idx;
 				idx++;
 			}
 		}
@@ -309,9 +381,32 @@ namespace PP
 			bool ret = false;
 			if ((idx >= 0) && (idx < 4))
 			{
-				ret = m_points[idx].IsIn(x, y);
+				ret = m_lines[idx].IsIn(x, y);
 			}
 			return ret;
+		}
+		// *********************************************************
+		private bool CrossPoint(PointF [] la, PointF [] lb, ref PointF R)
+		{
+			float a1 = la[1].Y - la[0].Y;
+			float b1 = la[0].X - la[1].X;
+			float c1 = a1 * la[0].X + b1 * la[0].Y;
+
+			float a2 = lb[1].Y - lb[0].Y;
+			float b2 = lb[0].X - lb[1].X;
+			float c2 = a2 * lb[0].X + b2 * lb[0].Y;
+
+			float det = a1 * b2 - a2 * b1;
+
+			if (det == 0)
+			{
+				return false;
+			}
+			else
+			{
+				R = new PointF((b2 * c1 - b1 * c2) / det, (a1 * c2 - a2 * c1) / det);
+				return true;
+			}
 		}
 	}
 }
