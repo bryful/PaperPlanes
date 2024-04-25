@@ -196,6 +196,7 @@ namespace PP
 		// **************************************************************
 		public void SetTailMode(TailMode tm)
 		{
+			/*
 			switch (tm)
 			{
 				case TailMode.Normal:
@@ -219,6 +220,7 @@ namespace PP
 					}
 					break;
 			}
+			*/
 			int idx = (int)tm;
 			if (m_cmbMode.SelectedIndex!=idx)
 				m_cmbMode.SelectedIndex = idx;

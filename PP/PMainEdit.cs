@@ -21,7 +21,7 @@ namespace PP
 				m_PCanvas = value;
 				if (m_PCanvas != null)
 				{
-					m_PCanvas.MainChanged += (sender, e) => { GetParams(); };
+					m_PCanvas.Wing.MainChanged += (sender, e) => { GetParams(); };
 					GetParams();
 				}
 			}

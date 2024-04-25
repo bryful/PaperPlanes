@@ -52,10 +52,11 @@ namespace PP
 			set
 			{
 				if (value < 0) value = 0;
-				if (m_posY != value)
+				bool b = (m_posY != value);
+				m_posY = value;
+				Calc();
+				if (b)
 				{
-					m_posY = value;
-					Calc();
 					OnWingChanged(new EventArgs());
 				}
 			}
@@ -70,10 +71,11 @@ namespace PP
 			set
 			{
 				if (value < 0) value = 0;
-				if (m_posX != value)
+				bool b = (m_posX != value);
+				m_posX = value;
+				Calc();
+				if (b) 
 				{
-					m_posX = value;
-					Calc();
 					OnWingChanged(new EventArgs());
 				}
 			}
@@ -84,12 +86,13 @@ namespace PP
 			if (x<0) x = 0;
 			if (y < 0) y = 0;
 			if (rt < 10) rt = 10;
-			if (m_posX != x || m_posY != y || m_root!=rt) 
+			bool b = (m_posX != x || m_posY != y || m_root != rt);
+			m_posX = x;
+			m_posY = y;
+			m_root = rt;
+			Calc();
+			if (b) 
 			{
-				m_posX = x;
-				m_posY = y;
-				m_root = rt;
-				Calc();
 				OnWingChanged(new EventArgs());
 			}
 		}
