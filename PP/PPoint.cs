@@ -16,11 +16,11 @@ namespace PP
 		public int Index { get; set; } = -1;
 		public bool IsIn(float x,float y)
 		{
-			bool ret = false;
-			ret = ((x > m_PF.X - 5)
-				&& (x < m_PF.X + 5)
-				&& (y > m_PF.Y - 5)
-				&& (y < m_PF.Y + 5));
+			bool ret 
+				= ((x > m_PF.X - 6)
+				&& (x < m_PF.X + 6)
+				&& (y > m_PF.Y - 6)
+				&& (y < m_PF.Y + 6));
 			return ret;
 		}
 		private float m_Xmm = 0;
@@ -90,6 +90,14 @@ namespace PP
 		public PPoint(float dpi)
 		{
 			m_Dpi = dpi;
+		}
+		public PPoint(float w, float h,float dpi)
+		{
+			m_Dpi = dpi;
+			m_Xmm = w; 
+			m_Ymm = h;
+			m_PF.X = P.Mm2Px(m_Xmm, m_Dpi);
+			m_PF.Y = P.Mm2Px(m_Ymm, m_Dpi);
 		}
 		public void SetDPI(float dpi)
 		{

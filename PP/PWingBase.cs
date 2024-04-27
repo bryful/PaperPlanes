@@ -15,8 +15,10 @@ namespace PP
 
 		protected virtual void OnWingChanged(EventArgs e)
 		{
+			Debug.WriteLine("OnWingChanged1");
 			if (WingChanged != null)
 			{
+				Debug.WriteLine("OnWingChanged2");
 				WingChanged(this, e);
 			}
 		}
@@ -56,10 +58,10 @@ namespace PP
 				bool b = (m_posY != value);
 				m_posY = value;
 				Calc();
-				if (b)
-				{
+				//if (b)
+				//{
 					OnWingChanged(new EventArgs());
-				}
+				//}
 			}
 		}
 		// ******************************
@@ -247,7 +249,11 @@ namespace PP
 		}
 		// ******************************
 		private PPoint [] m_lines = new PPoint[4];
-		public PointF[] Lines(PointF d)
+		public PPoint[] Lines
+		{
+			get { return m_lines; }
+		}
+		public PointF[] GetLines(PointF d)
 		{
 			PointF [] ret = new PointF[4];
 			ret[0] = m_lines[0].GetPixel(d);
@@ -257,14 +263,34 @@ namespace PP
 			return ret;
 		}
 		private PPoint[] m_MACLine = new PPoint[2];
+		public PPoint[] MACLine
+		{
+			get { return (m_MACLine); }
+		}
 		private float m_MACLineLength = 0;
-		public PointF[] MACLines(PointF d)
+		public float MACLineLength
+		{
+			get { return m_MACLineLength; }
+		}
+		public PointF[] GetMACLines(PointF d)
 		{
 			PointF[] ret = new PointF[2];
 			ret[0] = m_MACLine[0].GetPixel(d);
 			ret[1] = m_MACLine[1].GetPixel(d);
 			return ret;
 		}
+		private PPoint m_AC = new PPoint();
+		public PointF GetAC(PointF d)
+		{
+			PointF ret = new PointF();
+			ret = m_AC.GetPixel(d);
+			return ret;
+		}
+		public PPoint AC
+		{
+			get { return (m_AC); }
+		}
+
 		public float Dpi
 		{
 			get { return m_lines[0].Dpi; }
@@ -278,7 +304,7 @@ namespace PP
 				m_lines[3].SetDPI(f);
 				m_MACLine[0].SetDPI(f);
 				m_MACLine[1].SetDPI(f);
-
+				m_AC.SetDPI(f);
 			}
 		}
 	
@@ -350,9 +376,10 @@ namespace PP
 			{
 				return;
 			}
-			m_MACLine[0].SetMM(mc0.X, mc0.Y);
-			m_MACLine[1].SetMM(mc1.X, mc1.Y);
+			m_MACLine[0].SetMM(mc0.X+ m_posX, mc0.Y+m_posY);
+			m_MACLine[1].SetMM(mc1.X + m_posX, mc1.Y + m_posY);
 			m_MACLineLength = mc1.Y - mc0.Y;
+			m_AC.SetMM(m_MACLine[0].Xmm, (float)(m_MACLine[0].Ymm + m_MACLineLength * 0.25));
 		}
 		public PWingBase()
 		{

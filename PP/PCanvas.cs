@@ -14,50 +14,10 @@ namespace PP
 {
 	public class PCanvas : Control
 	{
-		public event EventHandler MainChanged;
-		public event EventHandler TailChanged;
-
-		protected virtual void OnMainChanged(EventArgs e)
-		{
-			Debug.WriteLine("OnMainChangedAA");
-			if (MainChanged != null)
-			{
-				Debug.WriteLine("OnMainChangedAA2");
-				MainChanged(this, e);
-			}
-		}
-		protected virtual void OnTailChanged(EventArgs e)
-		{
-			Debug.WriteLine("OnTailChangedAA");
-			if (TailChanged != null)
-			{
-				Debug.WriteLine("OnTailChangedAA2");
-				TailChanged(this, e);
-			}
-		}
-		public static string GetProps(Type ct)
-		{
-			// DateTimeのプロパティ一覧を取得する
-			PropertyInfo[] p = ct.GetProperties();
-
-			// 取得した一覧をコンソールに出力する
-			string s = "";
-			foreach (var a in p)
-			{
-				if (a.CanWrite == true)
-				{
-					s += "// **************************************************************\r\n";
-					s += $"[Browsable(false)]\r\n";
-					s += $"public new {a.PropertyType.ToString()} {a.Name}\r\n";
-					s += $"{{\r\n";
-					s += $"	get {{ return base.{a.Name}; }}\r\n";
-					s += $"	set {{ base.{a.Name} = value; }}\r\n";
-					s += "}\r\n";
-				}
-			}
-			return s;
-		}
 		private float m_Dpi = 83.0f;
+		/// <summary>
+		/// 解像度
+		/// </summary>
 		[Category("PaperPlane")]
 		public float Dpi
 		{
@@ -71,7 +31,7 @@ namespace PP
 		}
 
 		[Category ("PaperPlane")]
-		public SizeF SizeMM
+		public SizeF CanvasSize
 		{
 			get 
 			{
@@ -81,7 +41,7 @@ namespace PP
 			}
 			set
 			{
-				SetSizeMM(value);
+				SetCanvasSize(value);
 			}
 		}
 		public void SetWidthMM(float w)
@@ -94,7 +54,7 @@ namespace PP
 			base.Height = (int)(P.Mm2Px(h, m_Dpi) + 0.5);
 			this.Invalidate();
 		}
-		public void SetSizeMM(SizeF sz)
+		public void SetCanvasSize(SizeF sz)
 		{
 			base.Size = new Size(
 				(int)(P.Mm2Px(sz.Width, m_Dpi)),
@@ -104,7 +64,10 @@ namespace PP
 		}
 
 		private Color m_GridColor = Color.FromArgb(255,180,180,180);
-		[Category("PaperPlane")]
+		/// <summary>
+		/// グリッド線の色
+		/// </summary>
+		[Category("PaperPlane Color")]
 		public Color GridColor
 		{
 			get { return this.m_GridColor; }
@@ -114,26 +77,74 @@ namespace PP
 				this.Invalidate();
 			}
 		}
-		private PointF m_DispP = new Point(0, 0);
-		private PointF m_DispPF = new PointF(10.0f, 10.0f);
-		[Category("PaperPlane")]
-		public PointF DispPF
+		private Color m_LineColor = Color.FromArgb(255, 0, 0, 0);
+		/// <summary>
+		/// グリッド線の色
+		/// </summary>
+		[Category("PaperPlane Color")]
+		public Color LineColor
 		{
-			get { return m_DispPF; }
+			get { return this.m_LineColor; }
+			set
+			{
+				m_LineColor = value;
+				this.Invalidate();
+			}
+		}
+		/// <summary>
+		/// グリッド線の色
+		/// </summary>
+		private Color m_LineColor2 = Color.FromArgb(255, 128, 128, 128);
+		/// <summary>
+		/// グリッド線の色
+		/// </summary>
+		[Category("PaperPlane Color")]
+		public Color LineColor2
+		{
+			get { return this.m_LineColor2; }
+			set
+			{
+				m_LineColor2 = value;
+				this.Invalidate();
+			}
+		}
+		private Color m_BaseColor = Color.FromArgb(255, 120, 90, 90);
+		/// <summary>
+		/// グリッド線の色
+		/// </summary>
+		[Category("PaperPlane Color")]
+		public Color BaseColor
+		{
+			get { return this.m_BaseColor; }
+			set
+			{
+				m_BaseColor = value;
+				this.Invalidate();
+			}
+		}
+		private PointF m_DispP = new Point(0, 0);
+		private PointF m_DispF = new PointF(10.0f, 10.0f);
+		/// <summary>
+		/// 表示基点
+		/// </summary>
+		[Category("PaperPlane")]
+		public PointF DispF
+		{
+			get { return m_DispF; }
 			set 
 			{ 
-				m_DispPF = value; ;
-				if (m_DispPF.X < 0) m_DispPF.X = 0;
-				if (m_DispPF.Y < 0) m_DispPF.Y = 0;
+				m_DispF = value; ;
+				if (m_DispF.X < 0) m_DispF.X = 0;
+				if (m_DispF.Y < 0) m_DispF.Y = 0;
 
-				m_DispP.X = P.Mm2Px(m_DispPF.X, m_Dpi);
-				m_DispP.Y = P.Mm2Px(m_DispPF.Y, m_Dpi);
+				m_DispP.X = P.Mm2Px(m_DispF.X, m_Dpi);
+				m_DispP.Y = P.Mm2Px(m_DispF.Y, m_Dpi);
 			}
 		}
 
-		private PointF m_GridSize = new PointF(10.0f,10.0f);
+		private SizeF m_GridSize = new SizeF(5.0f,5.0f);
 		[Category("PaperPlane")]
-		public PointF GridSize
+		public SizeF GridSize
 		{
 			get { return this.m_GridSize; }
 			set
@@ -143,7 +154,7 @@ namespace PP
 			}
 		}
 		private PWing m_Wing = new PWing();
-		[Category("PaperPlane")]
+		[Category("PaperPlane Wing")]
 		public PWing Wing
 		{
 			get { return m_Wing; }
@@ -165,50 +176,55 @@ namespace PP
 			base.DoubleBuffered = true;
 			base.BackColor = Color.White;
 			Dpi = 83.0f;
-			DispPF = new PointF(10, 10);
-			m_Wing.MainChanged += (sender, e) => { OnMainChanged(new EventArgs()); };
-			m_Wing.TailChanged += (sender, e) => { OnTailChanged(new EventArgs()); };
+			DispF = new PointF(10, 10);
 			m_Wing.SyncTwin();
+			m_Wing.MainWing.WingChanged += (sender, e) => { this.Invalidate(); };
+			m_Wing.HTail.WingChanged += (sender, e) => { this.Invalidate(); };
+			m_Wing.VTail.WingChanged += (sender, e) => { this.Invalidate(); };
 		}
 		// ********************************************************************
-		private void DrawMain(Graphics g,Pen p,SolidBrush sb)
+		private void DrawWingSub(Graphics g, Pen p, SolidBrush sb,
+				PointF[] m, PointF[] mac,int idx
+			)
 		{
+			p.Color = m_LineColor2;
+			g.DrawLines(p, mac);
+			
+			float y = (float)(mac[0].Y + (mac[1].Y - mac[0].Y) * 0.25);
+			float x0 = m_DispP.X;
+			float x1 = (float)(mac[0].X);
+			g.DrawLine(p, x0, y, x1, y);
 
-			PointF[] pnts = m_Wing.MainLines(m_GridSize);
-			g.DrawLines(p, pnts);
+			p.Color = m_LineColor;
+			g.DrawLines(p, m);
 
-			sb.Color = ForeColor;
-			int si = m_Wing.SelectedIndex;
-			if ((si>=0)&&(si<4))
+			if ((idx >= 0) && (idx < 4))
 			{
-				P.FillDot(g, sb, pnts[si], 5);
+				sb.Color = m_LineColor;
+				P.FillDot(g, sb, m[idx], 6);
 			}
-			pnts = m_Wing.MainMACLines(m_GridSize);
-			Debug.WriteLine($"x0:{pnts[0].X},y0:{pnts[0].Y},x1:{pnts[1].X},y1:{pnts[1].Y}");
-			g.DrawLines(p, pnts);
 
-			pnts = Wing.HTailLines(m_GridSize);
-			g.DrawLines(p, pnts);
-			si = m_Wing.SelectedIndex - 4;
-			if (( si >= 0)&&(si<4))
-			{
-				P.FillDot(g, sb, pnts[si], 5);
-			}
-			switch (m_Wing.TailMode)
-			{
-				case TailMode.Normal:
-					pnts = m_Wing.VTailLines(m_GridSize);
-					break;
-				case TailMode.Twin:
-					pnts = m_Wing.VTailLines(m_GridSize);
-					break;
-			}
-			g.DrawLines(p, pnts);
-			si = m_Wing.SelectedIndex - 8;
-			if ((si >= 0) && (si < 4))
-			{
-				P.FillDot(g, sb, pnts[si], 5);
-			}
+
+		}
+		// ********************************************************************
+		private void DrawWing(Graphics g,Pen p,SolidBrush sb)
+		{
+			p.Width = 2;
+			// baseLine
+			p.Color = m_BaseColor;
+			g.DrawLine(p, m_DispP, new PointF(m_DispP.X, this.Height));
+
+			//Main
+			PointF[] lines = m_Wing.MainLines(m_DispF);
+			PointF[] mac = m_Wing.MainMACLines(m_DispF);
+			DrawWingSub(g,p,sb, lines, mac, m_Wing.SelectedIndex);
+			lines = m_Wing.HTailLines(m_DispF);
+			mac = m_Wing.HTailMACLines(m_DispF);
+			DrawWingSub(g, p, sb, lines, mac, m_Wing.SelectedIndex - 4);
+			lines = m_Wing.VTailLines(m_DispF);
+			mac = m_Wing.VTailMACLines(m_DispF);
+			DrawWingSub(g, p, sb, lines, mac, m_Wing.SelectedIndex - 8);
+
 		}
 		// ********************************************************************
 		protected override void OnPaint(PaintEventArgs e)
@@ -229,7 +245,7 @@ namespace PP
 				{
 					float h2 = P.Mm2Px(h, m_Dpi);
 					g.DrawLine(p, 0, h2, this.Width, h2);
-					h += m_GridSize.Y;
+					h += m_GridSize.Height;
 				}
 				// Vur
 				float w = 0.0f;
@@ -238,11 +254,11 @@ namespace PP
 				{
 					float w2 = P.Mm2Px(w, m_Dpi);
 					g.DrawLine(p, w2, 0, w2, this.Height);
-					w += m_GridSize.X;
+					w += m_GridSize.Width;
 				}
 				p.Color = ForeColor;
 				p.Width = 1;
-				DrawMain(g, p,sb);
+				DrawWing(g, p,sb);
 
 				p.Width = 1;
 				p.Color = ForeColor;
@@ -309,19 +325,6 @@ namespace PP
 			get { return base.AccessibleDefaultActionDescription; }
 			set { base.AccessibleDefaultActionDescription = value; }
 		}
-		// **************************************************************
-		// **************************************************************
-		[Category ("PapePlane_Main")]
-		public float MainPosition
-		{
-			get { return m_Wing.MainPos; }
-			set 
-			{
-				m_Wing.MainPos = value;
-				this.Invalidate ();
-			}
-		}
-
 		// **************************************************************
 		// **************************************************************
 		// **************************************************************

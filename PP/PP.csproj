@@ -59,17 +59,19 @@
     <Compile Include="PEdit.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PWing.cs" />
-    <Compile Include="PMainEdit.cs">
+    <Compile Include="PTrackBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PWing.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PWingEdit.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PPoint.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="PTail.cs" />
-    <Compile Include="PTailEdit.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="PWingBase.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

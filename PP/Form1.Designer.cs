@@ -29,77 +29,85 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-			PP.PWing pWing1 = new PP.PWing();
-			this.pTailEdit1 = new PP.PTailEdit();
+			this.pWingEdit3 = new PP.PWingEdit();
 			this.pCanvas1 = new PP.PCanvas();
-			this.pMainEdit1 = new PP.PMainEdit();
+			this.pWingEdit2 = new PP.PWingEdit();
+			this.pWingEdit1 = new PP.PWingEdit();
 			this.SuspendLayout();
 			// 
-			// pTailEdit1
+			// pWingEdit3
 			// 
-			this.pTailEdit1.Location = new System.Drawing.Point(13, 219);
-			this.pTailEdit1.Name = "pTailEdit1";
-			this.pTailEdit1.PCanvas = this.pCanvas1;
-			this.pTailEdit1.Size = new System.Drawing.Size(191, 315);
-			this.pTailEdit1.TabIndex = 2;
-			this.pTailEdit1.TailMode = PP.TailMode.Twin;
-			this.pTailEdit1.Text = "pTailEdit1";
-			// 
-			// pCanvas1
-			// 
-			this.pCanvas1.BackColor = System.Drawing.Color.White;
-			this.pCanvas1.DispPF = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.DispPF")));
-			this.pCanvas1.Dpi = 83F;
-			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-			this.pCanvas1.GridSize = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.GridSize")));
-			this.pCanvas1.Location = new System.Drawing.Point(211, 53);
-			this.pCanvas1.MainPosition = 0F;
-			this.pCanvas1.Name = "pCanvas1";
-			this.pCanvas1.Size = new System.Drawing.Size(643, 452);
-			this.pCanvas1.SizeMM = new System.Drawing.SizeF(196.7735F, 138.3229F);
-			this.pCanvas1.TabIndex = 0;
-			this.pCanvas1.TailMode = PP.TailMode.Twin;
-			pWing1.Dpi = 83F;
-			pWing1.HTailPos = 100F;
-			pWing1.HTailRoot = 20F;
-			pWing1.HTailSpan = 40F;
-			pWing1.HTailSwept = 5F;
-			pWing1.HTailTip = 10F;
-			pWing1.MainPos = 0F;
-			pWing1.MainRoot = 40F;
-			pWing1.MainSpan = 90F;
-			pWing1.MainSwept = 0F;
-			pWing1.MainTip = 30F;
-			pWing1.TailMode = PP.TailMode.Twin;
-			pWing1.VTailPos = 103.4995F;
-			pWing1.VTailRoot = 10F;
-			pWing1.VTailSpan = 30F;
-			pWing1.VTailSwept = 10F;
-			pWing1.VTailTip = 10F;
-			this.pCanvas1.Wing = pWing1;
-			// 
-			// pMainEdit1
-			// 
-			this.pMainEdit1.Captions = new string[] {
+			this.pWingEdit3.Canvas = this.pCanvas1;
+			this.pWingEdit3.Captions = new string[] {
         "Pos",
         "Span",
         "Root",
         "Tip",
         "Swept"};
-			this.pMainEdit1.Location = new System.Drawing.Point(13, 53);
-			this.pMainEdit1.Name = "pMainEdit1";
-			this.pMainEdit1.PCanvas = this.pCanvas1;
-			this.pMainEdit1.Size = new System.Drawing.Size(180, 180);
-			this.pMainEdit1.TabIndex = 1;
-			this.pMainEdit1.Text = "pMainEdit1";
+			this.pWingEdit3.EditMode = PP.EditMode.VTail;
+			this.pWingEdit3.Location = new System.Drawing.Point(12, 384);
+			this.pWingEdit3.Name = "pWingEdit3";
+			this.pWingEdit3.Size = new System.Drawing.Size(296, 176);
+			this.pWingEdit3.TabIndex = 3;
+			this.pWingEdit3.Text = "pWingEdit3";
+			// 
+			// pCanvas1
+			// 
+			this.pCanvas1.BackColor = System.Drawing.Color.White;
+			this.pCanvas1.BaseColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.pCanvas1.CanvasSize = new System.Drawing.SizeF(161.2747F, 168.3132F);
+			this.pCanvas1.DispF = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.DispF")));
+			this.pCanvas1.Dpi = 83F;
+			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.pCanvas1.GridSize = new System.Drawing.SizeF(5F, 5F);
+			this.pCanvas1.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.pCanvas1.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+			this.pCanvas1.Location = new System.Drawing.Point(327, 40);
+			this.pCanvas1.Name = "pCanvas1";
+			this.pCanvas1.Size = new System.Drawing.Size(527, 550);
+			this.pCanvas1.TabIndex = 0;
+			this.pCanvas1.TailMode = PP.TailMode.Twin;
+			// 
+			// pWingEdit2
+			// 
+			this.pWingEdit2.Canvas = this.pCanvas1;
+			this.pWingEdit2.Captions = new string[] {
+        "Pos",
+        "Span",
+        "Root",
+        "Tip",
+        "Swept"};
+			this.pWingEdit2.EditMode = PP.EditMode.HTail;
+			this.pWingEdit2.Location = new System.Drawing.Point(13, 202);
+			this.pWingEdit2.Name = "pWingEdit2";
+			this.pWingEdit2.Size = new System.Drawing.Size(296, 176);
+			this.pWingEdit2.TabIndex = 2;
+			this.pWingEdit2.Text = "pWingEdit2";
+			// 
+			// pWingEdit1
+			// 
+			this.pWingEdit1.Canvas = this.pCanvas1;
+			this.pWingEdit1.Captions = new string[] {
+        "Pos",
+        "Span",
+        "Root",
+        "Tip",
+        "Swept"};
+			this.pWingEdit1.EditMode = PP.EditMode.Main;
+			this.pWingEdit1.Location = new System.Drawing.Point(13, 40);
+			this.pWingEdit1.Name = "pWingEdit1";
+			this.pWingEdit1.Size = new System.Drawing.Size(296, 176);
+			this.pWingEdit1.TabIndex = 1;
+			this.pWingEdit1.Text = "pWingEdit1";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(866, 602);
-			this.Controls.Add(this.pTailEdit1);
-			this.Controls.Add(this.pMainEdit1);
+			this.Controls.Add(this.pWingEdit3);
+			this.Controls.Add(this.pWingEdit2);
+			this.Controls.Add(this.pWingEdit1);
 			this.Controls.Add(this.pCanvas1);
 			this.Name = "Form1";
 			this.Text = "Form1";
@@ -110,8 +118,9 @@
 		#endregion
 
 		private PCanvas pCanvas1;
-		private PMainEdit pMainEdit1;
-		private PTailEdit pTailEdit1;
+		private PWingEdit pWingEdit1;
+		private PWingEdit pWingEdit2;
+		private PWingEdit pWingEdit3;
 	}
 }
 

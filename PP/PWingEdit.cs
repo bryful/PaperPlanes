@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -9,25 +10,77 @@ using System.Windows.Forms;
 
 namespace PP
 {
-	public class PTailEdit :Control
+	public class PWingEdit : Control
 	{
-		private PCanvas m_PCanvas = null;
-		[Category("paperPlane")]
-		public PCanvas PCanvas
+		public delegate void ValueChangedEventHandler(object sender, EventArgs e);
+
+		//イベントデリゲートの宣言
+		public event ValueChangedEventHandler ValueChanged;
+
+		protected virtual void OnValueChanged(EventArgs e)
 		{
-			get { return m_PCanvas; }
+			if (ValueChanged != null)
+			{
+				ValueChanged(this, e);
+			}
+		}
+
+		private EditMode m_EditMode = EditMode.Main;
+		[Category("paperPlane")]
+		public EditMode EditMode
+		{
+			get { return m_EditMode; }
 			set
 			{
-				m_PCanvas = value;
-				if (m_PCanvas != null)
+				SetEditMode(value);
+			}
+		}
+		public void SetEditMode(EditMode md)
+		{
+			m_EditMode = md;
+			if (m_canvas != null)
+			{
+				bool b = ((md == EditMode.VTail) && (m_canvas.Wing.TailMode == TailMode.Twin));
+				m_edits[0].Enabled = !b;
+				m_edits[2].Enabled = !b;
+				m_canvas.Wing.WingChanged -= (sender, e) => { GetParams(); };
+				m_canvas.Wing.WingChanged += (sender, e) =>
 				{
+					Debug.WriteLine("m_wing.WingChanged1");
 					GetParams();
-					SetTailMode(m_PCanvas.TailMode);
-					m_PCanvas.Wing.TailChanged += (sender, e) => { GetParams(); };
+				};
+				m_canvas.Wing.TailModeChanged += (sender, e) =>
+				{
+					bool b2 = ((md == EditMode.VTail) && (m_canvas.Wing.TailMode == TailMode.Twin));
+					m_edits[0].Enabled = !b2;
+					m_edits[2].Enabled = !b2;
+				};
+			}
+				GetParams();
+
+		}
+
+		private PCanvas m_canvas = null;
+		[Category("paperPlane")]
+		public PCanvas Canvas
+		{
+			get { return m_canvas; }
+			set
+			{
+				m_canvas = value;
+				if (m_canvas != null)
+				{
+					//
+					m_canvas.Wing.WingChanged -= (sender, e) => { GetParams(); };
+					m_canvas.Wing.WingChanged += (sender, e) => {
+						Debug.WriteLine("m_wing.WingChanged1");
+						GetParams(); 
+					};
+					GetParams();
 				}
 			}
 		}
-		private PEdit[] m_edits = new PEdit[10];
+		private PEdit[] m_edits = new PEdit[5];
 		[Category("paperPlane")]
 		public PEdit[] Edits
 		{
@@ -38,188 +91,200 @@ namespace PP
 		public new string Text
 		{
 			get { return m_label.Text; }
-			set
+			set 
 			{
 				base.Text = value;
 				m_label.Text = value;
 			}
 		}
-
-		public TailMode TailMode
+		[Category("paperPlane")]
+		public string[] Captions
 		{
 			get
 			{
-				if (m_PCanvas != null)
+				string[] result = new string[m_edits.Length];
+				for(int i=0; i<result.Length; i++)
 				{
-					return m_PCanvas.TailMode;
+					result[i] = m_edits[i].Text;
 				}
-				else
-				{
-					return TailMode.Normal;
-				}
+				return result;
 			}
 			set
 			{
-				if (m_PCanvas != null)
+				if (value.Length<=0) return;
+				for (int i = 0; i < value.Length; i++)
 				{
-					m_PCanvas.TailMode = value;
+					m_edits[i].Text = value[i];
 				}
-				SetTailMode(value);
 			}
 		}
-		private ComboBox m_cmbMode = new ComboBox();
 		// **************************************************
-		public PTailEdit()
+		public PWingEdit()
 		{
+			base.DoubleBuffered = true;
+			SuspendLayout();
 			this.Text = base.Text;
 			m_label.AutoSize = false;
-			m_label.TextAlign = ContentAlignment.MiddleRight;
+			m_label.TextAlign= ContentAlignment.MiddleRight;
 			m_label.Location = new Point(0, 0);
 			this.Controls.Add(m_label);
-			m_cmbMode.Items.AddRange(new string[] { "Normal","Twin" });
-			m_cmbMode.DropDownStyle = ComboBoxStyle.DropDownList;
-			m_cmbMode.SelectedIndex = 0;
-			m_cmbMode.SelectedIndexChanged += (sender, e) =>
+			for (int i = 0;i<m_edits.Length;i++)
 			{
-				if (m_cmbMode.SelectedIndex < 0) return;
-				TailMode tm = (TailMode)m_cmbMode.SelectedIndex;
-				SetTailMode(tm);
-			};
-			this.Controls.Add(m_cmbMode);
-
-			for (int i = 0; i < m_edits.Length; i++)
-			{
-				m_edits[i] = new PEdit();
+				m_edits[i] =new PEdit();
 				m_edits[i].Tag = (int)i;
-				m_edits[i].Location = new Point(0, 24 * (i + 1));
+				m_edits[i].Location = new Point(0,24*(i+1));
 				m_edits[i].Size = new Size(this.Width, 24);
-				m_edits[i].ValueChanged += (sender, e) =>
+				m_edits[i].ValueFChanged += (sender, e) =>
 				{
 					if (refFlag == true) return;
-					if (m_PCanvas != null)
+					if (m_canvas != null)
 					{
 						if (sender is PEdit)
 						{
 							refFlag = true;
-							switch ((int)((PEdit)sender).Tag)
-							{
-								case 0:
-									m_PCanvas.Wing.HTailPos = e.Value;
-									break;
-								case 1:
-									m_PCanvas.Wing.HTailSpan = e.Value;
-									break;
-								case 2:
-									m_PCanvas.Wing.HTailRoot= e.Value;
-									break;
-								case 3:
-									m_PCanvas.Wing.HTailTip = e.Value;
-									break;
-								case 4:
-									m_PCanvas.Wing.HTailSwept = e.Value;
-									break;
-								case 5:
-									m_PCanvas.Wing.VTailPos = e.Value;
-									break;
-								case 6:
-									m_PCanvas.Wing.VTailSpan = e.Value;
-									break;
-								case 7:
-									m_PCanvas.Wing.VTailRoot = e.Value;
-									break;
-								case 8:
-									m_PCanvas.Wing.VTailTip = e.Value;
-									break;
-								case 9:
-									m_PCanvas.Wing.VTailSwept = e.Value;
-									break;
-							}
-							m_PCanvas.Invalidate();
+							SetParam((int)((PEdit)sender).Tag, e.Value);
 							refFlag = false;
 						}
 					}
+					OnValueChanged(new EventArgs());
 				};
 				this.Controls.Add(m_edits[i]);
 			}
 			m_label.Size = new Size(m_edits[0].CaptionWidth, 24);
-			m_cmbMode.Location = new Point(m_edits[0].CaptionWidth, 0);
-			m_cmbMode.Width = this.Width - m_edits[0].CaptionWidth;
 
-			m_edits[0].Text = "H_Pos";
-			m_edits[1].Text = "H_Span";
-			m_edits[2].Text = "H_Root";
-			m_edits[3].Text = "H_Tip";
-			m_edits[4].Text = "H_Swept";
+			m_edits[0].Text = "Pos";
+			m_edits[1].Text = "Span";
+			m_edits[2].Text = "Root";
+			m_edits[3].Text = "Tip";
+			m_edits[4].Text = "Swept";
 			m_edits[4].Minimum = -60;
 			m_edits[4].Maximum = 60;
+			ResumeLayout();
+		}
+		private void SetParam(int idx, float v)
+		{
+			if (m_canvas == null) return;
+			switch (idx)
+			{
+				case 0:
+					switch(m_EditMode)
+					{
+						case EditMode.Main:
+							m_canvas.Wing.MainPos = v;
+							break;
+						case EditMode.HTail:
+							m_canvas.Wing.HTailPos = v;
+							break;
+						case EditMode.VTail:
+							m_canvas.Wing.VTailPos = v;
+							break;
+					}
+					break;
+				case 1:
+					switch (m_EditMode)
+					{
+						case EditMode.Main:
+							m_canvas.Wing.MainSpan = v;
+							break;
+						case EditMode.HTail:
+							m_canvas.Wing.HTailSpan = v;
+							break;
+						case EditMode.VTail:
+							m_canvas.Wing.VTailSpan = v;
+							break;
+					}
+					break;
+				case 2:
+					switch (m_EditMode)
+					{
+						case EditMode.Main:
+							m_canvas.Wing.MainRoot = v;
+							break;
+						case EditMode.HTail:
+							m_canvas.Wing.HTailRoot = v;
+							break;
+						case EditMode.VTail:
+							m_canvas.Wing.VTailRoot = v;
+							break;
+					}
+					break;
+				case 3:
+					switch (m_EditMode)
+					{
+						case EditMode.Main:
+							m_canvas.Wing.MainTip = v;
+							break;
+						case EditMode.HTail:
+							m_canvas.Wing.HTailTip = v;
+							break;
+						case EditMode.VTail:
+							m_canvas.Wing.VTailTip = v;
+							break;
+					}
+					break;
+				case 4:
+					switch (m_EditMode)
+					{
+						case EditMode.Main:
+							m_canvas.Wing.MainSwept = v;
+							break;
+						case EditMode.HTail:
+							m_canvas.Wing.HTailSwept = v;
+							break;
+						case EditMode.VTail:
+							m_canvas.Wing.VTailSwept = v;
+							break;
+					}
+					break;
 
-			m_edits[5].Text = "V_Pos";
-			m_edits[6].Text = "V_Span";
-			m_edits[7].Text = "V_Root";
-			m_edits[8].Text = "V_Tip";
-			m_edits[9].Text = "V_Swept";
-			m_edits[9].Minimum = -60;
-			m_edits[9].Maximum = 60;
-
+			}
 		}
 		protected override void OnResize(EventArgs e)
 		{
-			m_label.Width = m_edits[0].CaptionWidth;
-			m_cmbMode.Location = new Point(m_edits[0].CaptionWidth,0);
-			m_cmbMode.Width = this.Width - m_cmbMode.Left;
+			m_label.Width=m_edits[0].CaptionWidth;
+			this.SuspendLayout();
 			for (int i = 0; i < m_edits.Length; i++)
 			{
 				m_edits[(int)i].Width = this.Width;
 			}
+			this.ResumeLayout();
 			base.OnResize(e);
 		}
 		private bool refFlag = false;
 		private void GetParams()
 		{
-			if (m_PCanvas == null) return;
+			if (m_canvas == null) return;
 			if (refFlag) return;
 			refFlag = true;
-			PWing pw = m_PCanvas.Wing;
-			SetTailMode(pw.TailMode);
-			m_edits[0].Value = pw.HTailPos;
-			m_edits[1].Value = pw.HTailSpan;
-			m_edits[2].Value = pw.HTailRoot;
-			m_edits[3].Value = pw.HTailTip;
-			m_edits[4].Value = pw.HTailSwept;
-			m_edits[5].Value = pw.VTailPos;
-			m_edits[6].Value = pw.VTailSpan;
-			m_edits[7].Value = pw.VTailRoot;
-			m_edits[8].Value = pw.VTailTip;
-			m_edits[9].Value = pw.VTailSwept;
+
+			switch(m_EditMode)
+			{
+				case EditMode.Main:
+					m_edits[0].Value = m_canvas.Wing.MainPos;
+					m_edits[1].Value = m_canvas.Wing.MainSpan;
+					m_edits[2].Value = m_canvas.Wing.MainRoot;
+					m_edits[3].Value = m_canvas.Wing.MainTip;
+					m_edits[4].Value = m_canvas.Wing.MainSwept;
+					break;
+				case EditMode.HTail:
+					m_edits[0].Value = m_canvas.Wing.HTailPos;
+					m_edits[1].Value = m_canvas.Wing.HTailSpan;
+					m_edits[2].Value = m_canvas.Wing.HTailRoot;
+					m_edits[3].Value = m_canvas.Wing.HTailTip;
+					m_edits[4].Value = m_canvas.Wing.HTailSwept;
+					break;
+				case EditMode.VTail:
+					m_edits[0].Value = m_canvas.Wing.VTailPos;
+					m_edits[1].Value = m_canvas.Wing.VTailSpan;
+					m_edits[2].Value = m_canvas.Wing.VTailRoot;
+					m_edits[3].Value = m_canvas.Wing.VTailTip;
+					m_edits[4].Value = m_canvas.Wing.VTailSwept;
+					break;
+			}
 			refFlag = false;
 		}
+		// ******************************************************************
 		// **************************************************************
-		public void SetTailMode(TailMode tm)
-		{
-			switch (tm)
-			{
-				case TailMode.Normal:
-					m_edits[5].Enabled = true;
-					m_edits[7].Enabled = true;
-					break;
-				case TailMode.Twin:
-					m_edits[5].Enabled = false;
-					m_edits[7].Enabled = false;
-					break;
-			}
-			int idx = (int)tm;
-			if (m_cmbMode.SelectedIndex!=idx)
-				m_cmbMode.SelectedIndex = idx;
-			if(m_PCanvas!=null)
-			{
-				if (m_PCanvas.TailMode!=tm)
-				{
-					m_PCanvas.TailMode = tm;
-				}
-			}
-		}
-		// **************************************************************
-
 		// **************************************************************
 		[Browsable(false)]
 		public new System.String AccessibleDefaultActionDescription
@@ -255,7 +320,6 @@ namespace PP
 			get { return base.AllowDrop; }
 			set { base.AllowDrop = value; }
 		}
-		// **************************************************************
 		// **************************************************************
 		[Browsable(false)]
 		public new System.Boolean AutoSize
@@ -355,8 +419,6 @@ namespace PP
 			set { base.Enabled = value; }
 		}
 		// **************************************************************
-		// **************************************************************
-		// **************************************************************
 		[Browsable(false)]
 		public new System.Int32 Height
 		{
@@ -435,8 +497,6 @@ namespace PP
 			set { base.Site = value; }
 		}
 		// **************************************************************
-		// **************************************************************
-		// **************************************************************
 		[Browsable(false)]
 		public new System.Int32 Top
 		{
@@ -486,5 +546,11 @@ namespace PP
 			set { base.ImeMode = value; }
 		}
 
+	}
+	public enum EditMode
+	{
+		Main,
+		HTail,
+		VTail
 	}
 }

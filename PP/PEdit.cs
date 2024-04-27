@@ -13,32 +13,43 @@ namespace PP
 	{
 		//デリゲートの宣言
 		//TimeEventArgs型のオブジェクトを返すようにする
-		public delegate void ValueChangedEventHandler(object sender, ValueChangedEventArgs e);
+		public delegate void ValueFChangedEventHandler(object sender, ValueFChangedEventArgs e);
 
 		//イベントデリゲートの宣言
-		public event ValueChangedEventHandler ValueChanged;
+		public event ValueFChangedEventHandler ValueFChanged;
 
-		protected virtual void OnValueChanged(ValueChangedEventArgs e)
+		protected virtual void OnValueFChanged(ValueFChangedEventArgs e)
 		{
-			if (ValueChanged != null)
+			if (ValueFChanged != null)
 			{
-				ValueChanged(this, e);
+				ValueFChanged(this, e);
 			}
 		}
 		private Label Label = new Label();
 		private NumericUpDown Edit = new NumericUpDown();
-
+		private PTrackBar TrackBar = new PTrackBar();
 		[Category ("paperPlane")]
 		public new string Text
 		{
 			get { return Label.Text; }
-			set { Label.Text = value; }
+			set 
+			{ 
+				Label.Text = value;
+				base.Text = value;
+			}
 		}
 		[Category("paperPlane")]
 		public float Value
 		{
 			get { return (float)Edit.Value; }
-			set { Edit.Value = (decimal)value; }
+			set 
+			{
+				decimal v = (decimal)value;
+				if ( (v>=Edit.Minimum)&&(v<=Edit.Maximum))
+				{
+					Edit.Value = v;
+				}
+			}
 		}
 		public new Font Font
 		{
@@ -53,7 +64,7 @@ namespace PP
 				base.MinimumSize = new Size(0,0);
 				base.MaximumSize = new Size(32000,32000);
 				base.Size = new Size(base.Width, h);
-				this.MinimumSize = new Size(50, h);
+				base.MinimumSize = new Size(50, h);
 				base.MaximumSize = new Size(32000, h);
 			}
 		}
@@ -65,23 +76,48 @@ namespace PP
 			{ 
 				Label.Width = value;
 				Edit.Left = Label.Width;
-				Edit.Width = base.Width - Label.Width;
+				TrackBar.Left = Label.Width + Edit.Width;
+				int b = this.Width - TrackBar.Left;
+				if (b<0) b = 0;
+				TrackBar.Width = b;
+			}
+		}
+		[Category("paperPlane")]
+		public int TextWidth
+		{
+			get { return Edit.Width; }
+			set
+			{
+				Edit.Width = value;	
+				Edit.Left = Label.Width;
+				TrackBar.Left = Label.Width + Edit.Width;
+				int b = this.Width - TrackBar.Left;
+				if (b < 0) b = 0;
+				TrackBar.Width = b;
 			}
 		}
 		[Category("paperPlane")]
 		public float Minimum
 		{
 			get { return (float)Edit.Minimum; }
-			set { Edit.Minimum = (decimal)value; }
+			set 
+			{ 
+				Edit.Minimum = (decimal)value;
+			}
 		}
 		[Category("paperPlane")]
 		public float Maximum
 		{
 			get { return (float)Edit.Maximum; }
-			set { Edit.Maximum = (decimal)value; }
+			set 
+			{ 
+				Edit.Maximum = (decimal)value;
+			}
 		}
 		public PEdit()
 		{
+			base.DoubleBuffered = true;
+			SuspendLayout();
 			int h = Edit.Height;
 			Label.AutoSize = false;
 			Label.Location = new Point(0, 0);
@@ -92,24 +128,38 @@ namespace PP
 			Edit.Size = new Size(60, h);
 			Edit.DecimalPlaces = 3;
 			Edit.Maximum = 5000;
+			TrackBar.Location = new Point(120, 0);
+			TrackBar.Size = new Size(120, h);
+			TrackBar.NumericUpDown = Edit;
+			this.Maximum = 200;
+
+
 			this.Controls.Add(Label);
 			this.Controls.Add(Edit);
-			base.Size = new Size(120, h);
+			this.Controls.Add(TrackBar);
+			base.Size = new Size(240, h);
 			base.MinimumSize = new Size(50, h);
 			base.MaximumSize = new Size(32000, h);
 			this.Name = base.Name;
 
 			Edit.ValueChanged += (sender, e) =>
 			{
-
-				OnValueChanged(new ValueChangedEventArgs((float)Edit.Value));
+				OnValueFChanged(new ValueFChangedEventArgs((float)Edit.Value));
 			};
+			ResumeLayout();
 		}
 
 		protected override void OnResize(EventArgs e)
 		{
-			Edit.Width = this.Width - Label.Width;
+			int a = Label.Width + Edit.Width;
+			int b = this.Width - a;
+			if (b < 0) b = 0;
+			SuspendLayout();
+			Label.Height = Edit.Height;
+			TrackBar.Location = new Point(a,0);
+			TrackBar.Size = new Size(b,Edit.Height);
 			base.OnResize(e);
+			ResumeLayout();
 		}
 		// *******************************************************************
 		// **************************************************************
@@ -326,10 +376,10 @@ namespace PP
 
 	}
 	// **************************************************************
-	public class ValueChangedEventArgs : EventArgs
+	public class ValueFChangedEventArgs : EventArgs
 	{
 		public float Value;
-		public ValueChangedEventArgs(float v)
+		public ValueFChangedEventArgs(float v)
 		{
 			Value = v;
 		}

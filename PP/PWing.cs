@@ -11,28 +11,41 @@ using System.Windows.Forms;
 
 namespace PP
 {
-	public class PWing
+	public class PWing :Component
 	{
-		public event EventHandler MainChanged;
-		public event EventHandler TailChanged;
+		public event EventHandler WingChanged;
 
-		protected virtual void OnMainChanged(EventArgs e)
+		protected virtual void OnWingChanged(EventArgs e)
 		{
-			if (MainChanged != null)
+			if (WingChanged != null)
 			{
-				MainChanged(this, e);
+				WingChanged(this, e);
 			}
 		}
-		protected virtual void OnTailChanged(EventArgs e)
+		public event EventHandler TailModeChanged;
+
+		protected virtual void OnTailModeChanged(EventArgs e)
 		{
-			if (TailChanged != null)
+			if (TailModeChanged != null)
 			{
-				TailChanged(this, e);
+				TailModeChanged(this, e);
 			}
 		}
 		private PWingBase m_Main = new PWingBase();
+		public PWingBase MainWing
+		{
+			get { return m_Main; }
+		}
 		private PWingBase m_Hor = new PWingBase();
 		private PWingBase m_Vur = new PWingBase();
+		public PWingBase HTail
+		{
+			get { return m_Hor; }
+		}
+		public PWingBase VTail
+		{
+			get { return m_Vur; }
+		}
 
 		public void SyncTwin()
 		{
@@ -55,7 +68,10 @@ namespace PP
 				m_TailMode = value;
 				SyncTwin();
 				if (b)
-					OnTailChanged(new EventArgs());
+				{
+					OnWingChanged(new EventArgs());
+				}
+				OnTailModeChanged(new EventArgs());
 			}
 		}
 		public float Dpi
@@ -99,19 +115,27 @@ namespace PP
 		}
 		public PointF[] MainLines(PointF d)
 		{
-			return m_Main.Lines(d);
+			return m_Main.GetLines(d);
 		}
 		public PointF[] MainMACLines(PointF d)
 		{
-			return m_Main.MACLines(d);
+			return m_Main.GetMACLines(d);
 		}
 		public PointF[] HTailLines(PointF d)
 		{
-			return m_Hor.Lines(d);
+			return m_Hor.GetLines(d);
 		}
 		public PointF[] VTailLines(PointF d)
 		{
-			return m_Vur.Lines(d);
+			return m_Vur.GetLines(d);
+		}
+		public PointF[] HTailMACLines(PointF d)
+		{
+			return m_Hor.GetMACLines(d);
+		}
+		public PointF[] VTailMACLines(PointF d)
+		{
+			return m_Vur.GetMACLines(d);
 		}
 
 		public float HTailPos
@@ -237,9 +261,9 @@ namespace PP
 
 
 			SyncTwin();
-			m_Main.WingChanged += (sender, e) => { OnMainChanged(new EventArgs()); };
-			m_Hor.WingChanged += (sender, e) => { OnTailChanged(new EventArgs()); };
-			m_Vur.WingChanged += (sender, e) => { OnTailChanged(new EventArgs()); };
+			m_Main.WingChanged += (sender, e) => { OnWingChanged(new EventArgs()); };
+			m_Hor.WingChanged += (sender, e) => { OnWingChanged(new EventArgs()); };
+			m_Vur.WingChanged += (sender, e) => { OnWingChanged(new EventArgs()); };
 		}
 		private int m_SelectedIndex = -1;
 		public int SelectedIndex { get { return m_SelectedIndex; } }
