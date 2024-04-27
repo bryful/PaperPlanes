@@ -49,7 +49,7 @@
 			this.pWingEdit3.Name = "pWingEdit3";
 			this.pWingEdit3.Size = new System.Drawing.Size(296, 176);
 			this.pWingEdit3.TabIndex = 3;
-			this.pWingEdit3.Text = "pWingEdit3";
+			this.pWingEdit3.Text = "VTail";
 			// 
 			// pCanvas1
 			// 
@@ -82,7 +82,7 @@
 			this.pWingEdit2.Name = "pWingEdit2";
 			this.pWingEdit2.Size = new System.Drawing.Size(296, 176);
 			this.pWingEdit2.TabIndex = 2;
-			this.pWingEdit2.Text = "pWingEdit2";
+			this.pWingEdit2.Text = "HTail";
 			// 
 			// pWingEdit1
 			// 
@@ -98,7 +98,7 @@
 			this.pWingEdit1.Name = "pWingEdit1";
 			this.pWingEdit1.Size = new System.Drawing.Size(296, 176);
 			this.pWingEdit1.TabIndex = 1;
-			this.pWingEdit1.Text = "pWingEdit1";
+			this.pWingEdit1.Text = "Main";
 			// 
 			// Form1
 			// 
