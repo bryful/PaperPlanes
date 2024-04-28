@@ -9,26 +9,26 @@ using System.Windows.Forms;
 
 namespace PP
 {
-	public class PEdit :Control
+	public class PValueBox :Control
 	{
-		//デリゲートの宣言
-		//TimeEventArgs型のオブジェクトを返すようにする
-		public delegate void ValueFChangedEventHandler(object sender, ValueFChangedEventArgs e);
 
-		//イベントデリゲートの宣言
-		public event ValueFChangedEventHandler ValueFChanged;
-
-		protected virtual void OnValueFChanged(ValueFChangedEventArgs e)
+		[Category("PaperPlane")]
+		public bool MatchMode
 		{
-			if (ValueFChanged != null)
+			get { return Edit2.Visible; }
+			set
 			{
-				ValueFChanged(this, e);
+				Edit2.Visible = value;
+				Edit.MatchMode = Edit2.Visible;
+				ChkSize();
 			}
 		}
+
 		private Label Label = new Label();
-		private NumericUpDown Edit = new NumericUpDown();
-		private PTrackBar TrackBar = new PTrackBar();
-		[Category ("paperPlane")]
+		private PNumBox Edit = new PNumBox();
+		private PNumBox Edit2 = new PNumBox();
+		private Label Label2 = new Label();
+		[Category ("PaperPlane")]
 		public new string Text
 		{
 			get { return Label.Text; }
@@ -39,16 +39,21 @@ namespace PP
 			}
 		}
 		[Category("PaperPlane")]
+		public string Text2
+		{
+			get { return Label2.Text; }
+			set
+			{
+				Label2.Text = value;
+			}
+		}
+		[Category("PaperPlane")]
 		public float Value
 		{
-			get { return (float)Edit.Value; }
+			get { return Edit.Value; }
 			set 
 			{
-				decimal v = (decimal)value;
-				if ( (v>=Edit.Minimum)&&(v<=Edit.Maximum))
-				{
-					Edit.Value = v;
-				}
+				Edit.Value = value;
 			}
 		}
 		public new Font Font
@@ -59,8 +64,11 @@ namespace PP
 				base.Font = value;
 				Label.Font = value;
 				Edit.Font = value;
+				Label2.Font = value;
+				Edit2.Font = value;
 				int h = Edit.Height;
 				Label.Height = h;
+				Label2.Height = h;
 				base.MinimumSize = new Size(0,0);
 				base.MaximumSize = new Size(32000,32000);
 				base.Size = new Size(base.Width, h);
@@ -68,18 +76,14 @@ namespace PP
 				base.MaximumSize = new Size(32000, h);
 			}
 		}
-		[Category("paperPlane")]
+		[Category("PaperPlane")]
 		public int CaptionWidth
 		{
 			get { return Label.Width; }
 			set 
 			{ 
 				Label.Width = value;
-				Edit.Left = Label.Width;
-				TrackBar.Left = Label.Width + Edit.Width;
-				int b = this.Width - TrackBar.Left;
-				if (b<0) b = 0;
-				TrackBar.Width = b;
+				ChkSize();
 			}
 		}
 		[Category("PaperPlane")]
@@ -88,30 +92,9 @@ namespace PP
 			get { return Edit.Width; }
 			set
 			{
-				Edit.Width = value;	
-				Edit.Left = Label.Width;
-				TrackBar.Left = Label.Width + Edit.Width;
-				int b = this.Width - TrackBar.Left;
-				if (b < 0) b = 0;
-				TrackBar.Width = b;
-			}
-		}
-		[Category("PaperPlane")]
-		public float Minimum
-		{
-			get { return (float)Edit.Minimum; }
-			set 
-			{ 
-				Edit.Minimum = (decimal)value;
-			}
-		}
-		[Category("PaperPlane")]
-		public float Maximum
-		{
-			get { return (float)Edit.Maximum; }
-			set 
-			{ 
-				Edit.Maximum = (decimal)value;
+				Edit.Width = value;
+				Edit2.Width = value;
+				ChkSize();
 			}
 		}
 		[Category("PaperPlane")]
@@ -123,61 +106,71 @@ namespace PP
 				Edit.ReadOnly = value;
 			}
 		}
-		[Category("PaperPlane")]
-		public bool SliderVisible
-		{
-			get { return TrackBar.Visible; }
-			set
-			{
-				TrackBar.Visible = value;
-			}
-		}
-		public PEdit()
+		
+		public PValueBox()
 		{
 			base.DoubleBuffered = true;
 			SuspendLayout();
 			int h = Edit.Height;
+			int x = 0;
 			Label.AutoSize = false;
-			Label.Location = new Point(0, 0);
-			Label.Size = new Size(60, h);
+			Label.Location = new Point(x, 0);
+			Label.Size = new Size(70, h);
 			Label.TextAlign = ContentAlignment.MiddleRight;
-			Edit.AutoSize = false;
-			Edit.Location = new Point(60, 0);
-			Edit.Size = new Size(70, h);
-			Edit.DecimalPlaces = 3;
-			Edit.Maximum = 5000;
-			TrackBar.Location = new Point(130, 0);
-			TrackBar.Size = new Size(120, h);
-			TrackBar.NumericUpDown = Edit;
-			this.Maximum = 200;
+			x += Label.Width;
 
+			Edit.AutoSize = false;
+			Edit.Location = new Point(x, 0);
+			Edit.Size = new Size(70, h);
+			x += Edit.Width;
+
+			if (Edit2.Visible)
+			{
+				Edit2.AutoSize = false;
+				Edit2.Location = new Point(x, 0);
+				Edit2.Size = new Size(70, h);
+				Edit2.MatchMode = false; ;
+				x += Edit2.Width;
+			}
+			Label2.AutoSize = false;
+			Label2.Location = new Point(x, 0);
+			Label2.Size = new Size(70, h);
+			Label2.TextAlign = ContentAlignment.MiddleLeft;
+			x += Label2.Width;
+			base.Width = x;
 
 			this.Controls.Add(Label);
 			this.Controls.Add(Edit);
-			this.Controls.Add(TrackBar);
-			base.Size = new Size(240, h);
+			this.Controls.Add(Edit2);
+			this.Controls.Add(Label2);
+			base.Size = new Size(x, h);
 			base.MinimumSize = new Size(50, h);
 			base.MaximumSize = new Size(32000, h);
 			this.Name = base.Name;
 
-			Edit.ValueChanged += (sender, e) =>
+			ResumeLayout();
+			ChkSize();
+		}
+		public void ChkSize()
+		{
+			SuspendLayout();
+			int x = 0;
+			Label.Location = new Point(x, 0);
+			x += Label.Width;
+			Edit.Location = new Point(x, 0);
+			x += Edit.Width;
+			if (Edit2.Visible)
 			{
-				OnValueFChanged(new ValueFChangedEventArgs((float)Edit.Value));
-			};
+				Edit2.Location = new Point(x, 0);
+				x += Edit2.Width;
+			}
+			Label2.Location = new Point(x, 0);
 			ResumeLayout();
 		}
-
 		protected override void OnResize(EventArgs e)
 		{
-			int a = Label.Width + Edit.Width;
-			int b = this.Width - a;
-			if (b < 0) b = 0;
-			SuspendLayout();
-			Label.Height = Edit.Height;
-			TrackBar.Location = new Point(a,0);
-			TrackBar.Size = new Size(b,Edit.Height);
-			base.OnResize(e);
-			ResumeLayout();
+
+
 		}
 		// *******************************************************************
 		// **************************************************************
@@ -394,13 +387,6 @@ namespace PP
 
 	}
 	// **************************************************************
-	public class ValueFChangedEventArgs : EventArgs
-	{
-		public float Value;
-		public ValueFChangedEventArgs(float v)
-		{
-			Value = v;
-		}
-	}
+
 
 }

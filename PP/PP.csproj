@@ -59,10 +59,19 @@
     <Compile Include="PEdit.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PNumBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PTrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PValueBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PWing.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PWingCalc.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PWingEdit.cs">
@@ -71,6 +80,9 @@
     <Compile Include="PPoint.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TailModeBtns.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <None Include="PTail.cs" />
     <Compile Include="PWingBase.cs" />
     <EmbeddedResource Include="Form1.resx">

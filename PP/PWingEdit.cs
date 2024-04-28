@@ -26,7 +26,7 @@ namespace PP
 		}
 
 		private EditMode m_EditMode = EditMode.Main;
-		[Category("paperPlane")]
+		[Category("PaperPlane")]
 		public EditMode EditMode
 		{
 			get { return m_EditMode; }
@@ -61,7 +61,7 @@ namespace PP
 		}
 
 		private PCanvas m_canvas = null;
-		[Category("paperPlane")]
+		[Category("PaperPlane")]
 		public PCanvas Canvas
 		{
 			get { return m_canvas; }
@@ -81,13 +81,25 @@ namespace PP
 			}
 		}
 		private PEdit[] m_edits = new PEdit[5];
-		[Category("paperPlane")]
+		[Category("PaperPlane")]
 		public PEdit[] Edits
 		{
 			get { return m_edits; }
 		}
 		private Label m_label = new Label();
-		[Category("paperPlane")]
+		private Label m_label2 = new Label();
+		[Category("PaperPlane")]
+		public bool TextVisible
+		{
+			get { return m_label.Visible; }
+			set
+			{
+				m_label.Visible = value;
+				m_label2.Visible = value;
+				ChkSize(true);
+			}
+		}
+		[Category("PaperPlane")]
 		public new string Text
 		{
 			get { return m_label.Text; }
@@ -97,7 +109,16 @@ namespace PP
 				m_label.Text = value;
 			}
 		}
-		[Category("paperPlane")]
+		[Category("PaperPlane")]
+		public string Text2
+		{
+			get { return m_label2.Text; }
+			set
+			{
+				m_label2.Text = value;
+			}
+		}
+		[Category("PaperPlane")]
 		public string[] Captions
 		{
 			get
@@ -118,6 +139,63 @@ namespace PP
 				}
 			}
 		}
+		[Category("PaperPlane")]
+		public int CaptionWidth
+		{
+			get
+			{
+				if (m_edits[0] != null)
+				{
+					return m_edits[0].CaptionWidth;
+				}
+				else
+				{
+					return 70;
+				}
+			}
+			set
+			{
+				if (value <= 0) return;
+				for (int i = 0; i <m_edits.Length; i++)
+				{
+					m_edits[i].CaptionWidth =value;
+				}
+			}
+		}
+		[Category("PaperPlane")]
+		public int EditWidth
+		{
+			get
+			{
+				return m_edits[0].EditWidth;
+			}
+			set
+			{
+				if (value <= 0) return;
+				for (int i = 0; i < m_edits.Length; i++)
+				{
+					m_edits[i].EditWidth = value;
+				}
+			}
+		}
+		public new Font Font
+		{
+			get { return base.Font; }
+			set 
+			{
+				base.Font = value;
+				m_label.Font = value;
+				m_label2.Font = value;
+				for(int i=0;i<m_edits.Length;i++)
+				{
+					if (m_edits[i] != null)
+					{
+						m_edits[i].Font = value;
+					}
+				}
+				ChkSize(true);
+			}
+		}
 		// **************************************************
 		public PWingEdit()
 		{
@@ -127,27 +205,39 @@ namespace PP
 			m_label.AutoSize = false;
 			m_label.TextAlign= ContentAlignment.MiddleRight;
 			m_label.Location = new Point(0, 0);
+			m_label.Size = new Size(60, 24);
 			this.Controls.Add(m_label);
+			m_label2.AutoSize = false;
+			m_label2.TextAlign = ContentAlignment.MiddleLeft;
+			m_label2.Location = new Point(65, 0);
+			m_label2.Size = new Size(70 , 24);
+			this.Controls.Add(m_label2);
+
+
 			for (int i = 0;i<m_edits.Length;i++)
 			{
 				m_edits[i] =new PEdit();
 				m_edits[i].Tag = (int)i;
 				m_edits[i].Location = new Point(0,24*(i+1));
 				m_edits[i].Size = new Size(this.Width, 24);
-				m_edits[i].ValueFChanged += (sender, e) =>
+				
+				if (i != 5)
 				{
-					if (refFlag == true) return;
-					if (m_canvas != null)
+					m_edits[i].ValueFChanged += (sender, e) =>
 					{
-						if (sender is PEdit)
+						if (refFlag == true) return;
+						if (m_canvas != null)
 						{
-							refFlag = true;
-							SetParam((int)((PEdit)sender).Tag, e.Value);
-							refFlag = false;
+							if (sender is PEdit)
+							{
+								refFlag = true;
+								SetParam((int)((PEdit)sender).Tag, e.Value);
+								refFlag = false;
+							}
 						}
-					}
-					OnValueChanged(new EventArgs());
-				};
+						OnValueChanged(new EventArgs());
+					};
+				}
 				this.Controls.Add(m_edits[i]);
 			}
 			m_label.Size = new Size(m_edits[0].CaptionWidth, 24);
@@ -159,6 +249,7 @@ namespace PP
 			m_edits[4].Text = "Swept";
 			m_edits[4].Minimum = -60;
 			m_edits[4].Maximum = 60;
+			ChkSize(false);
 			ResumeLayout();
 		}
 		private void SetParam(int idx, float v)
@@ -236,18 +327,36 @@ namespace PP
 							break;
 					}
 					break;
+				default:
+					break;
 
 			}
 		}
-		protected override void OnResize(EventArgs e)
+		private void ChkSize(bool r)
 		{
-			m_label.Width=m_edits[0].CaptionWidth;
-			this.SuspendLayout();
+			if (r) this.SuspendLayout();
+			int y = 0;
+			int h = m_edits[0].Height+2;
+			if (m_label.Visible == true)
+			{
+				m_label.Location = new Point(0, y);
+				m_label.Size = new Size(m_edits[0].CaptionWidth,h);
+				m_label2.Left = m_label.Width + 5;
+				m_label2.Size = new Size(this.Width - m_label.Width - 5,h);
+				y += h;
+			}
+
 			for (int i = 0; i < m_edits.Length; i++)
 			{
+				m_edits[(int)i].Top = y;
 				m_edits[(int)i].Width = this.Width;
+				y += h;
 			}
-			this.ResumeLayout();
+			if(r) this.ResumeLayout();
+		}
+		protected override void OnResize(EventArgs e)
+		{
+			ChkSize(true);
 			base.OnResize(e);
 		}
 		private bool refFlag = false;
@@ -405,7 +514,7 @@ namespace PP
 			set { base.Cursor = value; }
 		}
 		// **************************************************************
-		[Browsable(false)]
+		[Browsable(true)]
 		public new System.Windows.Forms.DockStyle Dock
 		{
 			get { return base.Dock; }

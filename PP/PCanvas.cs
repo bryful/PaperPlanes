@@ -177,10 +177,9 @@ namespace PP
 			base.BackColor = Color.White;
 			Dpi = 83.0f;
 			DispF = new PointF(10, 10);
-			m_Wing.SyncTwin();
-			m_Wing.MainWing.WingChanged += (sender, e) => { this.Invalidate(); };
-			m_Wing.HTail.WingChanged += (sender, e) => { this.Invalidate(); };
-			m_Wing.VTail.WingChanged += (sender, e) => { this.Invalidate(); };
+			m_Wing.Calc();
+			m_Wing.WingChanged -= (sender, e) => { this.Invalidate(); };
+			m_Wing.WingChanged += (sender, e) => { this.Invalidate(); };
 		}
 		// ********************************************************************
 		private void DrawWingSub(Graphics g, Pen p, SolidBrush sb,

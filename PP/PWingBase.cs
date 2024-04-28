@@ -41,6 +41,7 @@ namespace PP
 		private float m_swept = 0;
 		private float m_tipOffset = 0;
 
+
 		private float m_area = 0;
 		//private float[] Prm = new float[(int)PRM.Count];
 		private float[] PrmBak = new float[(int)PRM.Count]; 
@@ -180,6 +181,7 @@ namespace PP
 				return m_tipOffset;
 			}
 		}
+
 		// ******************************
 		public float Area
 		{
