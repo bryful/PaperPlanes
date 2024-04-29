@@ -464,15 +464,11 @@ namespace PP
 
 			m_CenterGP = m_Main.MACLine[0].Ymm + m_Main.MACLineLength * m_CenterG / 100;
 
-			float y1 = m_Main.MACLine[0].Ymm + m_Main.MACLineLength / 2;
-			float y2 = m_Hor.MACLine[0].Ymm + m_Hor.MACLineLength / 2;
-			float y3 = m_Ver.MACLine[0].Ymm + m_Ver.MACLineLength / 2;
 
-			float m1 = m_Main.Area*2;
-			float m2 = m_Hor.Area*2;
-			float m3 = m_Ver.Area;
-			if (m_TailMode == TailMode.Twin) m3 *= 2;
-			m_CenterGReal = (m1 * y1 + m2 * y2 + m3 * y3) / (m1 + m2 + m3);
+			float l = m_Hor.AC.Ymm - m_Main.AC.Ymm;
+			float lp = (m_Main.AC.Ymm + l * HArea / (MArea + HArea) - l * 0.1f);
+
+			m_CenterGReal = lp;
 
 		}
 		// ********************************

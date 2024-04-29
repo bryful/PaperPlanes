@@ -38,10 +38,11 @@
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.MainEdit = new PP.PWingEdit();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.HTailEdit = new PP.PWingEdit();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.MainEdit = new PP.PWingEdit();
+			this.HTailEdit = new PP.PWingEdit();
 			this.VTailEdit = new PP.PWingEdit();
 			this.tailModeBtns1 = new PP.TailModeBtns();
 			this.pWingCalc1 = new PP.PWingCalc();
@@ -101,6 +102,8 @@
 			// 
 			// helpToolStripMenuItem
 			// 
+			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem1});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
 			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpToolStripMenuItem.Text = "Help";
@@ -126,6 +129,35 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "主翼";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.HTailEdit);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(341, 120);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "水平尾翼";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.VTailEdit);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(341, 120);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "垂直尾翼";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// helpToolStripMenuItem1
+			// 
+			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
+			this.helpToolStripMenuItem1.Text = "Help";
+			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
 			// 
 			// MainEdit
 			// 
@@ -154,17 +186,6 @@
 			this.MainEdit.TextVisible = false;
 			this.MainEdit.TwinMode = false;
 			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.HTailEdit);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(341, 120);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "水平尾翼";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
 			// HTailEdit
 			// 
 			this.HTailEdit.Captions = new string[] {
@@ -191,17 +212,6 @@
 			this.HTailEdit.Text2 = "";
 			this.HTailEdit.TextVisible = false;
 			this.HTailEdit.TwinMode = false;
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.VTailEdit);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(341, 120);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "垂直尾翼";
-			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
 			// VTailEdit
 			// 
@@ -262,7 +272,7 @@
 			this.pWingCalc1.CaptionWidth = 160;
 			this.pWingCalc1.EditWidth = 70;
 			this.pWingCalc1.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.pWingCalc1.Location = new System.Drawing.Point(24, 225);
+			this.pWingCalc1.Location = new System.Drawing.Point(27, 263);
 			this.pWingCalc1.Name = "pWingCalc1";
 			this.pWingCalc1.ParamsT = new float[] {
         1.2F,
@@ -280,7 +290,7 @@
 			this.pCanvas1.BackColor = System.Drawing.Color.White;
 			this.pCanvas1.BaseColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.pCanvas1.CalcEdit = this.pWingCalc1;
-			this.pCanvas1.CanvasSize = new System.Drawing.SizeF(127.612F, 138.6289F);
+			this.pCanvas1.CanvasSize = new System.Drawing.SizeF(127.612F, 145.0554F);
 			this.pCanvas1.DispF = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.DispF")));
 			this.pCanvas1.Dpi = 83F;
 			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
@@ -291,7 +301,7 @@
 			this.pCanvas1.Location = new System.Drawing.Point(379, 43);
 			this.pCanvas1.MainEdit = this.MainEdit;
 			this.pCanvas1.Name = "pCanvas1";
-			this.pCanvas1.Size = new System.Drawing.Size(417, 453);
+			this.pCanvas1.Size = new System.Drawing.Size(417, 474);
 			this.pCanvas1.TabIndex = 6;
 			this.pCanvas1.TailMode = PP.TailMode.Normal;
 			this.pCanvas1.TailModeBtns = this.tailModeBtns1;
@@ -301,7 +311,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(810, 508);
+			this.ClientSize = new System.Drawing.Size(810, 529);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.tailModeBtns1);
 			this.Controls.Add(this.pWingCalc1);
@@ -341,6 +351,7 @@
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
 	}
 }
 

@@ -13,6 +13,7 @@ namespace PP
 {
 	public partial class Form1 : Form
 	{
+		HelpForm m_HelpForm = null;
 		public Form1()
 		{
 			InitializeComponent();
@@ -65,6 +66,19 @@ namespace PP
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			PrefSave();
+		}
+
+		private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			if(m_HelpForm != null)
+			{
+				m_HelpForm.Show();
+			}
+			else
+			{
+				m_HelpForm = new HelpForm();
+				m_HelpForm.Show();
+			}
 		}
 	}
 }
