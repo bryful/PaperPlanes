@@ -34,6 +34,13 @@ namespace PP
 		}
 
 
+		public void SetValues(float v, float m)
+		{
+			m_Value = v;
+			m_MatchValue = m;
+			Calc();
+			SetText(v);
+		}
 		private float m_Value = 0;
 		[Category("PaperPlane")]
 		public float Value

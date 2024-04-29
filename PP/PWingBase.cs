@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -97,7 +98,7 @@ namespace PP
 			Calc();
 			if (b) 
 			{
-				OnWingChanged(new EventArgs());
+				//OnWingChanged(new EventArgs());
 			}
 		}
 		// ******************************
@@ -171,6 +172,34 @@ namespace PP
 					Calc();
 					OnWingChanged(new EventArgs());
 				}
+			}
+		}
+		// ******************************
+		public float[] Params
+		{
+			get
+			{
+				float[]ret =  new float[]
+				{
+					m_posY,
+					m_span,
+					m_root,
+					m_tip,
+					m_swept
+				};
+				return ret;
+			}
+			set
+			{
+				if (value.Length<5) return;
+				bool b = false;
+				if (m_posY != value[0]) { m_posY = value[0]; b = true; }
+				if (m_span != value[1]) { m_span = value[1]; b = true; }
+				if (m_root != value[2]) { m_root = value[2]; b = true; }
+				if (m_tip != value[3]) { m_tip = value[3]; b = true; }
+				if (m_swept != value[4]) { m_swept = value[4]; b = true; }
+				Calc();
+				if(b) { OnWingChanged(new EventArgs()); }
 			}
 		}
 		// ******************************
@@ -436,6 +465,59 @@ namespace PP
 				R = new PointF((b2 * c1 - b1 * c2) / det, (a1 * c2 - a2 * c1) / det);
 				return true;
 			}
+		}
+		public JsonObject  JObj
+		{
+			get
+			{
+				JsonObject obj = new JsonObject();
+				obj.Add("PosY", m_posY);
+				obj.Add("PosX", m_posX);
+				obj.Add("Span", m_span);
+				obj.Add("Root", m_root);
+				obj.Add("Tip", m_tip);
+				obj.Add("Swept", m_swept);
+
+				return obj;
+			}
+			set
+			{
+				if (value == null) return;
+				bool ok = false;
+				float f = GetFloat(value, "PosY", out ok);
+				if (ok) m_posY = f;
+				f = GetFloat(value, "PosX", out ok);
+				if (ok) m_posX = f;
+				f = GetFloat(value, "Span", out ok);
+				if (ok) m_span = f;
+				f = GetFloat(value, "Root", out ok);
+				if (ok) m_root = f;
+				f = GetFloat(value, "Tip", out ok);
+				if (ok) m_tip = f;
+				f = GetFloat(value, "Swept", out ok);
+				if (ok) m_swept = f;
+				Calc();
+			}
+		}
+		private float GetFloat(JsonObject obj, string key,out bool ok)
+		{
+			float ret = 0;
+			ok = false;
+			if (key == "") return ret;
+			try
+			{
+				if (obj.ContainsKey(key))
+				{
+					ret = obj[key].GetValue<float>();
+					ok=true;
+				}
+			}
+			catch
+			{
+				ret = 0;
+				ok = false;
+			}
+			return ret;
 		}
 	}
 }

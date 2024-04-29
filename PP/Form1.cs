@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
+using System.IO;
 namespace PP
 {
 	public partial class Form1 : Form
@@ -15,8 +16,6 @@ namespace PP
 		public Form1()
 		{
 			InitializeComponent();
-			Clipboard.SetText(GetProps(typeof(Control)));
-			//pWingEdit1.Wing = pCanvas1.Wing;
 		}
 		public static string GetProps(Type ct)
 		{
@@ -41,14 +40,31 @@ namespace PP
 			return s;
 		}
 
-		private void pWingEdit1_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			PrefLoad();
+		}
+		public void PrefSave()
+		{
+			PrefFile pf = new PrefFile(this);
+			pf.StoreForm();
+			pf.Save();
 
+			string p = Path.Combine(pf.FileDirectory, "backup.json");
+			pCanvas1.Save(p);
+		}
+		public void PrefLoad()
+		{
+			PrefFile pf = new PrefFile(this);
+			pf.Load	();
+			pf.RestoreForm();
+
+			string p = Path.Combine(pf.FileDirectory, "backup.json");
+			pCanvas1.Load(p);
+		}
+		private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			PrefSave();
 		}
 	}
 }

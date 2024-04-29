@@ -25,61 +25,19 @@ namespace PP
 			}
 		}
 
-		private EditMode m_EditMode = EditMode.Main;
 		[Category("PaperPlane")]
-		public EditMode EditMode
+		public bool TwinMode
 		{
-			get { return m_EditMode; }
+			get { return (m_edits[0].Enabled == false); }
 			set
 			{
-				SetEditMode(value);
+				m_edits[0].Enabled = !value;
+				m_edits[2].Enabled = !value;
+				m_edits[0].SliderVisible = !value;
+				m_edits[2].SliderVisible = !value;
 			}
 		}
-		public void SetEditMode(EditMode md)
-		{
-			m_EditMode = md;
-			if (m_canvas != null)
-			{
-				bool b = ((md == EditMode.VTail) && (m_canvas.Wing.TailMode == TailMode.Twin));
-				m_edits[0].Enabled = !b;
-				m_edits[2].Enabled = !b;
-				m_canvas.Wing.WingChanged -= (sender, e) => { GetParams(); };
-				m_canvas.Wing.WingChanged += (sender, e) =>
-				{
-					Debug.WriteLine("m_wing.WingChanged1");
-					GetParams();
-				};
-				m_canvas.Wing.TailModeChanged += (sender, e) =>
-				{
-					bool b2 = ((md == EditMode.VTail) && (m_canvas.Wing.TailMode == TailMode.Twin));
-					m_edits[0].Enabled = !b2;
-					m_edits[2].Enabled = !b2;
-				};
-			}
-				GetParams();
-
-		}
-
-		private PCanvas m_canvas = null;
-		[Category("PaperPlane")]
-		public PCanvas Canvas
-		{
-			get { return m_canvas; }
-			set
-			{
-				m_canvas = value;
-				if (m_canvas != null)
-				{
-					//
-					m_canvas.Wing.WingChanged -= (sender, e) => { GetParams(); };
-					m_canvas.Wing.WingChanged += (sender, e) => {
-						Debug.WriteLine("m_wing.WingChanged1");
-						GetParams(); 
-					};
-					GetParams();
-				}
-			}
-		}
+	
 		private PEdit[] m_edits = new PEdit[5];
 		[Category("PaperPlane")]
 		public PEdit[] Edits
@@ -221,23 +179,11 @@ namespace PP
 				m_edits[i].Location = new Point(0,24*(i+1));
 				m_edits[i].Size = new Size(this.Width, 24);
 				
-				if (i != 5)
+				m_edits[i].ValueFChanged += (sender, e) =>
 				{
-					m_edits[i].ValueFChanged += (sender, e) =>
-					{
-						if (refFlag == true) return;
-						if (m_canvas != null)
-						{
-							if (sender is PEdit)
-							{
-								refFlag = true;
-								SetParam((int)((PEdit)sender).Tag, e.Value);
-								refFlag = false;
-							}
-						}
-						OnValueChanged(new EventArgs());
-					};
-				}
+					if (refFlag == true) return;
+					OnValueChanged(new EventArgs());
+				};
 				this.Controls.Add(m_edits[i]);
 			}
 			m_label.Size = new Size(m_edits[0].CaptionWidth, 24);
@@ -251,86 +197,6 @@ namespace PP
 			m_edits[4].Maximum = 60;
 			ChkSize(false);
 			ResumeLayout();
-		}
-		private void SetParam(int idx, float v)
-		{
-			if (m_canvas == null) return;
-			switch (idx)
-			{
-				case 0:
-					switch(m_EditMode)
-					{
-						case EditMode.Main:
-							m_canvas.Wing.MainPos = v;
-							break;
-						case EditMode.HTail:
-							m_canvas.Wing.HTailPos = v;
-							break;
-						case EditMode.VTail:
-							m_canvas.Wing.VTailPos = v;
-							break;
-					}
-					break;
-				case 1:
-					switch (m_EditMode)
-					{
-						case EditMode.Main:
-							m_canvas.Wing.MainSpan = v;
-							break;
-						case EditMode.HTail:
-							m_canvas.Wing.HTailSpan = v;
-							break;
-						case EditMode.VTail:
-							m_canvas.Wing.VTailSpan = v;
-							break;
-					}
-					break;
-				case 2:
-					switch (m_EditMode)
-					{
-						case EditMode.Main:
-							m_canvas.Wing.MainRoot = v;
-							break;
-						case EditMode.HTail:
-							m_canvas.Wing.HTailRoot = v;
-							break;
-						case EditMode.VTail:
-							m_canvas.Wing.VTailRoot = v;
-							break;
-					}
-					break;
-				case 3:
-					switch (m_EditMode)
-					{
-						case EditMode.Main:
-							m_canvas.Wing.MainTip = v;
-							break;
-						case EditMode.HTail:
-							m_canvas.Wing.HTailTip = v;
-							break;
-						case EditMode.VTail:
-							m_canvas.Wing.VTailTip = v;
-							break;
-					}
-					break;
-				case 4:
-					switch (m_EditMode)
-					{
-						case EditMode.Main:
-							m_canvas.Wing.MainSwept = v;
-							break;
-						case EditMode.HTail:
-							m_canvas.Wing.HTailSwept = v;
-							break;
-						case EditMode.VTail:
-							m_canvas.Wing.VTailSwept = v;
-							break;
-					}
-					break;
-				default:
-					break;
-
-			}
 		}
 		private void ChkSize(bool r)
 		{
@@ -360,39 +226,36 @@ namespace PP
 			base.OnResize(e);
 		}
 		private bool refFlag = false;
-		private void GetParams()
-		{
-			if (m_canvas == null) return;
-			if (refFlag) return;
-			refFlag = true;
-
-			switch(m_EditMode)
-			{
-				case EditMode.Main:
-					m_edits[0].Value = m_canvas.Wing.MainPos;
-					m_edits[1].Value = m_canvas.Wing.MainSpan;
-					m_edits[2].Value = m_canvas.Wing.MainRoot;
-					m_edits[3].Value = m_canvas.Wing.MainTip;
-					m_edits[4].Value = m_canvas.Wing.MainSwept;
-					break;
-				case EditMode.HTail:
-					m_edits[0].Value = m_canvas.Wing.HTailPos;
-					m_edits[1].Value = m_canvas.Wing.HTailSpan;
-					m_edits[2].Value = m_canvas.Wing.HTailRoot;
-					m_edits[3].Value = m_canvas.Wing.HTailTip;
-					m_edits[4].Value = m_canvas.Wing.HTailSwept;
-					break;
-				case EditMode.VTail:
-					m_edits[0].Value = m_canvas.Wing.VTailPos;
-					m_edits[1].Value = m_canvas.Wing.VTailSpan;
-					m_edits[2].Value = m_canvas.Wing.VTailRoot;
-					m_edits[3].Value = m_canvas.Wing.VTailTip;
-					m_edits[4].Value = m_canvas.Wing.VTailSwept;
-					break;
-			}
-			refFlag = false;
-		}
 		// ******************************************************************
+		public float[] Params
+		{
+			get
+			{
+				float[] ret = new float[]
+				{
+					m_edits[0].Value,
+					m_edits[1].Value,
+					m_edits[2].Value,
+					m_edits[3].Value,
+					m_edits[4].Value
+				};
+				return ret;
+			}
+			set
+			{
+				if(value.Length<5) return;
+				if (refFlag) return;
+				refFlag = true;
+				bool b = false;
+				if (m_edits[0].Value != value[0]) { m_edits[0].Value = value[0]; b = true; }
+				if (m_edits[1].Value != value[1]) { m_edits[1].Value = value[1]; b = true; }
+				if (m_edits[2].Value != value[2]) { m_edits[2].Value = value[2]; b = true; }
+				if (m_edits[3].Value != value[3]) { m_edits[3].Value = value[3]; b = true; }
+				if (m_edits[4].Value != value[4]) { m_edits[4].Value = value[4]; b = true; }
+				if(b) OnValueChanged(new EventArgs());
+				refFlag = false;
+			}
+		}
 		// **************************************************************
 		// **************************************************************
 		[Browsable(false)]

@@ -12,27 +12,7 @@ namespace PP
 {
 	public class TailModeBtns :Control
 	{
-		private PCanvas m_canvas = null;
-		[Category("PaperPlane")]
-		public PCanvas Canvas
-		{
-			get { return m_canvas; }
-			set 
-			{ 
-				m_canvas = value;
-				if (m_canvas != value) 
-				{
-					this.TailMode = m_canvas.TailMode;
-					m_canvas.Wing.TailModeChanged += (sender, e) =>{ this.TailMode = e.Mode;};
-					this.TailModeChanged += (sender, e) =>
-					{
-						m_canvas.TailMode = this.TailMode;
-					};
-				}
-			}
-		}
-
-		//デリゲートの宣言
+		//bool refFlag = false;
 		//TimeEventArgs型のオブジェクトを返すようにする
 		public delegate void TailModeChangedEventHandler(object sender, TailModeChangedEventArgs e);
 
@@ -41,31 +21,27 @@ namespace PP
 
 		protected virtual void OnTailModeChanged(TailModeChangedEventArgs e)
 		{
-			Debug.WriteLine("aaaa");
 			if (TailModeChanged != null)
 			{
-				Debug.WriteLine("BBBBB");
 				TailModeChanged(this, e);
 			}
 		}
-		private RadioButton m_rbNormal = new RadioButton();
-		private RadioButton m_rbTwin = new RadioButton();
+
+		private bool m_IsTwin = true; 
+		//private RadioButton m_rbNormal = new RadioButton();
+		//private RadioButton m_rbTwin = new RadioButton();
+		
+		private string[] m_Caption = new string[] { "Normal","Twin"};
 		[Category("PaperPlane")]
 		public string [] Caption
 		{
-			get 
-			{
-				string[] r = new string[2];
-				r[0] = m_rbNormal.Text;
-				r[1] = m_rbTwin.Text;
-				return r; 
-			}
+			get {return m_Caption; }
 			set 
 			{
 				if (value.Length>=2)
 				{
-					m_rbNormal.Text = value[0];
-					m_rbTwin.Text = value[1];
+					m_Caption[0] = value[0];
+					m_Caption[1] = value[1];
 				}
 			}
 		}
@@ -74,104 +50,96 @@ namespace PP
 		{
 			get 
 			{
-				TailMode tm = TailMode.Normal;
-				if (m_rbTwin.Checked)
+				if (m_IsTwin)
 				{
-					tm = TailMode.Twin;
+					return TailMode.Twin;
 				}
-				return tm; 
+				else
+				{
+					return TailMode.Normal;
+				}
 			}
 			set 
 			{
-				TailMode tm = TailMode;
-
-				bool b = (tm != value);
-				switch(value)
+				bool isT = (value == TailMode.Twin);
+				bool b = (isT != m_IsTwin);
+				m_IsTwin = isT;
+				this.Invalidate();
+				if (b)
 				{
-					case TailMode.Twin:
-						m_rbTwin.Checked = true;
-						break;
-					case TailMode.Normal:
-					default:
-						m_rbNormal.Checked = true;
-						break;
+					OnTailModeChanged(new TailModeChangedEventArgs(TailMode));
 				}
-				if (b) OnTailModeChanged(new TailModeChangedEventArgs(tm));
 			}
 		}
 
-		public new Font Font
+		private Color m_PushColor = Color.FromArgb(200,200,200);
+		public Color PushColor
 		{
-			get { return base.Font; }
-			set 
-			{ 
-				base.Font = value;
-				m_rbNormal.Font = value;
-				m_rbTwin.Font = value;
-				ChkSize();
+			get { return m_PushColor; }
+			set
+			{
+				m_PushColor = value;
+				this.Invalidate();
 			}
 		}
 		public TailModeBtns()
 		{
-			m_rbNormal.Tag = 0;
-			m_rbNormal.AutoSize = false;
-			m_rbNormal.Text = "Normal";
-			m_rbTwin.Tag = 1;
-			m_rbTwin.AutoSize = false;
-			m_rbTwin.Text = "Twin";
-			m_rbNormal.Click+= (sender, e) =>
-			{
-				if(m_canvas != null)
-				{
-					m_canvas.TailMode = this.TailMode;
-				}
-			};
-			m_rbTwin.Click += (sender, e) =>
-			{
-				if (m_canvas != null)
-				{
-					m_canvas.TailMode = this.TailMode;
-				}
-			};
-
-
-			this.Controls.Add(m_rbNormal);
-			this.Controls.Add(m_rbTwin);
-			ChkSize() ;
-		}
-		private void ChkSize()
-		{
-			int w = (this.Width-20)/2;
-			int h = (this.Height - 20);
-
-			m_rbNormal.Location = new Point(10, 13);
-			m_rbNormal.Size = new Size(w, h);
-			m_rbTwin.Location = new Point(w+10, 13);
-			m_rbTwin.Size = new Size(w, h);
-		}
-		protected override void OnResize(EventArgs e)
-		{
-			ChkSize();
-			base.OnResize(e);
 		}
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			base.OnPaint(e);
 
-			using(Pen p = new Pen(ForeColor, 1))
+			using (SolidBrush sb = new SolidBrush(BackColor))
+			using (Pen p = new Pen(ForeColor, 1))
+			using (StringFormat sf = new StringFormat())
 			{
 				Graphics g = e.Graphics;
-				g.DrawRectangle(p,new Rectangle(0,0,this.Width-1,this.Height-1));
+				g.Clear(BackColor);
+
+				Rectangle r0 = new Rectangle(0, 0, Width/2,Height);
+				Rectangle r1 = new Rectangle(r0.Right, 0, Width -r0.Width, Height);
+
+				Rectangle rct;
+				if (m_IsTwin)
+				{
+					rct = r1;
+				}
+				else
+				{
+					rct = r0;
+				}
+				sb.Color = m_PushColor;
+				g.FillRectangle(sb, rct);
+				sf.Alignment = StringAlignment.Center;
+				sf.LineAlignment = StringAlignment.Center;
+				sb.Color = ForeColor;
+				g.DrawString(m_Caption[0], this.Font, sb, r0, sf);
+				g.DrawString(m_Caption[1], this.Font, sb, r1, sf);
+
+				p.Color = ForeColor;
+				g.DrawRectangle(p, new Rectangle(0,0,this.Width-1,this.Height-1));
+			}
+		}
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			if (e.X < this.Width/2)
+			{
+				if (m_IsTwin==true)
+				{
+					m_IsTwin = false;
+					OnTailModeChanged(new TailModeChangedEventArgs(TailMode));
+					this.Invalidate();
+				}
+			}
+			else
+			{
+				if (m_IsTwin == false)
+				{
+					m_IsTwin = true;
+					OnTailModeChanged(new TailModeChangedEventArgs(TailMode));
+					this.Invalidate();
+				}
 			}
 		}
 	}
 	// **************************************************************
-	public class TailModeChangedEventArgs : EventArgs
-	{
-		public TailMode Mode;
-		public TailModeChangedEventArgs(TailMode v)
-		{
-			Mode = v;
-		}
-	}
 }

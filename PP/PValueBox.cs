@@ -56,6 +56,18 @@ namespace PP
 				Edit.Value = value;
 			}
 		}
+		public void SetValues(float value,float mvalue)
+		{
+			if(MatchMode)
+			{
+				Edit.SetValues(value,mvalue);
+				Edit2.Value = mvalue;
+			}
+			else
+			{
+				Edit.Value=value;	
+			}
+		}
 		public new Font Font
 		{
 			get { return Label.Font; }

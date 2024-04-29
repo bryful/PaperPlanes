@@ -166,7 +166,19 @@ namespace PP
 			get { return m_Wing.TailMode; }
 			set
 			{
+				bool b = (m_Wing.TailMode != value);
 				m_Wing.TailMode = value;
+				this.Invalidate();
+				if (m_TailModeBtns != null)
+				{
+					//if (m_TailModeBtns.TailMode != m_Wing.TailMode)
+						m_TailModeBtns.TailMode = m_Wing.TailMode;
+				}
+				if(m_VTailEdit != null)
+				{
+					m_VTailEdit.TwinMode = (m_Wing.TailMode == TailMode.Twin);
+
+				}
 				this.Invalidate();
 			}
 		}
@@ -211,12 +223,24 @@ namespace PP
 			p.Width = 2;
 			// baseLine
 			p.Color = m_BaseColor;
-			g.DrawLine(p, m_DispP, new PointF(m_DispP.X, this.Height));
+			g.DrawLine(p, m_DispP, new PointF(m_DispP.X, m_DispP.Y + P.Mm2Px(m_Wing.FuselageLength,m_Dpi)));
 
 			//Main
 			PointF[] lines = m_Wing.MainLines(m_DispF);
 			PointF[] mac = m_Wing.MainMACLines(m_DispF);
 			DrawWingSub(g,p,sb, lines, mac, m_Wing.SelectedIndex);
+
+			p.Color = m_LineColor;
+			float cg = P.Mm2Px(m_Wing.CenterGP, m_Dpi) + m_DispP.Y;
+			g.DrawLine(p, m_DispP.X, cg, m_DispP.X - 10, cg);
+
+			p.Color = Color.Red;
+			p.Width = 2;
+			float cg2 = P.Mm2Px(m_Wing.CenterGReal, m_Dpi) + m_DispP.Y;
+			g.DrawLine(p, m_DispP.X, cg2, m_DispP.X + 20, cg2);
+			p.Width = 2;
+
+
 			lines = m_Wing.HTailLines(m_DispF);
 			mac = m_Wing.HTailMACLines(m_DispF);
 			DrawWingSub(g, p, sb, lines, mac, m_Wing.SelectedIndex - 4);
@@ -317,6 +341,157 @@ namespace PP
 			base.OnMouseUp(e);
 		}
 		// **************************************************************
+		private TailModeBtns m_TailModeBtns = null;
+		[Category("PaperPlaneControl")]
+		public TailModeBtns TailModeBtns
+		{
+			get { return m_TailModeBtns; }
+			set
+			{
+				m_TailModeBtns = value;
+				if (m_TailModeBtns != null)
+				{
+					m_TailModeBtns.TailMode = m_Wing.TailMode;
+					m_TailModeBtns.TailModeChanged += (sender, e) =>
+					{
+						if (TailMode != e.Mode)
+						{
+							TailMode = e.Mode;
+						}
+					};
+				}
+			}
+		}
+		private PWingEdit m_MainEdit = null;
+		[Category("PaperPlaneControl")]
+		public PWingEdit MainEdit
+		{
+			get { return m_MainEdit; }
+			set
+			{
+				m_MainEdit = value;
+
+				if (m_MainEdit != null)
+				{
+					m_MainEdit.TwinMode = false;
+					m_MainEdit.Params = Wing.MainParams;
+					Wing.WingChanged += (sender, e) =>
+					{
+						m_MainEdit.Params = Wing.MainParams;
+					};
+					m_MainEdit.ValueChanged += (sender, e) =>
+					{
+						Debug.WriteLine("PCANVAS:m_MainEdit");
+						Wing.MainParams = m_MainEdit.Params;
+						this.Invalidate();
+					};
+				}
+			}
+		}
+		private PWingEdit m_HTailEdit = null;
+		[Category("PaperPlaneControl")]
+		public PWingEdit HTailEdit
+		{
+			get { return m_HTailEdit; }
+			set
+			{
+				m_HTailEdit = value;
+
+				if (m_HTailEdit != null)
+				{
+					m_HTailEdit.TwinMode = false;
+					m_HTailEdit.Params = Wing.HTailParams;
+					Wing.WingChanged += (sender, e) =>
+					{
+						m_HTailEdit.Params = Wing.HTailParams;
+					};
+					m_HTailEdit.ValueChanged += (sender, e) =>
+					{
+						Wing.HTailParams = m_HTailEdit.Params;
+					};
+				}
+			}
+		}
+		private PWingEdit m_VTailEdit = null;
+		[Category("PaperPlaneControl")]
+		public PWingEdit VTailEdit
+		{
+			get { return m_VTailEdit; }
+			set
+			{
+				m_VTailEdit = value;
+
+				if (m_VTailEdit != null)
+				{
+					if (Wing.TailMode == TailMode.Twin)
+					{
+						m_VTailEdit.TwinMode = true;
+					}
+					else
+					{
+						m_VTailEdit.TwinMode = false;
+					}
+					m_VTailEdit.Params = Wing.VTailParams;
+					Wing.WingChanged += (sender, e) =>
+					{
+						m_VTailEdit.Params = Wing.VTailParams;
+					};
+					m_VTailEdit.ValueChanged += (sender, e) =>
+					{
+						Wing.VTailParams = m_VTailEdit.Params;
+					};
+				}
+			}
+		}
+
+
+		private PWingCalc m_CalcEdit = null;
+		[Category("PaperPlaneControl")]
+		public PWingCalc CalcEdit
+		{
+			get { return m_CalcEdit; }
+			set
+			{
+				m_CalcEdit = value;
+
+				if (m_CalcEdit != null)
+				{
+					m_CalcEdit.ParamsT = Wing.ParamsT;
+					m_CalcEdit.SetParamsC(Wing.ParamsC);
+					Wing.WingChanged += (sender, e) =>
+					{
+						m_CalcEdit.ParamsT = Wing.ParamsT;
+						m_CalcEdit.SetParamsC(Wing.ParamsC);
+					};
+					m_CalcEdit.ValueChanged += (sender, e) =>
+					{
+						Wing.ParamsT = m_CalcEdit.ParamsT;
+					};
+				}
+			}
+		}
+		public bool Load(string p)
+		{
+			bool b = Wing.Load(p);
+			if(b)
+			{
+				if (m_TailModeBtns!=null)
+				{
+					m_TailModeBtns.TailMode = this.TailMode;
+				}
+			}
+			if(m_CalcEdit!=null)
+			{
+				m_CalcEdit.ParamsT= Wing.ParamsT;
+				m_CalcEdit.SetParamsC(Wing.ParamsC);
+			}
+			this.Invalidate();
+			return b;
+		}
+		public bool Save(string p)
+		{
+			return Wing.Save(p);
+		}
 		#region Porp
 		[Browsable(false)]
 		public new System.String AccessibleDefaultActionDescription

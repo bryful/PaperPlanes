@@ -12,6 +12,18 @@ namespace PP
 {
 	public class PWingCalc : Control
 	{
+		public event EventHandler ValueChanged;
+
+		protected virtual void OnValueChanged(EventArgs e)
+		{
+			if (ValueChanged != null)
+			{
+				ValueChanged(this, e);
+			}
+		}
+
+		//private PCanvas m_canvas = null;
+
 		private PEdit m_HTailVRT = new PEdit();
 		private PEdit m_VTailVRT = new PEdit();
 		private PEdit m_CG = new PEdit();
@@ -27,6 +39,43 @@ namespace PP
 		private PValueBox m_VTailArea = new PValueBox();
 		private PValueBox m_VTailVR = new PValueBox();
 
+		[Category("PaperPlane")]
+		public string[] Captions
+		{
+			get
+			{
+				string[] result = new string[]
+				{
+					m_HTailVRT.Text,
+					m_VTailVRT.Text,
+					m_CG.Text,
+					m_FuselageLength.Text,
+					m_MainArea.Text,
+					m_DistanceHTail.Text,
+					m_HTailArea.Text,
+					m_VTailVR.Text,
+					m_DistanceVTail.Text,
+					m_VTailArea.Text,
+					m_VTailVR.Text,
+				};
+				return result;
+			}
+			set
+			{
+				if (value.Length < 11) return;
+				m_HTailVRT.Text = value[0];
+				m_VTailVRT.Text = value[1];
+				m_CG.Text = value[2];
+				m_FuselageLength.Text = value[3];
+				m_MainArea.Text = value[4];
+				m_DistanceHTail.Text = value[5];
+				m_HTailArea.Text = value[6];
+				m_VTailVR.Text = value[7];
+				m_DistanceVTail.Text = value[8];
+				m_VTailArea.Text = value[9];
+				m_VTailVR.Text = value[10];
+			}
+		}
 		[Category("PaperPlane")]
 		public new Font Font
 		{
@@ -50,18 +99,60 @@ namespace PP
 				ChkSize();
 			}
 		}
+		// ***************************************************************
+		public float[] ParamsT
+		{
+			get 
+			{
+				float[] ret = new float[]
+				{
+					m_HTailVRT.Value,
+					m_VTailVRT.Value,
+					m_CG.Value
+				};
+				return ret;
+			}
+			set
+			{
+				bool b = false;
+				if (value.Length!=3) return;
+				if (m_HTailVRT.Value != value[0]) { m_HTailVRT.Value = value[0]; b = true; }
+				if (m_VTailVRT.Value != value[1]) { m_VTailVRT.Value = value[1]; b = true; }
+				if (m_CG.Value != value[2]) { m_CG.Value = value[2]; b = true; }
+				if (b) OnValueChanged(new EventArgs());
+			}
+		}
+		public void SetParamsC(float[] value)
+		{
+			if (value.Length<10) return;
+			m_FuselageLength.Value = value[0];
+			m_MainArea.Value = value[1];
 
+			m_DistanceHTail.Value = value[2];
+			m_HTailArea.SetValues(value[3], value[4]);
+			m_HTailVR.Value = value[5];
+
+			m_DistanceVTail.Value = value[6];
+			m_VTailArea.SetValues(value[7], value[8]);
+			m_VTailVR.Value = value[9];
+		}
+
+		// ***************************************************************
 		public PWingCalc()
 		{
 			m_HTailVRT.SliderVisible = false;
-			m_HTailVRT.Readonly = true;
+			m_HTailVRT.Readonly = false;
 			m_HTailVRT.Text = "!HTail_VRate";
+			m_HTailVRT.ValueFChanged += (sender, e) =>{OnValueChanged(new EventArgs());};
 			m_VTailVRT.SliderVisible = false;
-			m_VTailVRT.Readonly = true;
+			m_VTailVRT.Readonly = false;
+			m_VTailVRT.ValueFChanged += (sender, e) => { OnValueChanged(new EventArgs()); };
 			m_VTailVRT.Text = "!VTail_VR";
+			
 			m_CG.SliderVisible = false;
-			m_CG.Readonly = true;
+			m_CG.Readonly = false;
 			m_CG.Text = "CenterG";
+			m_CG.ValueFChanged += (sender, e) => { OnValueChanged(new EventArgs()); };
 
 			m_FuselageLength.Text = "Fuselage";
 			m_FuselageLength.Text2 = "mm";
@@ -156,7 +247,7 @@ namespace PP
 		{
 			int w = this.Width;
 			int y = 0;
-			int h = m_HTailVRT.Height + 2;
+			int h = m_HTailVRT.Height + 3;
 			
 			m_HTailVRT.Location = new Point(0, y);
 			m_HTailVRT.Size = new Size(w, h);
@@ -167,15 +258,15 @@ namespace PP
 			m_CG.Location = new Point(0, y);
 			m_CG.Size = new Size(w, h);
 			y += m_CG.Height;
-			y += 5;
+			y += 6;
 			m_FuselageLength.Location = new Point(0, y);
 			m_FuselageLength.Size = new Size(w, h);
 			y += m_FuselageLength.Height;
-			y += 5;
+			y += 6;
 			m_MainArea.Location = new Point(0, y);
 			m_MainArea.Size = new Size(w, h);
 			y += m_MainArea.Height;
-			y += 5;
+			y += 6;
 
 			m_DistanceHTail.Location = new Point(0, y);
 			m_DistanceHTail.Size = new Size(w, h);
@@ -186,12 +277,11 @@ namespace PP
 			m_HTailVR.Location = new Point(0, y);
 			m_HTailVR.Size = new Size(w, h);
 			y += m_HTailVR.Height;
-			y += 5;
+			y += 6;
 
 			m_DistanceVTail.Location = new Point(0, y);
 			m_DistanceVTail.Size = new Size(w, h);
 			y += m_DistanceVTail.Height;
-
 			m_VTailArea.Location = new Point(0, y);
 			m_VTailArea.Size = new Size(w, h);
 			y += m_VTailArea.Height;
@@ -207,5 +297,23 @@ namespace PP
 			base.OnResize(e);
 
 		}
+
+		/*
+		public void GetParams()
+		{
+			if (m_canvas == null) return;
+			m_HTailVRT.Value = m_canvas.Wing.HTailVR_tentative;
+			m_VTailVRT.Value = m_canvas.Wing.VTailVR_tentative;
+			m_CG.Value = m_canvas.Wing.CenterG;
+			m_FuselageLength.Value = m_canvas.Wing.FuselageLength;
+			m_MainArea.Value = m_canvas.Wing.MainArea;
+			m_DistanceHTail.Value = m_canvas.Wing.DistanceHTail;
+			m_HTailArea.Value = m_canvas.Wing.HTailArea;
+			//m_HTailVR
+			m_DistanceVTail.Value = m_canvas.Wing.DistanceVTail;
+			m_VTailArea.Value = m_canvas.Wing.VTailArea;
+			//m_VTailVR
+		}
+		*/
 	}
 }
