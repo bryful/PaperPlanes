@@ -101,6 +101,41 @@ namespace PP.Properties {
         }
         
         /// <summary>
+        ///   # PaperPlanes
+        ///「日本で生まれ育った高性能紙飛行機　その設計・製作・飛行技術のすべて」　二宮康明著
+        ///の計算式を使用して紙飛行機の設計を行うアプリです。&lt;br&gt;
+        ///電卓片手に計算するのがかなり面倒なので作ったアプリです。&lt;br&gt;
+        ///&lt;br&gt;
+        ///新しいバージョンを作りました。PP.exeです。&lt;br&gt;
+        ///&lt;br&gt;
+        ///普通の尾翼と双尾翼の2種類に対応しています。&lt;br&gt;
+        ///![PaperPlanes](pp.png)&lt;br&gt;
+        ///
+        ///# Usage
+        ///簡単な設計の仕方です。
+        ///
+        ///
+        ///## 尾翼の種類を選ぶ
+        ///後からでも大丈夫ですが、尾翼の形式を選びます。&lt;br&gt;
+        ///「**通常垂直尾翼**」と「**双垂直尾翼**」の二つが選べます。&lt;br&gt;
+        ///
+        ///## 主翼の大きさを決める
+        ///タブで「主翼」「水平尾翼」「垂直」とあるので「主翼」を選び、好きな形にします。&lt;br&gt;
+        ///&lt;br&gt;
+        ///単位はすべてmm(ミリメートル)です。
+        ///
+        ///* **位置**&lt;br&gt;先頭からの位置。
+        ///* **翼長**&lt;br&gt;中心から翼端までの距離。全長の半分なので注意してください。
+        ///* **翼根**&lt;br&gt;翼の根元の長さ。
+        ///* ** [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string HelpText {
+            get {
+                return ResourceManager.GetString("HelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
         internal static System.Drawing.Bitmap upALL {

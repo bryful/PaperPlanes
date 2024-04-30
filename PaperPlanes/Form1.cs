@@ -207,7 +207,7 @@ namespace PaperPlanes
 			return drawWings1.exportPDF(p);
 		}
 
-		private void exportPDFToolStripMenuItem_Click(object sender, EventArgs e)
+		private void exportPDF_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog sfd = new SaveFileDialog();
 

@@ -16,7 +16,7 @@ namespace PP
 		{
 			InitializeComponent();
 
-			string s = "Hellow **MarkDown**!";
+			string s = Properties.Resources.HelpText;
 
 			var html = Markdown.ToHtml(s);
 

@@ -187,5 +187,10 @@ namespace PP
 			pCanvas1.ExportPDF("AAA.pdf");
 
 		}
+
+		private void exportPDFMenu_Click(object sender, EventArgs e)
+		{
+			pCanvas1.ExportPDF();
+		}
 	}
 }

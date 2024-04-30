@@ -517,20 +517,27 @@ namespace PP
 		// ********************************
 		public PWing()
 		{
+			TailMode = TailMode.Twin;
 			m_Main.CreateIndex(0);
 			m_Hor.CreateIndex(4);
 			m_Ver.CreateIndex(8);
-			m_Hor.PosY = 100;
-			m_Hor.Span = 40;
-			m_Hor.Root = 20;
-			m_Hor.Tip = 10;
-			m_Hor.Swept = 5;
+			m_Main.PosY = 50;
+			m_Main.Span = 85;
+			m_Main.Root = 28;
+			m_Main.Tip = 16;
+			m_Main.Swept = 8;
 
-			m_Ver.PosY = 80;
-			m_Ver.Span = 30;
-			m_Ver.Root = 20;
-			m_Ver.Tip = 10;
-			m_Ver.Swept = 10;
+			m_Hor.PosY = 160;
+			m_Hor.Span = 28.7f;
+			m_Hor.Root = 19;
+			m_Hor.Tip = 14.284f;
+			m_Hor.Swept = 13;
+
+			m_Ver.PosY = 166.63f;
+			m_Ver.Span = 14;
+			m_Ver.Root = 14.284f;
+			m_Ver.Tip = 6;
+			m_Ver.Swept = 40;
 
 
 			Calc();

@@ -14,7 +14,7 @@ using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System.Xml.Schema;
 using System.Security;
-
+using System.IO;
 namespace PP
 {
 	public class PCanvas : Control
@@ -614,6 +614,28 @@ namespace PP
 			{
 				ret = false;
 			}
+			return ret;
+		}
+		private string m_filename = "";
+		public bool ExportPDF()
+		{
+			bool ret = false;
+			using (SaveFileDialog dlg = new SaveFileDialog())
+			{
+				dlg.DefaultExt = ".pdf";
+				dlg.Filter = "*.pdf|*.pdf|*.*|*.*";
+				if (m_filename != "")
+				{
+					dlg.InitialDirectory = Path.GetDirectoryName(m_filename);
+					dlg.FileName = Path.GetFileName(m_filename);
+				}
+
+				if (dlg.ShowDialog() == DialogResult.OK)
+				{
+					ret = ExportPDF(dlg.FileName);
+				}
+			}
+
 			return ret;
 		}
 		#region Porp

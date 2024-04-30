@@ -40,16 +40,16 @@
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.MainEdit = new PP.PWingEdit();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.HTailEdit = new PP.PWingEdit();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.VTailEdit = new PP.PWingEdit();
+			this.exportPDFMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.navBtn1 = new PP.NavBtn();
+			this.MainEdit = new PP.PWingEdit();
+			this.HTailEdit = new PP.PWingEdit();
+			this.VTailEdit = new PP.PWingEdit();
 			this.tailModeBtns1 = new PP.TailModeBtns();
 			this.pWingCalc1 = new PP.PWingCalc();
 			this.pCanvas1 = new PP.PCanvas();
-			this.button1 = new System.Windows.Forms.Button();
 			this.menuStrip1.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
@@ -75,6 +75,7 @@
             this.openMenu,
             this.saveMenu,
             this.saveAsMenu,
+            this.exportPDFMenu,
             this.quitMenu});
 			this.fileMenu.Name = "fileMenu";
 			this.fileMenu.Size = new System.Drawing.Size(37, 20);
@@ -156,6 +157,45 @@
 			this.tabPage1.Text = "主翼";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.HTailEdit);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(341, 120);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "水平尾翼";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.VTailEdit);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(341, 120);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "垂直尾翼";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// exportPDFMenu
+			// 
+			this.exportPDFMenu.Name = "exportPDFMenu";
+			this.exportPDFMenu.Size = new System.Drawing.Size(182, 22);
+			this.exportPDFMenu.Text = "ExportPDF";
+			this.exportPDFMenu.Click += new System.EventHandler(this.exportPDFMenu_Click);
+			// 
+			// navBtn1
+			// 
+			this.navBtn1.Location = new System.Drawing.Point(374, 132);
+			this.navBtn1.MaximumSize = new System.Drawing.Size(16, 80);
+			this.navBtn1.MinimumSize = new System.Drawing.Size(16, 80);
+			this.navBtn1.Name = "navBtn1";
+			this.navBtn1.Size = new System.Drawing.Size(16, 80);
+			this.navBtn1.TabIndex = 16;
+			this.navBtn1.Text = "navBtn1";
+			// 
 			// MainEdit
 			// 
 			this.MainEdit.Captions = new string[] {
@@ -171,28 +211,17 @@
 			this.MainEdit.Location = new System.Drawing.Point(3, 3);
 			this.MainEdit.Name = "MainEdit";
 			this.MainEdit.Params = new float[] {
-        0F,
-        90F,
-        40F,
-        30F,
-        0F};
+        50F,
+        85F,
+        28F,
+        16F,
+        8F};
 			this.MainEdit.Size = new System.Drawing.Size(335, 114);
 			this.MainEdit.TabIndex = 7;
 			this.MainEdit.Text = "Main";
 			this.MainEdit.Text2 = "";
 			this.MainEdit.TextVisible = false;
 			this.MainEdit.TwinMode = false;
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.HTailEdit);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(341, 120);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "水平尾翼";
-			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
 			// HTailEdit
 			// 
@@ -209,28 +238,17 @@
 			this.HTailEdit.Location = new System.Drawing.Point(3, 3);
 			this.HTailEdit.Name = "HTailEdit";
 			this.HTailEdit.Params = new float[] {
-        100F,
-        40F,
-        20F,
-        10F,
-        5F};
+        160F,
+        28.7F,
+        19F,
+        14.284F,
+        13F};
 			this.HTailEdit.Size = new System.Drawing.Size(335, 114);
 			this.HTailEdit.TabIndex = 8;
 			this.HTailEdit.Text = "HTail";
 			this.HTailEdit.Text2 = "";
 			this.HTailEdit.TextVisible = false;
 			this.HTailEdit.TwinMode = false;
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.VTailEdit);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(341, 120);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "垂直尾翼";
-			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
 			// VTailEdit
 			// 
@@ -247,27 +265,17 @@
 			this.VTailEdit.Location = new System.Drawing.Point(3, 3);
 			this.VTailEdit.Name = "VTailEdit";
 			this.VTailEdit.Params = new float[] {
-        80F,
-        30F,
-        20F,
-        10F,
-        10F};
+        166.6259F,
+        14F,
+        14.284F,
+        6F,
+        40F};
 			this.VTailEdit.Size = new System.Drawing.Size(335, 114);
 			this.VTailEdit.TabIndex = 9;
 			this.VTailEdit.Text = "VTail";
 			this.VTailEdit.Text2 = "";
 			this.VTailEdit.TextVisible = false;
-			this.VTailEdit.TwinMode = false;
-			// 
-			// navBtn1
-			// 
-			this.navBtn1.Location = new System.Drawing.Point(374, 132);
-			this.navBtn1.MaximumSize = new System.Drawing.Size(16, 80);
-			this.navBtn1.MinimumSize = new System.Drawing.Size(16, 80);
-			this.navBtn1.Name = "navBtn1";
-			this.navBtn1.Size = new System.Drawing.Size(16, 80);
-			this.navBtn1.TabIndex = 16;
-			this.navBtn1.Text = "navBtn1";
+			this.VTailEdit.TwinMode = true;
 			// 
 			// tailModeBtns1
 			// 
@@ -281,7 +289,7 @@
 			this.tailModeBtns1.Size = new System.Drawing.Size(256, 24);
 			this.tailModeBtns1.TabIndex = 14;
 			this.tailModeBtns1.TabStop = false;
-			this.tailModeBtns1.TailMode = PP.TailMode.Normal;
+			this.tailModeBtns1.TailMode = PP.TailMode.Twin;
 			this.tailModeBtns1.Text = "TailMode";
 			// 
 			// pWingCalc1
@@ -333,26 +341,15 @@
 			this.pCanvas1.NavBtn = this.navBtn1;
 			this.pCanvas1.Size = new System.Drawing.Size(449, 425);
 			this.pCanvas1.TabIndex = 6;
-			this.pCanvas1.TailMode = PP.TailMode.Normal;
+			this.pCanvas1.TailMode = PP.TailMode.Twin;
 			this.pCanvas1.TailModeBtns = this.tailModeBtns1;
 			this.pCanvas1.VTailEdit = this.VTailEdit;
-			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(298, 44);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 17;
-			this.button1.Text = "button1";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(858, 480);
-			this.Controls.Add(this.button1);
 			this.Controls.Add(this.navBtn1);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.tailModeBtns1);
@@ -397,7 +394,7 @@
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
 		private NavBtn navBtn1;
 		private System.Windows.Forms.ToolStripMenuItem saveAsMenu;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.ToolStripMenuItem exportPDFMenu;
 	}
 }
 
