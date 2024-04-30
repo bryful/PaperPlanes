@@ -49,7 +49,7 @@ namespace PP
 			string path = String.Format(@"{0}\{1}",//\{2}
 			  Environment.GetFolderPath(folder),  // ベース・パス
 			  //Application.CompanyName,            // 会社名
-			  Application.ProductName
+			  "PP"
 			  );           // 製品名
 
 			// パスのフォルダを作成
