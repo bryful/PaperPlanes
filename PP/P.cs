@@ -26,5 +26,10 @@ namespace PP
 			RectangleF rct = new RectangleF(pt.X - sz/2, pt.Y - sz/2, sz, sz);
 			g.FillEllipse(sb, rct);
 		}
+		static public float CF(float f)
+		{
+			int ff = (int)(f * 100);
+			return (float)ff /100;
+		}
 	}
 }

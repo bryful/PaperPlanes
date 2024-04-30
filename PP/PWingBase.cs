@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PdfSharp.Drawing;
 
 namespace PP
 {
@@ -291,6 +292,15 @@ namespace PP
 			ret[1] = m_lines[1].GetPixel(d);
 			ret[2] = m_lines[2].GetPixel(d);
 			ret[3] = m_lines[3].GetPixel(d);
+			return ret;
+		}
+		public XPoint[] GetXLine()
+		{
+			XPoint[] ret = new XPoint[4];
+			ret[0] = new XPoint(m_lines[0].Xmm, m_lines[0].Ymm);
+			ret[1] = new XPoint(m_lines[1].Xmm, m_lines[1].Ymm);
+			ret[2] = new XPoint(m_lines[2].Xmm, m_lines[2].Ymm);
+			ret[3] = new XPoint(m_lines[3].Xmm, m_lines[3].Ymm);
 			return ret;
 		}
 		private PPoint[] m_MACLine = new PPoint[2];

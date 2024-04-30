@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Diagnostics;
+using PdfSharp;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using System.Xml.Schema;
+using System.Security;
 
 namespace PP
 {
@@ -198,6 +203,7 @@ namespace PP
 				PointF[] m, PointF[] mac,int idx
 			)
 		{
+			p.Width = 1;
 			p.Color = m_LineColor2;
 			g.DrawLines(p, mac);
 			
@@ -207,6 +213,7 @@ namespace PP
 			g.DrawLine(p, x0, y, x1, y);
 
 			p.Color = m_LineColor;
+			p.Width = 2;
 			g.DrawLines(p, m);
 
 			if ((idx >= 0) && (idx < 4))
@@ -220,8 +227,8 @@ namespace PP
 		// ********************************************************************
 		private void DrawWing(Graphics g,Pen p,SolidBrush sb)
 		{
-			p.Width = 2;
 			// baseLine
+			p.Width = 2;
 			p.Color = m_BaseColor;
 			g.DrawLine(p, m_DispP, new PointF(m_DispP.X, m_DispP.Y + P.Mm2Px(m_Wing.FuselageLength,m_Dpi)));
 
@@ -231,14 +238,14 @@ namespace PP
 			DrawWingSub(g,p,sb, lines, mac, m_Wing.SelectedIndex);
 
 			p.Color = m_LineColor;
+			p.Width = 1;
 			float cg = P.Mm2Px(m_Wing.CenterGP, m_Dpi) + m_DispP.Y;
 			g.DrawLine(p, m_DispP.X, cg, m_DispP.X - 10, cg);
 
 			p.Color = Color.Red;
-			p.Width = 2;
+			p.Width = 1;
 			float cg2 = P.Mm2Px(m_Wing.CenterGReal, m_Dpi) + m_DispP.Y;
 			g.DrawLine(p, m_DispP.X, cg2, m_DispP.X + 20, cg2);
-			p.Width = 2;
 
 
 			lines = m_Wing.HTailLines(m_DispF);
@@ -444,7 +451,6 @@ namespace PP
 			}
 		}
 
-
 		private PWingCalc m_CalcEdit = null;
 		[Category("PaperPlaneControl")]
 		public PWingCalc CalcEdit
@@ -470,6 +476,27 @@ namespace PP
 				}
 			}
 		}
+		// ***********************************************************
+		private NavBtn m_NavBtn = null;
+		[Category("PaperPlaneControl")]
+		public NavBtn NavBtn
+		{
+			get { return m_NavBtn; }
+			set
+			{
+				m_NavBtn = value;
+
+				if (m_NavBtn != null)
+				{
+					m_NavBtn.UpTailChanged += (sender, e) => { Wing.MoveTail(-1); };
+					m_NavBtn.DownTailChanged += (sender, e) => { Wing.MoveTail(1); };
+					m_NavBtn.UpAllChanged += (sender, e) => { Wing.MoveMainTail(-1); };
+					m_NavBtn.DownAllChanged += (sender, e) => { Wing.MoveMainTail(1); };
+				}
+			}
+		}
+
+		// ***********************************************************
 		public bool Load(string p)
 		{
 			bool b = Wing.Load(p);
@@ -491,6 +518,103 @@ namespace PP
 		public bool Save(string p)
 		{
 			return Wing.Save(p);
+		}
+		public XPoint[] ShiftXLines(XPoint[] pnts, double x, double y)
+		{
+			if(pnts.Length>0)
+			{
+				for(int i=0; i<pnts.Length;i++)
+				{
+					pnts[i].X += x;
+					pnts[i].Y += y;
+				}
+			}
+			return pnts;
+		}
+		public bool ExportPDF(string p)
+		{
+			bool ret = false;
+			PdfDocument document = new PdfDocument();
+			PdfPage page = document.AddPage();
+			page.Size = PageSize.A4; //用紙の大きさ
+			page.Orientation = PageOrientation.Portrait; //用紙の向き
+			XGraphics xg = XGraphics.FromPdfPage(page, XGraphicsUnit.Millimeter);
+
+			XPen pen = new XPen(XColors.Black, 0.2); //線を引く
+			double sX = 40;
+			double sY = 30;
+
+			XPoint[] cg1 = new XPoint[] {
+				new XPoint(sX-10,sY+m_Wing.CenterGP),
+				new XPoint(sX,sY+m_Wing.CenterGP),
+			};
+			pen.Color = XColor.FromArgb(255, 0, 0);
+			xg.DrawLines(pen, cg1);
+			XPoint[] cg2 = new XPoint[] {
+				new XPoint(sX-5,sY+m_Wing.CenterGReal),
+				new XPoint(sX,sY+m_Wing.CenterGReal),
+			};
+			pen.Color = XColor.FromArgb(255, 0, 255);
+			xg.DrawLines(pen, cg2);
+
+
+			XPoint[] LineBody = new XPoint[] {
+				new XPoint(sX,sY),
+				new XPoint(sX,sY + Wing.FuselageLength),
+			};
+			pen.Color = XColor.FromArgb(255, 128, 128);
+			xg.DrawLines(pen, LineBody);
+
+
+
+
+			XPoint[] lineM = ShiftXLines(Wing.MainXLine(), sX, sY);
+			XPoint[] lineHT = ShiftXLines(Wing.HTailXLine(), sX, sY);
+			XPoint[] lineVT = ShiftXLines(Wing.VTailXLine(), sX, sY);
+			pen.Color = XColor.FromArgb(0, 0, 0);
+			xg.DrawLines(pen, lineM);
+			if (TailMode==TailMode.Twin)
+			{
+				XPoint[] TT1 = new XPoint[]
+				{
+					lineHT[1],
+					lineHT[2]
+				};
+				pen.Color = XColor.FromArgb(200, 200, 200);
+				xg.DrawLines(pen, TT1);
+				XPoint[] TT = new XPoint[]
+				{
+					lineHT[0],
+					lineHT[1],
+					lineVT[1],
+					lineVT[2],
+					lineHT[2],
+					lineHT[3],
+				};
+				pen.Color = XColor.FromArgb(0, 0, 0);
+				xg.DrawLines(pen, TT);
+			}
+			else
+			{
+				pen.Color = XColor.FromArgb(0, 0, 0);
+				xg.DrawLines(pen, lineHT);
+				pen.Color = XColor.FromArgb(200, 50, 50);
+				xg.DrawLines(pen, lineVT);
+
+			}
+
+			document.PageLayout = PdfPageLayout.OneColumn; //幅一杯に表示
+
+			try
+			{
+				document.Save(p);
+				ret = true;
+			}
+			catch
+			{
+				ret = false;
+			}
+			return ret;
 		}
 		#region Porp
 		[Browsable(false)]

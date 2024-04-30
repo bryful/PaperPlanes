@@ -10,6 +10,7 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using PdfSharp.Drawing;
 
 namespace PP
 {
@@ -156,6 +157,18 @@ namespace PP
 			return m_Ver.GetMACLines(d);
 		}
 
+		public XPoint[] MainXLine()
+		{
+			return m_Main.GetXLine();
+		}
+		public XPoint[] HTailXLine()
+		{
+			return m_Hor.GetXLine();
+		}
+		public XPoint[] VTailXLine()
+		{
+			return m_Ver.GetXLine();
+		}
 		public float HTailPos
 		{
 			get { return m_Hor.PosY; }
@@ -294,6 +307,26 @@ namespace PP
 			}
 		}
 		// ********************************
+		public void MoveMainTail(float v)
+		{
+			m_Main.PosY += v;
+			m_Hor.PosY += v;
+			if(m_TailMode != TailMode.Twin) 
+			{
+				m_Ver.PosY += v;
+			}
+			Calc();
+		}
+		public void MoveTail(float v)
+		{
+			m_Hor.PosY += v;
+			if (m_TailMode != TailMode.Twin)
+			{
+				m_Ver.PosY += v;
+			}
+			Calc();
+		}
+		// ********************************
 		private float m_FuselageLength = 17.0f;
 		private float m_DistanceHTail = 0;
 		private float m_DistanceVTail = 0;
@@ -316,49 +349,49 @@ namespace PP
 			get
 
 			{
-				return m_DistanceHTail;
+				return P.CF(m_DistanceHTail);
 			}
 		}
 		public float DistanceVTail
 		{
 			get
 			{
-				return m_DistanceVTail;
+				return P.CF(m_DistanceVTail);
 			}
 		}
 		public float FuselageLength
 		{
 			get
 			{
-				return m_FuselageLength;
+				return P.CF(m_FuselageLength);
 			}
 		}
 		public float HTailVR_tentative
 		{
-			get { return (m_HTailVR_tentative); }
+			get { return P.CF(m_HTailVR_tentative); }
 			set
 			{
-				m_HTailVR_tentative = value;
+				m_HTailVR_tentative = P.CF(value);
 				Calc();
 				OnWingChanged(new EventArgs());
 			}
 		}
 		public float VTailVR_tentative
 		{
-			get { return (m_VTailVR_tentative); }
+			get { return P.CF(m_VTailVR_tentative); }
 			set
 			{
-				m_VTailVR_tentative = value;
+				m_VTailVR_tentative = P.CF(value);
 				Calc();
 				OnWingChanged(new EventArgs());
 			}
 		}
 		public float CenterG
 		{
-			get { return (m_CenterG); }
+			get { return P.CF(m_CenterG); }
 			set
 			{
-				m_CenterG = value;
+				m_CenterG = P.CF(value);
 				Calc();
 				OnWingChanged(new EventArgs());
 			}
@@ -378,9 +411,9 @@ namespace PP
 			{
 				float[] ret = new float[]
 				{
-					m_HTailVR_tentative,
-					m_VTailVR_tentative,
-					m_CenterG
+					P.CF(m_HTailVR_tentative),
+					P.CF(m_VTailVR_tentative),
+					P.CF(m_CenterG)
 				};
 				return ret;
 			}
@@ -389,9 +422,13 @@ namespace PP
 				bool b = false;
 				if (value.Length >= 3)
 				{
+					value[0] = P.CF(value[0]);
+					value[1] = P.CF(value[1]);
+					value[2] = P.CF(value[2]);
 					if (m_HTailVR_tentative != value[0]) { m_HTailVR_tentative = value[0]; b = true; }
 					if (m_VTailVR_tentative != value[1]) { m_VTailVR_tentative = value[1]; b = true; }
 					if (m_CenterG != value[2]) { m_CenterG = value[2]; b = true; }
+					Calc();
 				}
 				if (b) OnWingChanged(new EventArgs());
 			}
@@ -434,8 +471,8 @@ namespace PP
 			{
 				m_Ver.PosX = 0;
 			}
-			m_DistanceHTail = m_Hor.AC.Ymm - m_Main.AC.Ymm;
-			m_DistanceVTail = m_Ver.AC.Ymm - m_Main.AC.Ymm;
+			m_DistanceHTail = P.CF(m_Hor.AC.Ymm - m_Main.AC.Ymm);
+			m_DistanceVTail = P.CF(m_Ver.AC.Ymm - m_Main.AC.Ymm);
 
 			float a = m_Hor.Root + m_Hor.PosY;
 			if (m_TailMode == TailMode.Normal)
@@ -444,7 +481,7 @@ namespace PP
 				if (a < b) a = b;
 
 			}
-			m_FuselageLength = a;
+			m_FuselageLength = P.CF(a);
 
 			float MArea = m_Main.Area * 2;
 			float HArea = m_Hor.Area * 2;
@@ -453,6 +490,8 @@ namespace PP
 
 			m_HTailAreaT = m_HTailVR_tentative * MArea * m_Main.MACLineLength / m_DistanceHTail;
 			m_HTailVR = HArea * m_DistanceHTail / (MArea * m_Main.MACLineLength);
+			m_HTailAreaT = P.CF(m_HTailAreaT);
+			m_HTailVR = P.CF(m_HTailVR);
 
 			if (m_TailMode == TailMode.Twin)
 			{
@@ -460,15 +499,18 @@ namespace PP
 			}
 			m_VTailAreaT = m_VTailVR_tentative * MArea * MSpan / m_DistanceVTail;
 			m_VTailVR = VArea * m_DistanceVTail / (MArea * MSpan);
+			m_VTailAreaT = P.CF(m_VTailAreaT);
+			m_VTailVR = P.CF(m_VTailVR);
 
 
 			m_CenterGP = m_Main.MACLine[0].Ymm + m_Main.MACLineLength * m_CenterG / 100;
+			m_CenterGP = P.CF(m_CenterGP);
 
 
 			float l = m_Hor.AC.Ymm - m_Main.AC.Ymm;
 			float lp = (m_Main.AC.Ymm + l * HArea / (MArea + HArea) - l * 0.1f);
 
-			m_CenterGReal = lp;
+			m_CenterGReal = P.CF(lp);
 
 		}
 		// ********************************
@@ -593,10 +635,13 @@ namespace PP
 		public string ToJson()
 		{
 			JsonObject obj = new JsonObject();
+			obj.Add("TailMode", (int)m_TailMode);
+			obj.Add("HTailVRT", (double)(P.CF(m_HTailVR_tentative)));
+			obj.Add("VTailVRT", (double)(P.CF(m_VTailVR_tentative)));
+			obj.Add("CG", (double)(P.CF(m_CenterG)));
 			obj.Add("Main", m_Main.JObj);
 			obj.Add("HTail", m_Hor.JObj);
 			obj.Add("VTail", m_Ver.JObj);
-			obj.Add("TailMode", (int)m_TailMode);
 
 
 			return obj.ToJsonString();
@@ -610,6 +655,22 @@ namespace PP
 				if (doc != null)
 				{
 					JsonObject json = (JsonObject)doc;
+					float f = GetFloat(json, "HTailVRT");
+					if (f >= 0)
+					{
+						this.m_HTailVR_tentative = P.CF(f);
+					}
+					f = GetFloat(json, "VTailVRT");
+					if (f >= 0)
+					{
+						this.m_VTailVR_tentative = P.CF(f);
+					}
+					f = GetFloat(json, "CG");
+					if (f >= 0)
+					{
+						this.m_CenterG = P.CF(f);
+					}
+
 					int v = GetInt(json, "TailMode");
 					if ((v >= 0) && (v < 2))
 					{
@@ -631,6 +692,8 @@ namespace PP
 						m_Ver.JObj = a;
 					}
 					Calc();
+					OnWingChanged(new EventArgs());
+
 				}
 			}
 			catch
@@ -701,6 +764,23 @@ namespace PP
 				if (obj.ContainsKey(key))
 				{
 					ret = obj[key].GetValue<int>();
+				}
+			}
+			catch
+			{
+				ret = -1;
+			}
+			return ret;
+		}
+		public float GetFloat(JsonObject obj, string key)
+		{
+			float ret = -1;
+			if (key == "") return ret;
+			try
+			{
+				if (obj.ContainsKey(key))
+				{
+					ret = obj[key].GetValue<float>();
 				}
 			}
 			catch

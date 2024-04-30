@@ -30,23 +30,26 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.eidtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.openMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveAsMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.quitMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.editMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainEdit = new PP.PWingEdit();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.HTailEdit = new PP.PWingEdit();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.VTailEdit = new PP.PWingEdit();
+			this.navBtn1 = new PP.NavBtn();
 			this.tailModeBtns1 = new PP.TailModeBtns();
 			this.pWingCalc1 = new PP.PWingCalc();
 			this.pCanvas1 = new PP.PCanvas();
+			this.button1 = new System.Windows.Forms.Button();
 			this.menuStrip1.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
@@ -57,56 +60,79 @@
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.eidtToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.fileMenu,
+            this.editMenu,
+            this.helpMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(810, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(858, 24);
 			this.menuStrip1.TabIndex = 5;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
-			// fileToolStripMenuItem
+			// fileMenu
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.quitToolStripMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-			this.fileToolStripMenuItem.Text = "File";
+			this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openMenu,
+            this.saveMenu,
+            this.saveAsMenu,
+            this.quitMenu});
+			this.fileMenu.Name = "fileMenu";
+			this.fileMenu.Size = new System.Drawing.Size(37, 20);
+			this.fileMenu.Text = "File";
 			// 
-			// loadToolStripMenuItem
+			// openMenu
 			// 
-			this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-			this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
-			this.loadToolStripMenuItem.Text = "Load";
+			this.openMenu.Name = "openMenu";
+			this.openMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.openMenu.Size = new System.Drawing.Size(182, 22);
+			this.openMenu.Text = "Open";
+			this.openMenu.Click += new System.EventHandler(this.openMenu_Click);
 			// 
-			// saveToolStripMenuItem
+			// saveMenu
 			// 
-			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
-			this.saveToolStripMenuItem.Text = "Save";
+			this.saveMenu.Name = "saveMenu";
+			this.saveMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.saveMenu.Size = new System.Drawing.Size(182, 22);
+			this.saveMenu.Text = "Save";
+			this.saveMenu.Click += new System.EventHandler(this.saveMenu_Click);
 			// 
-			// quitToolStripMenuItem
+			// saveAsMenu
 			// 
-			this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-			this.quitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
-			this.quitToolStripMenuItem.Text = "Quit";
+			this.saveAsMenu.Name = "saveAsMenu";
+			this.saveAsMenu.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+			this.saveAsMenu.Size = new System.Drawing.Size(182, 22);
+			this.saveAsMenu.Text = "SaveAs";
+			this.saveAsMenu.Click += new System.EventHandler(this.saveAsMenu_Click);
 			// 
-			// eidtToolStripMenuItem
+			// quitMenu
 			// 
-			this.eidtToolStripMenuItem.Name = "eidtToolStripMenuItem";
-			this.eidtToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-			this.eidtToolStripMenuItem.Text = "Eidt";
+			this.quitMenu.Name = "quitMenu";
+			this.quitMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+			this.quitMenu.Size = new System.Drawing.Size(182, 22);
+			this.quitMenu.Text = "Quit";
+			this.quitMenu.Click += new System.EventHandler(this.quitMenu_Click);
 			// 
-			// helpToolStripMenuItem
+			// editMenu
 			// 
-			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.editMenu.Name = "editMenu";
+			this.editMenu.Size = new System.Drawing.Size(39, 20);
+			this.editMenu.Text = "Eidt";
+			// 
+			// helpMenu
+			// 
+			this.helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpToolStripMenuItem1});
-			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-			this.helpToolStripMenuItem.Text = "Help";
+			this.helpMenu.Name = "helpMenu";
+			this.helpMenu.Size = new System.Drawing.Size(44, 20);
+			this.helpMenu.Text = "Help";
+			// 
+			// helpToolStripMenuItem1
+			// 
+			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
+			this.helpToolStripMenuItem1.Text = "Help";
+			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
 			// 
 			// tabControl1
 			// 
@@ -129,35 +155,6 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "主翼";
 			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.HTailEdit);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(341, 120);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "水平尾翼";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.VTailEdit);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(341, 120);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "垂直尾翼";
-			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// helpToolStripMenuItem1
-			// 
-			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
-			this.helpToolStripMenuItem1.Text = "Help";
-			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
 			// 
 			// MainEdit
 			// 
@@ -186,6 +183,17 @@
 			this.MainEdit.TextVisible = false;
 			this.MainEdit.TwinMode = false;
 			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.HTailEdit);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(341, 120);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "水平尾翼";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
 			// HTailEdit
 			// 
 			this.HTailEdit.Captions = new string[] {
@@ -212,6 +220,17 @@
 			this.HTailEdit.Text2 = "";
 			this.HTailEdit.TextVisible = false;
 			this.HTailEdit.TwinMode = false;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.VTailEdit);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(341, 120);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "垂直尾翼";
+			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
 			// VTailEdit
 			// 
@@ -240,16 +259,26 @@
 			this.VTailEdit.TextVisible = false;
 			this.VTailEdit.TwinMode = false;
 			// 
+			// navBtn1
+			// 
+			this.navBtn1.Location = new System.Drawing.Point(374, 132);
+			this.navBtn1.MaximumSize = new System.Drawing.Size(16, 80);
+			this.navBtn1.MinimumSize = new System.Drawing.Size(16, 80);
+			this.navBtn1.Name = "navBtn1";
+			this.navBtn1.Size = new System.Drawing.Size(16, 80);
+			this.navBtn1.TabIndex = 16;
+			this.navBtn1.Text = "navBtn1";
+			// 
 			// tailModeBtns1
 			// 
 			this.tailModeBtns1.Caption = new string[] {
         "通常垂直尾翼",
         "双垂直尾翼"};
 			this.tailModeBtns1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.tailModeBtns1.Location = new System.Drawing.Point(31, 43);
+			this.tailModeBtns1.Location = new System.Drawing.Point(27, 43);
 			this.tailModeBtns1.Name = "tailModeBtns1";
 			this.tailModeBtns1.PushColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-			this.tailModeBtns1.Size = new System.Drawing.Size(335, 24);
+			this.tailModeBtns1.Size = new System.Drawing.Size(256, 24);
 			this.tailModeBtns1.TabIndex = 14;
 			this.tailModeBtns1.TabStop = false;
 			this.tailModeBtns1.TailMode = PP.TailMode.Normal;
@@ -272,7 +301,7 @@
 			this.pWingCalc1.CaptionWidth = 160;
 			this.pWingCalc1.EditWidth = 70;
 			this.pWingCalc1.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.pWingCalc1.Location = new System.Drawing.Point(27, 263);
+			this.pWingCalc1.Location = new System.Drawing.Point(27, 225);
 			this.pWingCalc1.Name = "pWingCalc1";
 			this.pWingCalc1.ParamsT = new float[] {
         1.2F,
@@ -290,7 +319,7 @@
 			this.pCanvas1.BackColor = System.Drawing.Color.White;
 			this.pCanvas1.BaseColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.pCanvas1.CalcEdit = this.pWingCalc1;
-			this.pCanvas1.CanvasSize = new System.Drawing.SizeF(127.612F, 145.0554F);
+			this.pCanvas1.CanvasSize = new System.Drawing.SizeF(137.4048F, 130.0602F);
 			this.pCanvas1.DispF = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.DispF")));
 			this.pCanvas1.Dpi = 83F;
 			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
@@ -298,28 +327,42 @@
 			this.pCanvas1.HTailEdit = this.HTailEdit;
 			this.pCanvas1.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
 			this.pCanvas1.LineColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-			this.pCanvas1.Location = new System.Drawing.Point(379, 43);
+			this.pCanvas1.Location = new System.Drawing.Point(397, 43);
 			this.pCanvas1.MainEdit = this.MainEdit;
 			this.pCanvas1.Name = "pCanvas1";
-			this.pCanvas1.Size = new System.Drawing.Size(417, 474);
+			this.pCanvas1.NavBtn = this.navBtn1;
+			this.pCanvas1.Size = new System.Drawing.Size(449, 425);
 			this.pCanvas1.TabIndex = 6;
 			this.pCanvas1.TailMode = PP.TailMode.Normal;
 			this.pCanvas1.TailModeBtns = this.tailModeBtns1;
 			this.pCanvas1.VTailEdit = this.VTailEdit;
 			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(298, 44);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 17;
+			this.button1.Text = "button1";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(810, 529);
+			this.ClientSize = new System.Drawing.Size(858, 480);
+			this.Controls.Add(this.button1);
+			this.Controls.Add(this.navBtn1);
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.tailModeBtns1);
 			this.Controls.Add(this.pWingCalc1);
 			this.Controls.Add(this.pCanvas1);
 			this.Controls.Add(this.menuStrip1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Text = "PaperPlane";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.menuStrip1.ResumeLayout(false);
@@ -335,12 +378,12 @@
 
 		#endregion
 		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem eidtToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem fileMenu;
+		private System.Windows.Forms.ToolStripMenuItem openMenu;
+		private System.Windows.Forms.ToolStripMenuItem saveMenu;
+		private System.Windows.Forms.ToolStripMenuItem quitMenu;
+		private System.Windows.Forms.ToolStripMenuItem editMenu;
+		private System.Windows.Forms.ToolStripMenuItem helpMenu;
 		private PCanvas pCanvas1;
 		private PWingEdit MainEdit;
 		private PWingEdit HTailEdit;
@@ -352,6 +395,9 @@
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+		private NavBtn navBtn1;
+		private System.Windows.Forms.ToolStripMenuItem saveAsMenu;
+		private System.Windows.Forms.Button button1;
 	}
 }
 

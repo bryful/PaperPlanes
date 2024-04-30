@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
+
 namespace PP
 {
 	public partial class Form1 : Form
 	{
+		private string m_filename = "";
 		HelpForm m_HelpForm = null;
 		public Form1()
 		{
@@ -44,6 +46,11 @@ namespace PP
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			PrefLoad();
+			string[] cmds = System.Environment.GetCommandLineArgs();
+			if(cmds.Length>1)
+			{
+				Open(cmds[1]);
+			}
 		}
 		public void PrefSave()
 		{
@@ -79,6 +86,106 @@ namespace PP
 				m_HelpForm = new HelpForm();
 				m_HelpForm.Show();
 			}
+		}
+		public bool Save()
+		{
+			bool ret = false;
+			if(m_filename!="")
+			{
+				ret = Save(m_filename);
+			}
+			else
+			{
+				ret = SaveAs();
+			}
+			return ret;
+		}
+		public bool Save(string p)
+		{
+			bool ret = false;
+
+			ret = pCanvas1.Save (p);
+			if(ret)
+			{
+				m_filename = p;
+			}
+			return ret;
+		}
+		public bool SaveAs() 
+		{
+			bool ret = false;
+			using (SaveFileDialog dlg = new SaveFileDialog())
+			{
+				dlg.DefaultExt = ".json";
+				dlg.Filter = "*.json|*.json|*.*|*.*";
+				if(m_filename!="")
+				{
+					dlg.InitialDirectory = Path.GetDirectoryName( m_filename);
+					dlg.FileName = Path.GetFileName( m_filename );
+				}
+
+				if (dlg.ShowDialog() == DialogResult.OK)
+				{
+					ret = Save(dlg.FileName);
+				}
+			}
+			return ret;
+		}
+		public bool Open(string p)
+		{
+			bool ret = false;
+			ret = pCanvas1.Load(p);
+			if (ret)
+			{
+				m_filename = p;
+			}
+			return ret;
+		}
+		public bool Open()
+		{
+			bool ret = false;
+			using (OpenFileDialog dlg = new OpenFileDialog())
+			{
+				dlg.DefaultExt = ".json";
+				dlg.Filter = "*.json|*.json|*.*|*.*";
+				if (m_filename != "")
+				{
+					dlg.InitialDirectory = Path.GetDirectoryName(m_filename);
+					dlg.FileName = Path.GetFileName(m_filename);
+				}
+
+				if (dlg.ShowDialog() == DialogResult.OK)
+				{
+					ret = Open(dlg.FileName);
+				}
+			}
+			return ret;
+		}
+		private void saveMenu_Click(object sender, EventArgs e)
+		{
+			Save();
+		}
+
+		private void quitMenu_Click(object sender, EventArgs e)
+		{
+			Application.Exit();
+		}
+
+		private void openMenu_Click(object sender, EventArgs e)
+		{
+			Open();
+		}
+
+		private void saveAsMenu_Click(object sender, EventArgs e)
+		{
+			SaveAs();
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+
+			pCanvas1.ExportPDF("AAA.pdf");
+
 		}
 	}
 }
