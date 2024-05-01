@@ -25,95 +25,114 @@ namespace PP
 				ValueFChanged(this, e);
 			}
 		}
-		private Label Label = new Label();
-		private NumericUpDown Edit = new NumericUpDown();
+		//private Label Label = new Label();
+		//private NumericUpDown Edit = new NumericUpDown();
+		private PNumEdit Edit = new PNumEdit();
 		private PTrackBar TrackBar = new PTrackBar();
+		[Category("paperPlane")]
+		public bool IsArrowHor
+		{
+			get { return Edit.IsArrowHor; }
+			set
+			{
+				Edit.IsArrowHor = value;
+			}
+		}
 		[Category ("paperPlane")]
 		public new string Text
 		{
-			get { return Label.Text; }
+			get { return Edit.Text; }
 			set 
-			{ 
-				Label.Text = value;
+			{
+				Edit.Text = value;
 				base.Text = value;
 			}
 		}
 		[Category("PaperPlane")]
 		public float Value
 		{
-			get { return (float)Edit.Value; }
+			get { return Edit.Value; }
 			set 
 			{
-				decimal v = (decimal)value;
+				float v = value;
 				if ( (v>=Edit.Minimum)&&(v<=Edit.Maximum))
 				{
 					Edit.Value = v;
 				}
 			}
 		}
+		[Category("PaperPlane")]
+		public bool MatchMode
+		{
+			get { return Edit.MatchMode; }
+			set
+			{
+				Edit.MatchMode = value;
+			}
+		}
 		public new Font Font
 		{
-			get { return Label.Font; }
+			get { return Edit.Font; }
 			set
 			{
 				base.Font = value;
-				Label.Font = value;
 				Edit.Font = value;
-				int h = Edit.Height;
-				Label.Height = h;
-				base.MinimumSize = new Size(0,0);
-				base.MaximumSize = new Size(32000,32000);
-				base.Size = new Size(base.Width, h);
-				base.MinimumSize = new Size(50, h);
-				base.MaximumSize = new Size(32000, h);
 			}
 		}
 		[Category("paperPlane")]
 		public int CaptionWidth
 		{
-			get { return Label.Width; }
+			get { return Edit.CaptionWidth; }
 			set 
-			{ 
-				Label.Width = value;
-				Edit.Left = Label.Width;
-				TrackBar.Left = Label.Width + Edit.Width;
-				int b = this.Width - TrackBar.Left;
-				if (b<0) b = 0;
-				TrackBar.Width = b;
+			{
+				int v = value - Edit.CaptionWidth;
+				if (v != 0)
+				{
+					Edit.CaptionWidth = value;
+					Edit.Width += v; 
+					TrackBar.Left = Edit.Width;
+					int b = this.Width - TrackBar.Left;
+					if (b < 0) b = 0;
+					TrackBar.Width = b;
+				}
 			}
 		}
 		[Category("PaperPlane")]
 		public int EditWidth
 		{
-			get { return Edit.Width; }
+			get { return Edit.Width- Edit.CaptionWidth; }
 			set
 			{
-				Edit.Width = value;	
-				Edit.Left = Label.Width;
-				TrackBar.Left = Label.Width + Edit.Width;
-				int b = this.Width - TrackBar.Left;
-				if (b < 0) b = 0;
-				TrackBar.Width = b;
+				int v = value - (Edit.Width - Edit.CaptionWidth);
+				if (v != 0)
+				{
+					Edit.Width += v;
+					TrackBar.Left = Edit.Width;
+					int b = this.Width - TrackBar.Left;
+					if (b < 0) b = 0;
+					TrackBar.Width = b;
+				}
 			}
 		}
 		[Category("PaperPlane")]
 		public float Minimum
 		{
-			get { return (float)Edit.Minimum; }
+			get { return Edit.Minimum; }
 			set 
 			{ 
-				Edit.Minimum = (decimal)value;
+				Edit.Minimum = value;
 			}
 		}
 		[Category("PaperPlane")]
 		public float Maximum
 		{
-			get { return (float)Edit.Maximum; }
+			get { return Edit.Maximum; }
 			set 
 			{ 
-				Edit.Maximum = (decimal)value;
+				Edit.Maximum = value;
 			}
 		}
+		public void SetMinMax(float min, float max) { Edit.SetMinMax(min, max); }
 		[Category("PaperPlane")]
 		public bool Readonly
 		{
@@ -132,52 +151,54 @@ namespace PP
 				TrackBar.Visible = value;
 			}
 		}
+
+		public Color EditColor
+		{
+			get { return Edit.EditColor; }
+			set
+			{
+				Edit.EditColor = value;
+			}
+		}
 		public PEdit()
 		{
 			base.DoubleBuffered = true;
 			SuspendLayout();
-			int h = Edit.Height;
-			Label.AutoSize = false;
-			Label.Location = new Point(0, 0);
-			Label.Size = new Size(60, h);
-			Label.TextAlign = ContentAlignment.MiddleRight;
-			Edit.AutoSize = false;
-			Edit.Location = new Point(60, 0);
-			Edit.Size = new Size(70, h);
-			Edit.DecimalPlaces = 3;
+			int h = 20;
+			Edit.Location = new Point(0, 0);
+			Edit.Size = new Size(150, h);
 			Edit.Maximum = 5000;
-			TrackBar.Location = new Point(130, 0);
+			TrackBar.Location = new Point(150, 0);
 			TrackBar.Size = new Size(120, h);
-			TrackBar.NumericUpDown = Edit;
+			TrackBar.NumEdit = Edit;
 			this.Maximum = 200;
 
 
-			this.Controls.Add(Label);
 			this.Controls.Add(Edit);
 			this.Controls.Add(TrackBar);
 			base.Size = new Size(240, h);
-			base.MinimumSize = new Size(50, h);
-			base.MaximumSize = new Size(32000, h);
 			this.Name = base.Name;
 
-			Edit.ValueChanged += (sender, e) =>
+			Edit.ValueFChanged += (sender, e) =>
 			{
-				OnValueFChanged(new ValueFChangedEventArgs((float)Edit.Value));
+				OnValueFChanged(new ValueFChangedEventArgs(Edit.Value));
 			};
+			ChkSize();
 			ResumeLayout();
+		}
+		public void ChkSize()
+		{
+			Edit.Size = new Size(Edit.Width, this.Height);
+			TrackBar.Location = new Point(Edit.Width, 0);
+			int b = this.Width - Edit.Width;
+			if (b < 0) b = 0;
+			TrackBar.Size = new Size(b, this.Height);
 		}
 
 		protected override void OnResize(EventArgs e)
 		{
-			int a = Label.Width + Edit.Width;
-			int b = this.Width - a;
-			if (b < 0) b = 0;
-			SuspendLayout();
-			Label.Height = Edit.Height;
-			TrackBar.Location = new Point(a,0);
-			TrackBar.Size = new Size(b,Edit.Height);
+			ChkSize();
 			base.OnResize(e);
-			ResumeLayout();
 		}
 		// *******************************************************************
 		// **************************************************************

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace PP
 {
-	public class PValueBox :Control
+	public class PEdit2 :Control
 	{
 
 		[Category("PaperPlane")]
@@ -24,17 +24,16 @@ namespace PP
 			}
 		}
 
-		private Label Label = new Label();
-		private PNumBox Edit = new PNumBox();
-		private PNumBox Edit2 = new PNumBox();
+		private PNumEdit Edit = new PNumEdit();
+		private PNumEdit Edit2 = new PNumEdit();
 		private Label Label2 = new Label();
 		[Category ("PaperPlane")]
 		public new string Text
 		{
-			get { return Label.Text; }
+			get { return Edit.Text; }
 			set 
-			{ 
-				Label.Text = value;
+			{
+				Edit.Text = value;
 				base.Text = value;
 			}
 		}
@@ -70,41 +69,33 @@ namespace PP
 		}
 		public new Font Font
 		{
-			get { return Label.Font; }
+			get { return Edit.Font; }
 			set
 			{
 				base.Font = value;
-				Label.Font = value;
 				Edit.Font = value;
 				Label2.Font = value;
 				Edit2.Font = value;
-				int h = Edit.Height;
-				Label.Height = h;
-				Label2.Height = h;
-				base.MinimumSize = new Size(0,0);
-				base.MaximumSize = new Size(32000,32000);
-				base.Size = new Size(base.Width, h);
-				base.MinimumSize = new Size(50, h);
-				base.MaximumSize = new Size(32000, h);
 			}
 		}
 		[Category("PaperPlane")]
 		public int CaptionWidth
 		{
-			get { return Label.Width; }
+			get { return Edit.CaptionWidth; }
 			set 
-			{ 
-				Label.Width = value;
+			{
+				Edit.CaptionWidth = value;
 				ChkSize();
 			}
 		}
 		[Category("PaperPlane")]
 		public int EditWidth
 		{
-			get { return Edit.Width; }
+			get { return Edit.EditWidth; }
 			set
 			{
-				Edit.Width = value;
+
+				Edit.Width = Edit.CaptionWidth + value;
 				Edit2.Width = value;
 				ChkSize();
 			}
@@ -119,45 +110,41 @@ namespace PP
 			}
 		}
 		
-		public PValueBox()
+		public PEdit2()
 		{
 			base.DoubleBuffered = true;
 			SuspendLayout();
-			int h = Edit.Height;
 			int x = 0;
-			Label.AutoSize = false;
-			Label.Location = new Point(x, 0);
-			Label.Size = new Size(70, h);
-			Label.TextAlign = ContentAlignment.MiddleRight;
-			x += Label.Width;
-
-			Edit.AutoSize = false;
 			Edit.Location = new Point(x, 0);
-			Edit.Size = new Size(70, h);
+			Edit.Size = new Size(140, 24);
+			Edit.ReadOnly = true;
+			Edit.IsShowArrow = false;
+			Edit.SetMinMax(0, 320000);
 			x += Edit.Width;
 
 			if (Edit2.Visible)
 			{
-				Edit2.AutoSize = false;
+				x += 2;
 				Edit2.Location = new Point(x, 0);
-				Edit2.Size = new Size(70, h);
+				Edit2.ReadOnly = true;
+				Edit2.IsShowArrow = false;
+				Edit2.IsShowCaption = false;
+				Edit2.Size = new Size(70, 24);
 				Edit2.MatchMode = false; ;
+				Edit2.SetMinMax(0, 320000);
 				x += Edit2.Width;
 			}
 			Label2.AutoSize = false;
 			Label2.Location = new Point(x, 0);
-			Label2.Size = new Size(70, h);
+			Label2.Size = new Size(70, 24);
 			Label2.TextAlign = ContentAlignment.MiddleLeft;
 			x += Label2.Width;
 			base.Width = x;
 
-			this.Controls.Add(Label);
 			this.Controls.Add(Edit);
 			this.Controls.Add(Edit2);
 			this.Controls.Add(Label2);
-			base.Size = new Size(x, h);
-			base.MinimumSize = new Size(50, h);
-			base.MaximumSize = new Size(32000, h);
+			base.Size = new Size(x, 24);
 			this.Name = base.Name;
 
 			ResumeLayout();
@@ -167,22 +154,25 @@ namespace PP
 		{
 			SuspendLayout();
 			int x = 0;
-			Label.Location = new Point(x, 0);
-			x += Label.Width;
 			Edit.Location = new Point(x, 0);
+			Edit.Size = new Size(Edit.Width, this.Height);
 			x += Edit.Width;
 			if (Edit2.Visible)
 			{
+				x += 2;
 				Edit2.Location = new Point(x, 0);
+				Edit2.Size = new Size(Edit2.Width, this.Height);
 				x += Edit2.Width;
 			}
 			Label2.Location = new Point(x, 0);
+
+			Label2.Size = new Size(this.Width-x, this.Height);
 			ResumeLayout();
 		}
 		protected override void OnResize(EventArgs e)
 		{
 
-
+			ChkSize();
 		}
 		// *******************************************************************
 		// **************************************************************

@@ -12,43 +12,43 @@ namespace PP
 	{
 		//デリゲートの宣言
 		//TimeEventArgs型のオブジェクトを返すようにする
-		public delegate void FValueChangedEventHandler(object sender, ValueFChangedEventArgs e);
+		public delegate void ValueFChangedEventHandler(object sender, ValueFChangedEventArgs e);
 
 		//イベントデリゲートの宣言
-		public event FValueChangedEventHandler FValueChanged;
-		protected virtual void OnFValueChanged(ValueFChangedEventArgs e)
+		public event ValueFChangedEventHandler ValueFChanged;
+		protected virtual void OnValueFChanged(ValueFChangedEventArgs e)
 		{
-			if (FValueChanged != null)
+			if (ValueFChanged != null)
 			{
-				FValueChanged(this, e);
+				ValueFChanged(this, e);
 			}
 		}
-		private NumericUpDown m_numericUpDown = null;
-		private int ValueMax = 0;
-		private int TrackLength = 0;
-		private int BarLength = 6;
+		private PNumEdit m_NumEdit = null;
+		private float ValueMax = 0;
+		private float TrackLength = 0;
+		private float BarLength = 10;
 
 		private void SetupEdit()
 		{
-			if (m_numericUpDown == null)return;
-			ValueMax = (int )(m_numericUpDown.Maximum - m_numericUpDown.Minimum);
+			if (m_NumEdit == null)return;
+			ValueMax = (float)(m_NumEdit.Maximum - m_NumEdit.Minimum);
 		}
 
 
 		[Category("PaperPlane")]
-		public NumericUpDown NumericUpDown
+		public PNumEdit NumEdit
 		{
 			get
 			{
-				return m_numericUpDown;
+				return m_NumEdit;
 			}
 			set
 			{
-				m_numericUpDown = value;
-				if (m_numericUpDown !=null)
+				m_NumEdit = value;
+				if (m_NumEdit !=null)
 				{
 					SetupEdit();
-					m_numericUpDown.ValueChanged += (sender, e) =>
+					m_NumEdit.ValueFChanged += (sender, e) =>
 					{
 						this.Invalidate();
 					};
@@ -58,6 +58,7 @@ namespace PP
 		}
 		public PTrackBar()
 		{
+			DoubleBuffered = true;
 		}
 		protected override void OnResize(EventArgs e)
 		{
@@ -74,62 +75,62 @@ namespace PP
 				Graphics g = e.Graphics;
 				g.Clear(BackColor);
 
-				g.DrawLine(p,0,this.Height/2,this.Width, this.Height / 2);
-				g.DrawLine(p, 0, 0, 0, this.Height);
-				g.DrawLine(p, this.Width-1, 0, this.Width - 1, this.Height);
+				g.DrawLine(p,2,this.Height/2,this.Width-4, this.Height / 2);
+				g.DrawLine(p, 2, 0, 2, this.Height);
+				g.DrawLine(p, this.Width-3, 0, this.Width - 3, this.Height);
 
 
-				if (m_numericUpDown != null )
+				if (m_NumEdit != null )
 				{
-					Rectangle r = new Rectangle(EValue, 0, BarLength,this.Height);
+					RectangleF r = new RectangleF(EValue+2, 0, BarLength,this.Height);
 					sb.Color = ForeColor;
 					g.FillRectangle(sb, r);
 				}
 
 			}
 		}
-		public int EValue
+		public float EValue
 		{
 			get
 			{
-				int ret = 0;
-				if (m_numericUpDown != null)
+				float ret = 0;
+				if (m_NumEdit != null)
 				{
-					ValueMax = (int)(m_numericUpDown.Maximum - m_numericUpDown.Minimum);
-					TrackLength = this.Width - BarLength;
-					ret = (int)(m_numericUpDown.Value - m_numericUpDown.Minimum) * TrackLength / ValueMax;
+					ValueMax = (m_NumEdit.Maximum - m_NumEdit.Minimum);
+					TrackLength = (float)this.Width - BarLength-4;
+					ret = (m_NumEdit.Value - m_NumEdit.Minimum) * TrackLength / ValueMax;
 				}
 				return ret;
 			}
 		}
 		int m_md = -1;
-		decimal m_ev = 0;
+		float m_ev = 0;
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if(m_numericUpDown != null)
+			if(m_NumEdit != null)
 			{
-				int v = EValue;
+				int v = (int)EValue +2;
 				if ((e.X>=v) && (e.Y<v+BarLength))
 				{
 					m_md = e.X;
-					m_ev = m_numericUpDown.Value;
+					m_ev = m_NumEdit.Value;
 				}
 			}
 			base.OnMouseDown(e);
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (m_numericUpDown != null)
+			if (m_NumEdit != null)
 			{
 				if (m_md>=0)
 				{
 					int v = e.X - m_md;
-					decimal d = (decimal)v * (decimal)ValueMax / (decimal)TrackLength + m_ev;
-					if (d < m_numericUpDown.Minimum) d = m_numericUpDown.Minimum;
-					else if (d > m_numericUpDown.Maximum) d = m_numericUpDown.Maximum;
-					if (m_numericUpDown.Value != d)
+					float d = (float)v * (float)ValueMax / (float)TrackLength + m_ev;
+					if (d < m_NumEdit.Minimum) d = m_NumEdit.Minimum;
+					else if (d > m_NumEdit.Maximum) d = m_NumEdit.Maximum;
+					if (m_NumEdit.Value != d)
 					{
-						m_numericUpDown.Value = d;
+						m_NumEdit.Value = d;
 						this.Invalidate();
 					}
 				}
@@ -144,22 +145,22 @@ namespace PP
 		}
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
-			if(m_numericUpDown !=null)
+			if(m_NumEdit !=null)
 			{
-				int v = EValue;
+				int v = (int)EValue + 2;
 				if (e.X < v)
 				{
-					if (m_numericUpDown.Value > 5)
+					if (m_NumEdit.Value > 5)
 					{
-						m_numericUpDown.Value -= 5;
+						m_NumEdit.Value -= 5;
 						this.Invalidate();
 					}
 				}
 				else if (e.X > v+ BarLength) 
 				{
-					if (m_numericUpDown.Value < m_numericUpDown.Maximum - 5)
+					if (m_NumEdit.Value < m_NumEdit.Maximum - 5)
 					{
-						m_numericUpDown.Value += 5;
+						m_NumEdit.Value += 5;
 						this.Invalidate();
 					}
 				}

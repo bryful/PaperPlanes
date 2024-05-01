@@ -113,9 +113,6 @@
     <Compile Include="PEdit.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PNumBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="PNumEdit.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -123,7 +120,7 @@
     <Compile Include="PTrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PValueBox.cs">
+    <Compile Include="PEdit2.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PWing.cs">

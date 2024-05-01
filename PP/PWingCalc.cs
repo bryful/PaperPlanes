@@ -28,16 +28,16 @@ namespace PP
 		private PEdit m_VTailVRT = new PEdit();
 		private PEdit m_CG = new PEdit();
 
-		private PValueBox m_FuselageLength = new PValueBox();
-		private PValueBox m_MainArea = new PValueBox();
+		private PEdit2 m_FuselageLength = new PEdit2();
+		private PEdit2 m_MainArea = new PEdit2();
 
-		private PValueBox m_DistanceHTail = new PValueBox();
-		private PValueBox m_HTailArea = new PValueBox();
-		private PValueBox m_HTailVR = new PValueBox();
+		private PEdit2 m_DistanceHTail = new PEdit2();
+		private PEdit2 m_HTailArea = new PEdit2();
+		private PEdit2 m_HTailVR = new PEdit2();
 
-		private PValueBox m_DistanceVTail = new PValueBox();
-		private PValueBox m_VTailArea = new PValueBox();
-		private PValueBox m_VTailVR = new PValueBox();
+		private PEdit2 m_DistanceVTail = new PEdit2();
+		private PEdit2 m_VTailArea = new PEdit2();
+		private PEdit2 m_VTailVR = new PEdit2();
 
 		[Category("PaperPlane")]
 		public string[] Captions
@@ -141,15 +141,18 @@ namespace PP
 		public PWingCalc()
 		{
 			m_HTailVRT.SliderVisible = false;
+			m_HTailVRT.MatchMode = false;
 			m_HTailVRT.Readonly = false;
 			m_HTailVRT.Text = "!HTail_VRate";
 			m_HTailVRT.ValueFChanged += (sender, e) =>{OnValueChanged(new EventArgs());};
 			m_VTailVRT.SliderVisible = false;
+			m_VTailVRT.MatchMode = false;
 			m_VTailVRT.Readonly = false;
 			m_VTailVRT.ValueFChanged += (sender, e) => { OnValueChanged(new EventArgs()); };
 			m_VTailVRT.Text = "!VTail_VR";
 			
 			m_CG.SliderVisible = false;
+			m_CG.MatchMode = false;
 			m_CG.Readonly = false;
 			m_CG.Text = "CenterG";
 			m_CG.ValueFChanged += (sender, e) => { OnValueChanged(new EventArgs()); };
@@ -161,7 +164,6 @@ namespace PP
 			m_MainArea.Text = "MainArea";
 			m_MainArea.MatchMode = false;
 			m_MainArea.Text2 = "mm2";
-
 			m_DistanceHTail.Text = "DistanceHTail";
 			m_DistanceHTail.MatchMode = false;
 			m_DistanceHTail.Text2 = "mm";
@@ -171,7 +173,7 @@ namespace PP
 
 			m_HTailVR.Text = "HTailVR";
 			m_HTailVR.MatchMode = false;
-			m_HTailVR.Text2 = "mm2";
+			m_HTailVR.Text2 = "";
 
 			m_DistanceVTail.Text = "DistanceVTail";
 			m_DistanceVTail.MatchMode = false;
@@ -183,7 +185,7 @@ namespace PP
 
 			m_VTailVR.Text = "VTailVR";
 			m_VTailVR.MatchMode = false;
-			m_VTailVR.Text2 = "mm2";
+			m_VTailVR.Text2 = "";
 
 			this.Controls.Add(m_HTailVRT);
 			this.Controls.Add(m_VTailVRT);
@@ -224,12 +226,12 @@ namespace PP
 		[Category("PaperPlane")]
 		public int EditWidth
 		{
-			get { return m_HTailVRT.EditWidth; }
+			get { return m_FuselageLength.EditWidth; }
 			set
 			{
-				m_HTailVRT.EditWidth = value;
-				m_VTailVRT.EditWidth = value;
-				m_CG.EditWidth = value;
+				m_HTailVRT.EditWidth = value+24;
+				m_VTailVRT.EditWidth = value + 24;
+				m_CG.EditWidth = value + 24;
 				m_FuselageLength.EditWidth = value;
 				m_MainArea.EditWidth = value;
 				m_DistanceHTail.EditWidth = value;
@@ -242,52 +244,65 @@ namespace PP
 			}
 
 		}
+		public int m_EditHeight = 22;
+		[Category("PaperPlane")]
+		public int EditHeight
+		{
+			get { return m_EditHeight; }
+			set
+			{
+				m_EditHeight = value;
+				ChkSize();
+			}
+
+		}
 
 		public void ChkSize()
 		{
 			int w = this.Width;
 			int y = 0;
-			int h = m_HTailVRT.Height + 3;
-			
+			int h = m_EditHeight+3;
+			int h2 = m_EditHeight;
+
 			m_HTailVRT.Location = new Point(0, y);
-			m_HTailVRT.Size = new Size(w, h);
-			y += m_HTailVRT.Height;
+			m_HTailVRT.Size = new Size(w, h2);
+			y += h;
 			m_VTailVRT.Location = new Point(0, y);
-			m_VTailVRT.Size = new Size(w, h);
-			y += m_VTailVRT.Height;
+			m_VTailVRT.Size = new Size(w, h2);
+			y += h;
 			m_CG.Location = new Point(0, y);
-			m_CG.Size = new Size(w, h);
-			y += m_CG.Height;
-			y += 6;
+			m_CG.Size = new Size(w, h2);
+			y += h;
+			y += 4;
 			m_FuselageLength.Location = new Point(0, y);
-			m_FuselageLength.Size = new Size(w, h);
-			y += m_FuselageLength.Height;
-			y += 6;
+			m_FuselageLength.Size = new Size(w, h2);
+			y += h;
+			y += 4;
 			m_MainArea.Location = new Point(0, y);
-			m_MainArea.Size = new Size(w, h);
-			y += m_MainArea.Height;
-			y += 6;
+			m_MainArea.Size = new Size(w, h2);
+			y += h;
+			y += 4;
 
 			m_DistanceHTail.Location = new Point(0, y);
-			m_DistanceHTail.Size = new Size(w, h);
-			y += m_DistanceHTail.Height;
+			m_DistanceHTail.Size = new Size(w, h2);
+			y += h;
 			m_HTailArea.Location = new Point(0, y);
-			m_HTailArea.Size = new Size(w, h);
-			y += m_HTailArea.Height;
+			m_HTailArea.Size = new Size(w, h2);
+			y += h;
 			m_HTailVR.Location = new Point(0, y);
-			m_HTailVR.Size = new Size(w, h);
-			y += m_HTailVR.Height;
-			y += 6;
+			m_HTailVR.Size = new Size(w, h2);
+			y += h;
+			y += 4;
 
 			m_DistanceVTail.Location = new Point(0, y);
-			m_DistanceVTail.Size = new Size(w, h);
-			y += m_DistanceVTail.Height;
+			m_DistanceVTail.Size = new Size(w, h2);
+			y += h;
 			m_VTailArea.Location = new Point(0, y);
-			m_VTailArea.Size = new Size(w, h);
-			y += m_VTailArea.Height;
+			m_VTailArea.Size = new Size(w, h2);
+			y += h;
 			m_VTailVR.Location = new Point(0, y);
-			m_VTailVR.Size = new Size(w, h);
-			y += m_VTailVR.Height;
+			m_VTailVR.Size = new Size(w, h2);
+			y += h;
 
 		}
 		protected override void OnResize(EventArgs e)

@@ -44,38 +44,6 @@ namespace PP
 		{
 			get { return m_edits; }
 		}
-		private Label m_label = new Label();
-		private Label m_label2 = new Label();
-		[Category("PaperPlane")]
-		public bool TextVisible
-		{
-			get { return m_label.Visible; }
-			set
-			{
-				m_label.Visible = value;
-				m_label2.Visible = value;
-				ChkSize(true);
-			}
-		}
-		[Category("PaperPlane")]
-		public new string Text
-		{
-			get { return m_label.Text; }
-			set 
-			{
-				base.Text = value;
-				m_label.Text = value;
-			}
-		}
-		[Category("PaperPlane")]
-		public string Text2
-		{
-			get { return m_label2.Text; }
-			set
-			{
-				m_label2.Text = value;
-			}
-		}
 		[Category("PaperPlane")]
 		public string[] Captions
 		{
@@ -142,8 +110,6 @@ namespace PP
 			set 
 			{
 				base.Font = value;
-				m_label.Font = value;
-				m_label2.Font = value;
 				for(int i=0;i<m_edits.Length;i++)
 				{
 					if (m_edits[i] != null)
@@ -154,30 +120,34 @@ namespace PP
 				ChkSize(true);
 			}
 		}
+		private int m_EditHeight = 20;
+		[Category("PaperPlane")]
+		public int EditHeight
+		{
+			get { return m_EditHeight; }
+			set
+			{
+				m_EditHeight=value;
+				for(int i=0; i<m_edits.Length;i++)
+				{
+					m_edits[i].Height = value;
+				}
+				ChkSize(true);
+			}
+		}
 		// **************************************************
 		public PWingEdit()
 		{
 			base.DoubleBuffered = true;
 			SuspendLayout();
-			this.Text = base.Text;
-			m_label.AutoSize = false;
-			m_label.TextAlign= ContentAlignment.MiddleRight;
-			m_label.Location = new Point(0, 0);
-			m_label.Size = new Size(60, 24);
-			this.Controls.Add(m_label);
-			m_label2.AutoSize = false;
-			m_label2.TextAlign = ContentAlignment.MiddleLeft;
-			m_label2.Location = new Point(65, 0);
-			m_label2.Size = new Size(70 , 24);
-			this.Controls.Add(m_label2);
-
 
 			for (int i = 0;i<m_edits.Length;i++)
 			{
 				m_edits[i] =new PEdit();
 				m_edits[i].Tag = (int)i;
+				m_edits[i].MatchMode = false;
 				m_edits[i].Location = new Point(0,24*(i+1));
-				m_edits[i].Size = new Size(this.Width, 24);
+				m_edits[i].Size = new Size(this.Width, 22);
 				
 				m_edits[i].ValueFChanged += (sender, e) =>
 				{
@@ -186,37 +156,32 @@ namespace PP
 				};
 				this.Controls.Add(m_edits[i]);
 			}
-			m_label.Size = new Size(m_edits[0].CaptionWidth, 24);
 
 			m_edits[0].Text = "Pos";
+			m_edits[0].SetMinMax(0, 200);
+			m_edits[0].IsArrowHor = false;
 			m_edits[1].Text = "Span";
+			m_edits[1].SetMinMax(5, 150);
 			m_edits[2].Text = "Root";
+			m_edits[2].SetMinMax(5, 150);
+			m_edits[2].IsArrowHor = false;
 			m_edits[3].Text = "Tip";
+			m_edits[3].SetMinMax(5, 150);
+			m_edits[3].IsArrowHor = false;
 			m_edits[4].Text = "Swept";
-			m_edits[4].Minimum = -60;
-			m_edits[4].Maximum = 60;
+			m_edits[4].IsArrowHor = false;
+			m_edits[4].SetMinMax(-60, 60);
 			ChkSize(false);
 			ResumeLayout();
 		}
 		private void ChkSize(bool r)
 		{
 			if (r) this.SuspendLayout();
-			int y = 0;
-			int h = m_edits[0].Height+2;
-			if (m_label.Visible == true)
-			{
-				m_label.Location = new Point(0, y);
-				m_label.Size = new Size(m_edits[0].CaptionWidth,h);
-				m_label2.Left = m_label.Width + 5;
-				m_label2.Size = new Size(this.Width - m_label.Width - 5,h);
-				y += h;
-			}
 
 			for (int i = 0; i < m_edits.Length; i++)
 			{
-				m_edits[(int)i].Top = y;
-				m_edits[(int)i].Width = this.Width;
-				y += h;
+				m_edits[(int)i].Location = new Point(0,(m_EditHeight+2)*i);
+				m_edits[(int)i].Size = new Size(this.Width, m_EditHeight);
 			}
 			if(r) this.ResumeLayout();
 		}

@@ -12,26 +12,92 @@ namespace PP
 {
 	public class PNumEdit : Control
 	{
+		//デリゲートの宣言
+		//TimeEventArgs型のオブジェクトを返すようにする
+		public delegate void ValueFChangedEventHandler(object sender, ValueFChangedEventArgs e);
+
+		//イベントデリゲートの宣言
+		public event ValueFChangedEventHandler ValueFChanged;
+		protected virtual void OnValueFChanged(ValueFChangedEventArgs e)
+		{
+			if (ValueFChanged != null)
+			{
+				ValueFChanged(this, e);
+			}
+		}
+		private TextBox m_TextBox = null;
 		private Bitmap [] m_bitmap = new Bitmap[6];
+		
+		private int m_MatchValue = 0;
+		public float MatchValue
+		{
+			get { return (float)m_MatchValue / 100; }
+			set
+			{
+				m_MatchValue = (int)(m_MatchValue * 100);
+				this.Invalidate();
+			}
+		}
+		private bool m_MatchMode = true;
+		[Category("PaperPlane")]
+		public bool MatchMode
+		{
+			get { return m_MatchMode; }
+			set
+			{
+				m_MatchMode = value;
+				if (m_MatchMode == true)
+				{
+					Calc();
+					this.Invalidate();
+				}
+				else
+				{
+					m_EditColor = m_EditSubColor;
+					this.Invalidate();
+				}
+			}
+
+		}
 		private int m_Value = 0;
 		[Category("PaperPlane")]
 		public float Value
 		{
-			get { return (float)m_Value / 1000; }
+			get { return (float)m_Value / 100; }
 			set
 			{
-				m_Value = (int)(value*1000);
+				int v = (int)(value * 100);
+				SetMValeu(v);
+				Calc();
 				this.Invalidate();
 			}
 		}
-		private int m_AddValue = 1000;
+		public void SetValues(float v,float m)
+		{
+			m_Value = (int)(v*100);
+			if (m_Value < m_Minimum) m_Value = m_Minimum;
+			if (m_Value > m_Maximum) m_Value = m_Maximum;
+			m_MatchValue = (int)(m*100);
+			Calc();
+			this.Invalidate ();
+			OnValueFChanged(new ValueFChangedEventArgs(m_Value));
+		}
+		private void SetMValeu(int v)
+		{
+			if (m_Value != v)
+			{
+				m_Value = v;
+				OnValueFChanged(new ValueFChangedEventArgs(m_Value));
+			}
+		}
+		private int m_AddValue = 100;
 		[Category("PaperPlane")]
 		public float AddValue
 		{
-			get { return (float)m_AddValue / 1000; }
+			get { return (float)m_AddValue / 100; }
 			set
 			{
-				m_AddValue = (int)(value * 1000);
+				m_AddValue = (int)(value * 100);
 				if (m_AddValue < 1) m_AddValue = 1;
 			}
 		}
@@ -39,25 +105,67 @@ namespace PP
 		[Category("PaperPlane")]
 		public float Minimum
 		{
-			get { return (float)m_Minimum / 1000; }
+			get { return (float)m_Minimum / 100; }
 			set
 			{
-				m_Minimum = (int)(value * 1000);
+				m_Minimum = (int)(value * 100);
 				if (m_Minimum > m_Maximum) m_Minimum = m_Maximum;
-				if (m_Value < m_Minimum) m_Value = m_Minimum;
+				if (m_Value < m_Minimum)
+				{
+					SetMValeu(m_Minimum);
+				}
 				this.Invalidate();
 			}
 		}
-		private int m_Maximum = 1000*1000;
+		private int m_Maximum = 1000*100;
 		[Category("PaperPlane")]
 		public float Maximum
 		{
-			get { return (float)m_Maximum / 1000; }
+			get { return (float)m_Maximum / 100; }
 			set
 			{
-				m_Maximum = (int)(value * 1000);
+				m_Maximum = (int)(value * 100);
 				if (m_Maximum < m_Minimum) m_Maximum = m_Minimum;
-				if (m_Value > m_Maximum) m_Value = m_Maximum;
+				if (m_Value > m_Maximum) SetMValeu(m_Maximum);
+				this.Invalidate();
+			}
+		}
+		public void SetMinMax(float mn, float mx)
+		{
+			m_Minimum = (int)(mn * 100);
+			m_Maximum = (int)(mx * 100);
+			if (Minimum > m_Maximum) 
+			{
+				int v = m_Minimum;
+				m_Minimum = m_Maximum;
+				m_Maximum = v;
+			}
+			if(m_Value < m_Minimum) SetMValeu(m_Minimum);
+			if (m_Value > m_Maximum) SetMValeu(m_Maximum);
+			
+		}
+
+		private int m_MatchBorderIn = 10 * 100;
+		[Category("PaperPlane")]
+		public float MatchBorderIn
+		{
+			get { return (float)m_MatchBorderIn / 100; }
+			set
+			{
+				m_MatchBorderIn = (int)(value * 100);
+				Calc();
+				this.Invalidate();
+			}
+		}
+		private int m_MatchBorderOut = 300 * 100;
+		[Category("PaperPlane")]
+		public float MatchBorderOut
+		{
+			get { return (float)m_MatchBorderOut / 100; }
+			set
+			{
+				m_MatchBorderOut = (int)(value * 100);
+				Calc();
 				this.Invalidate();
 			}
 		}
@@ -83,17 +191,135 @@ namespace PP
 				this.Invalidate();
 			}
 		}
-
+		private bool m_Readonly = false;
+		[Category("PaperPlane")]
+		public bool ReadOnly 
+		{
+			get {return m_Readonly; }
+			set
+			{
+				m_Readonly = value;
+				this.Invalidate();
+			}
+		}
+		[Category("PaperPlane")]
+		public string ValueText
+		{
+			get
+			{
+				string s = "";
+				s = ((int)(m_Value / 100)).ToString();
+				s += ".";
+				s += ((int)(m_Value % 100)).ToString("D2");
+				return s;
+			}
+		}
+		private bool m_IsShowCaption = true;
+		[Category("PaperPlane")]
+		public bool IsShowCaption
+		{
+			get { return m_IsShowCaption; }
+			set 
+			{
+				m_IsShowCaption = value;
+				this.Invalidate();
+			}
+		}
+		private int m_CaptionWidth = 80;
+		[Category("PaperPlane")]
+		public int CaptionWidth
+		{
+			get { return m_CaptionWidth; }
+			set
+			{
+				m_CaptionWidth = value;
+				this.Invalidate();
+			}
+		}
+		[Category("PaperPlane")]
+		public int EditWidth
+		{
+			get { return this.Width - m_CaptionWidth; }
+		}
+		// *********************************************************
+		private Color m_EditColor = SystemColors.Window;
+		[Category("PaperPlane")]
+		public Color EditColor
+		{
+			get { return m_EditColor; }
+			set
+			{
+				m_EditColor = value;
+				this.Invalidate();
+			}
+		}
+		private Color m_EditSubColor = SystemColors.Window;
+		[Category("PaperPlane")]
+		public Color EditSubColor
+		{
+			get { return m_EditSubColor; }
+			set
+			{
+				m_EditSubColor = value;
+				this.Invalidate();
+			}
+		}
+		private Color m_MatchColor = Color.Yellow;
+		[Category("PaperPlane")]
+		public Color MatchColor
+		{
+			get { return m_MatchColor; }
+			set
+			{
+				m_MatchColor = value;
+				this.Invalidate();
+			}
+		}
+		private Color m_BorderOutColor = Color.DimGray;
+		[Category("PaperPlane")]
+		public Color BorderOutColor
+		{
+			get { return m_BorderOutColor; }
+			set
+			{
+				m_BorderOutColor = value;
+				this.Invalidate();
+			}
+		}
+		private Color m_BorderInColor = Color.LightGray;
+		[Category("PaperPlane")]
+		public Color BorderInColor
+		{
+			get { return m_BorderInColor; }
+			set
+			{
+				m_BorderInColor = value;
+				this.Invalidate();
+			}
+		}
+		// *********************************************************
 		public PNumEdit()
 		{
 			DoubleBuffered = true;
+			this.Size = new Size(160, 24);
 			m_bitmap[0] = Properties.Resources.Arrow_0000;
 			m_bitmap[1] = Properties.Resources.Arrow_0001;
 			m_bitmap[2] = Properties.Resources.Arrow_0002;
 			m_bitmap[3] = Properties.Resources.Arrow_0003;
 			m_bitmap[4] = Properties.Resources.Arrow_0004;
 			m_bitmap[5] = Properties.Resources.Arrow_0005;
-			base.BackColor = SystemColors.Window;
+			base.BackColor = SystemColors.Control;
+			m_EditColor = SystemColors.Window;
+			this.SetStyle(
+				ControlStyles.Selectable |
+				ControlStyles.UserMouse |
+				ControlStyles.DoubleBuffer |
+				ControlStyles.UserPaint |
+				ControlStyles.AllPaintingInWmPaint |
+				ControlStyles.ResizeRedraw |
+				ControlStyles.SupportsTransparentBackColor,
+				true);
+			Calc();
 		}
 		private void ChkValue()
 		{
@@ -145,6 +371,7 @@ namespace PP
 
 		}
 		// ************************************************************
+		// ************************************************************
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			using(SolidBrush sb = new SolidBrush(BackColor))
@@ -152,65 +379,162 @@ namespace PP
 			using (StringFormat sf = new StringFormat())
 			{
 				Graphics g = e.Graphics;
-				g.Clear(BackColor);
-				Rectangle rct0,rct1;
-				if (m_IsShowArrow)
+				sb.Color = Color.Transparent;
+				g.FillRectangle(sb,this.ClientRectangle);
+				Rectangle rct0,rct1,rct2;
+				int w = this.Width;
+				int l = 0;
+				if ((m_CaptionWidth>0)&&(m_IsShowCaption))
 				{
-					rct0 = new Rectangle(
+					sf.Alignment = StringAlignment.Far;
+					sf.LineAlignment = StringAlignment.Center;
+					rct0 = new Rectangle(l,0,m_CaptionWidth,this.Height);
+					sb.Color = ForeColor;
+					g.DrawString(this.Text, this.Font, sb, rct0, sf);
+					w = this.Width - m_CaptionWidth;
+					l = m_CaptionWidth;
+				}
+				if ((m_IsShowArrow)&&(m_Readonly==false))
+				{
+					rct1 = new Rectangle(
+						l,
 						0,
-						0,
-						this.Width - this.Height,
+						w - this.Height,
 						this.Height
 						);
-					rct1 = new Rectangle(
+					rct2 = new Rectangle(
 						this.Width - this.Height + 1,
 						1,
 						this.Height - 1,
 						this.Height - 1
 						);
-					DrawArrow(g, rct1);
+					DrawArrow(g, rct2);
 				}
 				else
 				{
-					rct0 = new Rectangle(
+					rct1 = new Rectangle(
+					l,
 					0,
-					0,
-					this.Width - this.Height,
+					w,
 					this.Height
 					);
 				}
-				string s = "";
-				s = ((int)(m_Value/1000)).ToString();
-				s += ".";
-				s += ((int)(m_Value % 1000)).ToString("D3");
-				sf.Alignment = StringAlignment.Far;
-				sf.LineAlignment = StringAlignment.Center;
-				sb.Color = ForeColor;
-				g.DrawString(s, this.Font, sb, rct0, sf);
 
-				rct0 = new Rectangle(0, 0, Width-1, Height-1);
+				sb.Color = m_EditColor;
+				g.FillRectangle(sb, rct1);
+
+				if (m_TextBox == null)
+				{
+					sf.Alignment = StringAlignment.Far;
+					sf.LineAlignment = StringAlignment.Center;
+					sb.Color = ForeColor;
+					g.DrawString(ValueText, this.Font, sb, rct1, sf);
+				}
 				p.Width = 1;
-				p.Color = ForeColor;
-				g.DrawRectangle(p,rct0);
+				if (this.Focused)
+				{
+					p.Color = Color.Blue;
+				}
+				else
+				{
+					p.Color = ForeColor;
+				}
+				g.DrawRectangle(p,new Rectangle(rct1.Left,rct1.Top,rct1.Width-1,rct1.Height-1));
 			}
+		}
+		// ************************************************************
+		private void EditStart()
+		{
+			if (m_Readonly == true) return;
+			if (m_TextBox==null)
+			{
+				m_TextBox = new TextBox();
+				m_TextBox.TextAlign = HorizontalAlignment.Right;
+				m_TextBox.BorderStyle = BorderStyle.None;
+				m_TextBox.Font = this.Font;
+				int l = m_CaptionWidth + 2;
+				if (m_IsShowCaption == false) l = 2;
+				int t = (this.Height - m_TextBox.Height) / 2;
+				int w = this.Width-4;
+				if (m_IsShowArrow) w = w - this.Height;
+				if (m_IsShowCaption) w -= m_CaptionWidth;
+				m_TextBox.Location = new Point(l,t);
+				m_TextBox.Size = new Size(w,m_TextBox.Height);
+				m_TextBox.PreviewKeyDown += (sender, e) =>
+				{
+					if(e.KeyCode == Keys.Escape)
+					{
+						EditChk();
+						EditRemove();
+					}else if (e.KeyCode == Keys.Enter)
+					{
+						if (EditChk()) { EditRemove(); }
+					}
+				};
+				m_TextBox.LostFocus += (sender, e) =>
+				{
+					EditChk();
+					EditRemove();
+				};
+				m_TextBox.MouseDown += (sender, e) =>
+				{
+					if((e.X<0)|| (e.Y > m_TextBox.Width)
+					||(e.Y<0)||(e.X>m_TextBox.Height))
+					{
+						EditChk();
+						EditRemove();
+					}
+				};
+				this.Controls.Add(m_TextBox);
+			}
+			this.Invalidate();
+			m_TextBox.Focus();
+			m_TextBox.Text = ValueText;
+		}
+		private bool EditChk()
+		{
+			bool ret = false;
+			if(m_TextBox==null) return ret;
+			float k = 0;
+			if (float.TryParse(m_TextBox.Text,out k))
+			{
+				Value = k;
+				ret = true;
+			}
+			return ret;
+		}
+		private bool EditRemove()
+		{
+			bool ret = false;
+			if (m_TextBox == null) return ret;
+			this.Controls.Remove(m_TextBox);
+			m_TextBox = null;
+			return ret;
 		}
 		// ************************************************************
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			int w = this.Width-this.Height;
 			m_md = -1;
-			if (e.X>w)
+			if (m_Readonly == false)
 			{
-				int h = this.Height / 2;
-				if (m_IsArrowHor)
+				if (e.X > w)
 				{
-					m_md = ((e.X - w) / h) % 2;
+					int h = this.Height / 2;
+					if (m_IsArrowHor)
+					{
+						m_md = ((e.X - w) / h) % 2;
+					}
+					else
+					{
+						m_md = (e.Y / h) % 2;
+					}
+					this.Refresh();
 				}
-				else
+				else if(e.X>m_CaptionWidth)
 				{
-					m_md = (e.Y / h) % 2;
+					EditStart();
 				}
-				this.Refresh();
 			}
 			base.OnMouseDown(e);
 		}
@@ -223,10 +547,12 @@ namespace PP
 					case 0:
 						m_Value -= m_AddValue;
 						ChkValue();
+						OnValueFChanged(new ValueFChangedEventArgs(m_Value));
 						break;
 					case 1:
 						m_Value += m_AddValue;
 						ChkValue();
+						OnValueFChanged(new ValueFChangedEventArgs(m_Value));
 						break;
 				}
 
@@ -234,6 +560,52 @@ namespace PP
 				this.Refresh();
 			}
 			base.OnMouseUp(e);
+		}
+
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				EditStart();
+			}
+			base.OnKeyDown(e);
+		}
+		protected override void OnGotFocus(EventArgs e)
+		{
+			if(m_TextBox != null)
+			{
+				EditChk();
+				EditRemove();
+			}
+			base.OnGotFocus(e);
+			this.Invalidate();
+		}
+		protected override void OnLostFocus(EventArgs e)
+		{
+			base.OnLostFocus(e);
+			this.Invalidate();
+		}
+		public void Calc()
+		{
+			if (m_MatchMode == false) return;
+			int ff = Math.Abs(m_Value - m_MatchValue);
+			if (ff < m_MatchBorderIn)
+			{
+				m_EditColor = m_MatchColor;
+			}
+			else if (ff > m_MatchBorderOut)
+			{
+				m_EditColor = m_BorderOutColor;
+			}
+			else
+			{
+				double ff2 = (ff - (double)m_MatchBorderIn) / ((double)m_MatchBorderOut - (double)m_MatchBorderIn);
+
+				int r = (int)(m_BorderInColor.R + ((float)m_BorderOutColor.R - (float)m_BorderInColor.R) * ff2);
+				int g = (int)(m_BorderInColor.G + ((float)m_BorderOutColor.G - (float)m_BorderInColor.G) * ff2);
+				int b = (int)(m_BorderInColor.B + ((float)m_BorderOutColor.B - (float)m_BorderInColor.B) * ff2);
+				m_EditColor = Color.FromArgb(r, g, b);
+			}
 		}
 	}
 }
