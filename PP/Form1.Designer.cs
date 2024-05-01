@@ -34,6 +34,7 @@
 			this.openMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportPDFMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.quitMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.editMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,7 +43,6 @@
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.exportPDFMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.navBtn1 = new PP.NavBtn();
 			this.MainEdit = new PP.PWingEdit();
 			this.HTailEdit = new PP.PWingEdit();
@@ -105,6 +105,13 @@
 			this.saveAsMenu.Size = new System.Drawing.Size(182, 22);
 			this.saveAsMenu.Text = "SaveAs";
 			this.saveAsMenu.Click += new System.EventHandler(this.saveAsMenu_Click);
+			// 
+			// exportPDFMenu
+			// 
+			this.exportPDFMenu.Name = "exportPDFMenu";
+			this.exportPDFMenu.Size = new System.Drawing.Size(182, 22);
+			this.exportPDFMenu.Text = "ExportPDF";
+			this.exportPDFMenu.Click += new System.EventHandler(this.exportPDFMenu_Click);
 			// 
 			// quitMenu
 			// 
@@ -178,13 +185,6 @@
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "垂直尾翼";
 			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// exportPDFMenu
-			// 
-			this.exportPDFMenu.Name = "exportPDFMenu";
-			this.exportPDFMenu.Size = new System.Drawing.Size(182, 22);
-			this.exportPDFMenu.Text = "ExportPDF";
-			this.exportPDFMenu.Click += new System.EventHandler(this.exportPDFMenu_Click);
 			// 
 			// navBtn1
 			// 

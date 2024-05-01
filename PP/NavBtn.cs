@@ -46,7 +46,7 @@ namespace PP
 			m_Icons[1] = Properties.Resources.downTail;
 			m_Icons[2] = Properties.Resources.upALL;
 			m_Icons[3] = Properties.Resources.downAll;
-			m_IconsD[0] = Properties.Resources.upTaild;
+			m_IconsD[0] = Properties.Resources.upTail;
 			m_IconsD[1] = Properties.Resources.downTaild;
 			m_IconsD[2] = Properties.Resources.upAlld;
 			m_IconsD[3] = Properties.Resources.downAlld;

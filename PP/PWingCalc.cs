@@ -53,7 +53,7 @@ namespace PP
 					m_MainArea.Text,
 					m_DistanceHTail.Text,
 					m_HTailArea.Text,
-					m_VTailVR.Text,
+					m_HTailVR.Text,
 					m_DistanceVTail.Text,
 					m_VTailArea.Text,
 					m_VTailVR.Text,
@@ -70,7 +70,7 @@ namespace PP
 				m_MainArea.Text = value[4];
 				m_DistanceHTail.Text = value[5];
 				m_HTailArea.Text = value[6];
-				m_VTailVR.Text = value[7];
+				m_HTailVR.Text = value[7];
 				m_DistanceVTail.Text = value[8];
 				m_VTailArea.Text = value[9];
 				m_VTailVR.Text = value[10];

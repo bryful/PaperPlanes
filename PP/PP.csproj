@@ -116,6 +116,9 @@
     <Compile Include="PNumBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PNumEdit.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PrefFile.cs" />
     <Compile Include="PTrackBar.cs">
       <SubType>Component</SubType>
@@ -196,6 +199,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="PaperPlanes.ico" />
+    <None Include="Resources\Arrow_0005.png" />
+    <None Include="Resources\Arrow_0004.png" />
+    <None Include="Resources\Arrow_0003.png" />
+    <None Include="Resources\Arrow_0002.png" />
+    <None Include="Resources\Arrow_0001.png" />
+    <None Include="Resources\Arrow_0000.png" />
+    <None Include="Resources\Arrow004.png" />
+    <None Include="Resources\Arrow003.png" />
+    <None Include="Resources\Arrow002.png" />
+    <None Include="Resources\Arrow001.png" />
+    <None Include="Resources\Arrow000.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
