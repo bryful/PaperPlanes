@@ -88,14 +88,16 @@ namespace PP
 				ChkSize();
 			}
 		}
+		private int m_EditWidth = 80;
 		[Category("PaperPlane")]
 		public int EditWidth
 		{
-			get { return Edit.EditWidth; }
+			get { return m_EditWidth; }
 			set
 			{
-
-				Edit.Width = Edit.CaptionWidth + value;
+				m_EditWidth=value;
+				int w = Edit.CaptionWidth + m_EditWidth;
+				Edit.Width = w;
 				Edit2.Width = value;
 				ChkSize();
 			}

@@ -97,20 +97,24 @@ namespace PP
 				}
 			}
 		}
+
+		private int m_EditWidth = 80;
 		[Category("PaperPlane")]
 		public int EditWidth
 		{
-			get { return Edit.Width- Edit.CaptionWidth; }
+			get { return m_EditWidth; }
 			set
 			{
-				int v = value - (Edit.Width - Edit.CaptionWidth);
-				if (v != 0)
+				if (m_EditWidth != value)
 				{
-					Edit.Width += v;
+					m_EditWidth = value;
+					int w = Edit.CaptionWidth + m_EditWidth;
+					if (Edit.IsShowArrow) w += Edit.Height;
+					Edit.Width = w;
+					int v = this.Width - w;
+					if (v < 0) v = 0;
 					TrackBar.Left = Edit.Width;
-					int b = this.Width - TrackBar.Left;
-					if (b < 0) b = 0;
-					TrackBar.Width = b;
+					TrackBar.Width = v;
 				}
 			}
 		}
@@ -190,7 +194,7 @@ namespace PP
 		{
 			Edit.Size = new Size(Edit.Width, this.Height);
 			TrackBar.Location = new Point(Edit.Width, 0);
-			int b = this.Width - Edit.Width;
+			int b = this.Width - Edit.Width -2;
 			if (b < 0) b = 0;
 			TrackBar.Size = new Size(b, this.Height);
 		}

@@ -146,6 +146,7 @@ namespace PP
 				m_edits[i] =new PEdit();
 				m_edits[i].Tag = (int)i;
 				m_edits[i].MatchMode = false;
+				m_edits[i].EditWidth = 80;
 				m_edits[i].Location = new Point(0,24*(i+1));
 				m_edits[i].Size = new Size(this.Width, 22);
 				

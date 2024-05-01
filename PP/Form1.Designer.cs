@@ -41,15 +41,15 @@
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.navBtn1 = new PP.NavBtn();
 			this.MainEdit = new PP.PWingEdit();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.HTailEdit = new PP.PWingEdit();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.VTailEdit = new PP.PWingEdit();
+			this.pWingCalc1 = new PP.PWingCalc();
+			this.navBtn1 = new PP.NavBtn();
 			this.tailModeBtns1 = new PP.TailModeBtns();
 			this.pCanvas1 = new PP.PCanvas();
-			this.pWingCalc1 = new PP.PWingCalc();
 			this.menuStrip1.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
@@ -164,38 +164,6 @@
 			this.tabPage1.Text = "主翼";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.HTailEdit);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(341, 137);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "水平尾翼";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.VTailEdit);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage3.Size = new System.Drawing.Size(341, 137);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "垂直尾翼";
-			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// navBtn1
-			// 
-			this.navBtn1.Location = new System.Drawing.Point(374, 132);
-			this.navBtn1.MaximumSize = new System.Drawing.Size(16, 80);
-			this.navBtn1.MinimumSize = new System.Drawing.Size(16, 80);
-			this.navBtn1.Name = "navBtn1";
-			this.navBtn1.Size = new System.Drawing.Size(16, 80);
-			this.navBtn1.TabIndex = 3;
-			this.navBtn1.Text = "navBtn1";
-			// 
 			// MainEdit
 			// 
 			this.MainEdit.Captions = new string[] {
@@ -204,11 +172,11 @@
         "翼根",
         "翼端",
         "後退角"};
-			this.MainEdit.CaptionWidth = 60;
+			this.MainEdit.CaptionWidth = 70;
 			this.MainEdit.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.MainEdit.EditHeight = 22;
-			this.MainEdit.EditWidth = 90;
-			this.MainEdit.Font = new System.Drawing.Font("MS UI Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.MainEdit.EditWidth = 70;
+			this.MainEdit.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.MainEdit.Location = new System.Drawing.Point(3, 3);
 			this.MainEdit.Name = "MainEdit";
 			this.MainEdit.Params = new float[] {
@@ -222,6 +190,17 @@
 			this.MainEdit.Text = "Main";
 			this.MainEdit.TwinMode = false;
 			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.HTailEdit);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(341, 137);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "水平尾翼";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
 			// HTailEdit
 			// 
 			this.HTailEdit.Captions = new string[] {
@@ -230,11 +209,11 @@
         "翼根",
         "翼端",
         "後退角"};
-			this.HTailEdit.CaptionWidth = 60;
+			this.HTailEdit.CaptionWidth = 70;
 			this.HTailEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.HTailEdit.EditHeight = 20;
-			this.HTailEdit.EditWidth = 90;
-			this.HTailEdit.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.HTailEdit.EditHeight = 22;
+			this.HTailEdit.EditWidth = 70;
+			this.HTailEdit.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.HTailEdit.Location = new System.Drawing.Point(3, 3);
 			this.HTailEdit.Name = "HTailEdit";
 			this.HTailEdit.Params = new float[] {
@@ -248,6 +227,17 @@
 			this.HTailEdit.Text = "HTail";
 			this.HTailEdit.TwinMode = false;
 			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.VTailEdit);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(341, 137);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "垂直尾翼";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
 			// VTailEdit
 			// 
 			this.VTailEdit.Captions = new string[] {
@@ -256,11 +246,11 @@
         "翼根",
         "翼端",
         "後退角"};
-			this.VTailEdit.CaptionWidth = 60;
+			this.VTailEdit.CaptionWidth = 70;
 			this.VTailEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.VTailEdit.EditHeight = 20;
-			this.VTailEdit.EditWidth = 90;
-			this.VTailEdit.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.VTailEdit.EditHeight = 22;
+			this.VTailEdit.EditWidth = 70;
+			this.VTailEdit.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.VTailEdit.Location = new System.Drawing.Point(3, 3);
 			this.VTailEdit.Name = "VTailEdit";
 			this.VTailEdit.Params = new float[] {
@@ -273,6 +263,44 @@
 			this.VTailEdit.TabIndex = 9;
 			this.VTailEdit.Text = "VTail";
 			this.VTailEdit.TwinMode = true;
+			// 
+			// pWingCalc1
+			// 
+			this.pWingCalc1.Captions = new string[] {
+        "水平尾翼容積比(理想値)",
+        "垂直尾翼容積比(理想値)",
+        "重心位置",
+        "胴体長",
+        "主翼面積",
+        "主翼-水平尾翼間距離",
+        "水平尾翼面積",
+        "垂直尾翼容積比(現在)",
+        "主翼-垂直尾翼間距離",
+        "垂直尾翼面積",
+        "垂直尾翼容積比(現在)"};
+			this.pWingCalc1.CaptionWidth = 190;
+			this.pWingCalc1.EditHeight = 22;
+			this.pWingCalc1.EditWidth = 60;
+			this.pWingCalc1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.pWingCalc1.Location = new System.Drawing.Point(31, 243);
+			this.pWingCalc1.Name = "pWingCalc1";
+			this.pWingCalc1.ParamsT = new float[] {
+        1.2F,
+        0.05F,
+        85F};
+			this.pWingCalc1.Size = new System.Drawing.Size(338, 294);
+			this.pWingCalc1.TabIndex = 7;
+			this.pWingCalc1.Text = "pWingCalc1";
+			// 
+			// navBtn1
+			// 
+			this.navBtn1.Location = new System.Drawing.Point(374, 132);
+			this.navBtn1.MaximumSize = new System.Drawing.Size(16, 80);
+			this.navBtn1.MinimumSize = new System.Drawing.Size(16, 80);
+			this.navBtn1.Name = "navBtn1";
+			this.navBtn1.Size = new System.Drawing.Size(16, 80);
+			this.navBtn1.TabIndex = 3;
+			this.navBtn1.Text = "navBtn1";
 			// 
 			// tailModeBtns1
 			// 
@@ -314,33 +342,6 @@
 			this.pCanvas1.TailMode = PP.TailMode.Twin;
 			this.pCanvas1.TailModeBtns = this.tailModeBtns1;
 			this.pCanvas1.VTailEdit = this.VTailEdit;
-			// 
-			// pWingCalc1
-			// 
-			this.pWingCalc1.Captions = new string[] {
-        "!HTail_VRate",
-        "!VTail_VR",
-        "CenterG",
-        "Fuselage",
-        "MainArea",
-        "DistanceHTail",
-        "HTailArea",
-        "HTailVR",
-        "DistanceVTail",
-        "VTailArea",
-        "VTailVR"};
-			this.pWingCalc1.CaptionWidth = 120;
-			this.pWingCalc1.EditHeight = 22;
-			this.pWingCalc1.EditWidth = 80;
-			this.pWingCalc1.Location = new System.Drawing.Point(31, 243);
-			this.pWingCalc1.Name = "pWingCalc1";
-			this.pWingCalc1.ParamsT = new float[] {
-        1.2F,
-        0.05F,
-        85F};
-			this.pWingCalc1.Size = new System.Drawing.Size(338, 294);
-			this.pWingCalc1.TabIndex = 7;
-			this.pWingCalc1.Text = "pWingCalc1";
 			// 
 			// Form1
 			// 

@@ -184,7 +184,11 @@ namespace PP
 		[Category("PaperPlane")]
 		public bool IsShowArrow
 		{
-			get { return m_IsShowArrow; }
+			get
+			{
+				if(m_Readonly) return false;
+				return m_IsShowArrow; 
+			}
 			set
 			{
 				m_IsShowArrow = value;

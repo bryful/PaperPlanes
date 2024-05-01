@@ -187,6 +187,7 @@ namespace PP
 			m_VTailVR.MatchMode = false;
 			m_VTailVR.Text2 = "";
 
+			EditWidth = 80;
 			this.Controls.Add(m_HTailVRT);
 			this.Controls.Add(m_VTailVRT);
 			this.Controls.Add(m_CG);
@@ -229,9 +230,9 @@ namespace PP
 			get { return m_FuselageLength.EditWidth; }
 			set
 			{
-				m_HTailVRT.EditWidth = value+24;
-				m_VTailVRT.EditWidth = value + 24;
-				m_CG.EditWidth = value + 24;
+				m_HTailVRT.EditWidth = value;
+				m_VTailVRT.EditWidth = value;
+				m_CG.EditWidth = value;
 				m_FuselageLength.EditWidth = value;
 				m_MainArea.EditWidth = value;
 				m_DistanceHTail.EditWidth = value;
