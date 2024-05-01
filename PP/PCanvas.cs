@@ -19,7 +19,7 @@ namespace PP
 {
 	public class PCanvas : Control
 	{
-		private float m_Dpi = 83.0f;
+		private float m_Dpi = 82.0f;
 		/// <summary>
 		/// 解像度
 		/// </summary>
@@ -31,6 +31,9 @@ namespace PP
 			{
 				m_Dpi = value;
 				m_Wing.Dpi = value;
+				m_DispP.X = P.Mm2Px(m_DispF.X, m_Dpi);
+				m_DispP.Y = P.Mm2Px(m_DispF.Y, m_Dpi);
+
 				this.Invalidate(); 
 			}
 		}
@@ -638,6 +641,19 @@ namespace PP
 
 			return ret;
 		}
+		public void ShowDpiDialog()
+		{
+			using(DpiForm dlg = new DpiForm())
+			{
+				dlg.DPI = Dpi;
+
+				if (dlg.ShowDialog()==DialogResult.OK)
+				{
+					Dpi = dlg.DPI;
+				}
+			}
+		}
+
 		#region Porp
 		[Browsable(false)]
 		public new System.String AccessibleDefaultActionDescription

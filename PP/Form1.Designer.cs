@@ -50,6 +50,7 @@
 			this.navBtn1 = new PP.NavBtn();
 			this.tailModeBtns1 = new PP.TailModeBtns();
 			this.pCanvas1 = new PP.PCanvas();
+			this.resolutionMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
@@ -123,6 +124,8 @@
 			// 
 			// editMenu
 			// 
+			this.editMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.resolutionMenu});
 			this.editMenu.Name = "editMenu";
 			this.editMenu.Size = new System.Drawing.Size(39, 20);
 			this.editMenu.Text = "Eidt";
@@ -343,6 +346,13 @@
 			this.pCanvas1.TailModeBtns = this.tailModeBtns1;
 			this.pCanvas1.VTailEdit = this.VTailEdit;
 			// 
+			// resolutionMenu
+			// 
+			this.resolutionMenu.Name = "resolutionMenu";
+			this.resolutionMenu.Size = new System.Drawing.Size(180, 22);
+			this.resolutionMenu.Text = "Resolution";
+			this.resolutionMenu.Click += new System.EventHandler(this.resolutionMenu_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -394,6 +404,7 @@
 		private System.Windows.Forms.ToolStripMenuItem saveAsMenu;
 		private System.Windows.Forms.ToolStripMenuItem exportPDFMenu;
 		private PWingCalc pWingCalc1;
+		private System.Windows.Forms.ToolStripMenuItem resolutionMenu;
 	}
 }
 

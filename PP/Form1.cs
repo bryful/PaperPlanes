@@ -192,5 +192,10 @@ namespace PP
 		{
 			pCanvas1.ExportPDF();
 		}
+
+		private void resolutionMenu_Click(object sender, EventArgs e)
+		{
+			pCanvas1.ShowDpiDialog();
+		}
 	}
 }

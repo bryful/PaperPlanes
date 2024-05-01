@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>PaperPlanes.ico</ApplicationIcon>
+    <ApplicationIcon>DPI\PaperPlanes.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Markdig, Version=0.37.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -91,6 +91,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DPI\DpiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DPI\DpiForm.Designer.cs">
+      <DependentUpon>DpiForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +108,12 @@
     </Compile>
     <Compile Include="HelpForm.Designer.cs">
       <DependentUpon>HelpForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputPanelcs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InputPanelcs.Designer.cs">
+      <DependentUpon>InputPanelcs.cs</DependentUpon>
     </Compile>
     <Compile Include="NavBtn.cs">
       <SubType>Component</SubType>
@@ -123,6 +135,7 @@
     <Compile Include="PEdit2.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DPI\PU.cs" />
     <Compile Include="PWing.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -141,11 +154,17 @@
     <None Include="packages.config" />
     <None Include="PTail.cs" />
     <Compile Include="PWingBase.cs" />
+    <EmbeddedResource Include="DPI\DpiForm.resx">
+      <DependentUpon>DpiForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelpForm.resx">
       <DependentUpon>HelpForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputPanelcs.resx">
+      <DependentUpon>InputPanelcs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -195,7 +214,7 @@
     <None Include="Resources\upTaild.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="PaperPlanes.ico" />
+    <Content Include="DPI\PaperPlanes.ico" />
     <None Include="Resources\Arrow_0005.png" />
     <None Include="Resources\Arrow_0004.png" />
     <None Include="Resources\Arrow_0003.png" />
