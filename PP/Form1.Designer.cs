@@ -34,9 +34,10 @@
 			this.openMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.exportPDFMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportSVGMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.quitMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.editMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.resolutionMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -50,7 +51,6 @@
 			this.navBtn1 = new PP.NavBtn();
 			this.tailModeBtns1 = new PP.TailModeBtns();
 			this.pCanvas1 = new PP.PCanvas();
-			this.resolutionMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
@@ -76,7 +76,7 @@
             this.openMenu,
             this.saveMenu,
             this.saveAsMenu,
-            this.exportPDFMenu,
+            this.exportSVGMenu,
             this.quitMenu});
 			this.fileMenu.Name = "fileMenu";
 			this.fileMenu.Size = new System.Drawing.Size(37, 20);
@@ -107,12 +107,12 @@
 			this.saveAsMenu.Text = "SaveAs";
 			this.saveAsMenu.Click += new System.EventHandler(this.saveAsMenu_Click);
 			// 
-			// exportPDFMenu
+			// exportSVGMenu
 			// 
-			this.exportPDFMenu.Name = "exportPDFMenu";
-			this.exportPDFMenu.Size = new System.Drawing.Size(182, 22);
-			this.exportPDFMenu.Text = "ExportPDF";
-			this.exportPDFMenu.Click += new System.EventHandler(this.exportPDFMenu_Click);
+			this.exportSVGMenu.Name = "exportSVGMenu";
+			this.exportSVGMenu.Size = new System.Drawing.Size(182, 22);
+			this.exportSVGMenu.Text = "ExportSVG";
+			this.exportSVGMenu.Click += new System.EventHandler(this.exportSVGMenu_Click);
 			// 
 			// quitMenu
 			// 
@@ -129,6 +129,13 @@
 			this.editMenu.Name = "editMenu";
 			this.editMenu.Size = new System.Drawing.Size(39, 20);
 			this.editMenu.Text = "Eidt";
+			// 
+			// resolutionMenu
+			// 
+			this.resolutionMenu.Name = "resolutionMenu";
+			this.resolutionMenu.Size = new System.Drawing.Size(130, 22);
+			this.resolutionMenu.Text = "Resolution";
+			this.resolutionMenu.Click += new System.EventHandler(this.resolutionMenu_Click);
 			// 
 			// helpMenu
 			// 
@@ -346,13 +353,6 @@
 			this.pCanvas1.TailModeBtns = this.tailModeBtns1;
 			this.pCanvas1.VTailEdit = this.VTailEdit;
 			// 
-			// resolutionMenu
-			// 
-			this.resolutionMenu.Name = "resolutionMenu";
-			this.resolutionMenu.Size = new System.Drawing.Size(180, 22);
-			this.resolutionMenu.Text = "Resolution";
-			this.resolutionMenu.Click += new System.EventHandler(this.resolutionMenu_Click);
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -402,9 +402,9 @@
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
 		private NavBtn navBtn1;
 		private System.Windows.Forms.ToolStripMenuItem saveAsMenu;
-		private System.Windows.Forms.ToolStripMenuItem exportPDFMenu;
 		private PWingCalc pWingCalc1;
 		private System.Windows.Forms.ToolStripMenuItem resolutionMenu;
+		private System.Windows.Forms.ToolStripMenuItem exportSVGMenu;
 	}
 }
 

@@ -9,9 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Diagnostics;
-using PdfSharp;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 using System.Xml.Schema;
 using System.Security;
 using System.IO;
@@ -52,6 +49,12 @@ namespace PP
 				SetCanvasSize(value);
 			}
 		}
+		[Category("PaperPlaneLine")]
+		public PointF[] MainLines { get { return Wing.MainLinesPt; } }
+		[Category("PaperPlaneLine")]
+		public PointF[] HTailLines { get { return Wing.HTailLinesPt; } }
+		[Category("PaperPlaneLine")]
+		public PointF[] VTailLines { get { return Wing.VTailLinesPt; } }
 		public void SetWidthMM(float w)
 		{
 			base.Width = (int)(P.Mm2Px(w,m_Dpi));
@@ -522,11 +525,11 @@ namespace PP
 		{
 			return Wing.Save(p);
 		}
-		public XPoint[] ShiftXLines(XPoint[] pnts, double x, double y)
+		public PointF[] ShiftLines(PointF[] pnts, float x, float y)
 		{
-			if(pnts.Length>0)
+			if (pnts.Length > 0)
 			{
-				for(int i=0; i<pnts.Length;i++)
+				for (int i = 0; i < pnts.Length; i++)
 				{
 					pnts[i].X += x;
 					pnts[i].Y += y;
@@ -534,58 +537,48 @@ namespace PP
 			}
 			return pnts;
 		}
-		public bool ExportPDF(string p)
+		private string m_filename = "";
+		public bool ExportSVG(string p)
 		{
 			bool ret = false;
-			PdfDocument document = new PdfDocument();
-			PdfPage page = document.AddPage();
-			page.Size = PageSize.A4; //用紙の大きさ
-			page.Orientation = PageOrientation.Portrait; //用紙の向き
-			XGraphics xg = XGraphics.FromPdfPage(page, XGraphicsUnit.Millimeter);
+			EasySVG svg = new EasySVG();
+			svg.Unit = EasySVG.UnitType.Mm;
+			float sX = 40;
+			float sY = 30;
 
-			XPen pen = new XPen(XColors.Black, 0.2); //線を引く
-			double sX = 40;
-			double sY = 30;
-
-			XPoint[] cg1 = new XPoint[] {
-				new XPoint(sX-10,sY+m_Wing.CenterGP),
-				new XPoint(sX,sY+m_Wing.CenterGP),
+			PointF[] cg1 = new PointF[] {
+				new PointF(sX-10,sY+m_Wing.CenterGP),
+				new PointF(sX,sY+m_Wing.CenterGP),
 			};
-			pen.Color = XColor.FromArgb(255, 0, 0);
-			xg.DrawLines(pen, cg1);
-			XPoint[] cg2 = new XPoint[] {
-				new XPoint(sX-5,sY+m_Wing.CenterGReal),
-				new XPoint(sX,sY+m_Wing.CenterGReal),
+			svg.DrawLine("cg",cg1,Color.FromArgb(255,128,128));
+			PointF[] cg2 = new PointF[] {
+				new PointF(sX-5,sY+m_Wing.CenterGReal),
+				new PointF(sX,sY+m_Wing.CenterGReal),
 			};
-			pen.Color = XColor.FromArgb(255, 0, 255);
-			xg.DrawLines(pen, cg2);
-
-
-			XPoint[] LineBody = new XPoint[] {
-				new XPoint(sX,sY),
-				new XPoint(sX,sY + Wing.FuselageLength),
+			svg.DrawLine("cg-ex", cg2, Color.FromArgb(255, 200, 200));
+			PointF[] LineBody = new PointF[] {
+				new PointF(sX,sY),
+				new PointF(sX,sY + Wing.FuselageLength),
 			};
-			pen.Color = XColor.FromArgb(255, 128, 128);
-			xg.DrawLines(pen, LineBody);
+			svg.DrawLine("body", LineBody, Color.FromArgb(0, 0, 0));
 
+			PointF dp = new PointF(sX, sY);
+			PointF[] lineM = Wing.MainMMLines(dp);
+			PointF[] lineHT = Wing.HTailMMLines(dp);
+			PointF[] lineVT = Wing.VTailMMLines(dp);
 
+			svg.DrawPolyline("Main", lineM, Color.FromArgb(0, 0, 0));
 
-
-			XPoint[] lineM = ShiftXLines(Wing.MainXLine(), sX, sY);
-			XPoint[] lineHT = ShiftXLines(Wing.HTailXLine(), sX, sY);
-			XPoint[] lineVT = ShiftXLines(Wing.VTailXLine(), sX, sY);
-			pen.Color = XColor.FromArgb(0, 0, 0);
-			xg.DrawLines(pen, lineM);
-			if (TailMode==TailMode.Twin)
+			if (TailMode == TailMode.Twin)
 			{
-				XPoint[] TT1 = new XPoint[]
+				PointF[] TT1 = new PointF[]
 				{
 					lineHT[1],
 					lineHT[2]
 				};
-				pen.Color = XColor.FromArgb(200, 200, 200);
-				xg.DrawLines(pen, TT1);
-				XPoint[] TT = new XPoint[]
+				svg.DrawLine("Tail-ori", TT1, Color.FromArgb(160, 160, 160));
+
+				PointF[] TT = new PointF[]
 				{
 					lineHT[0],
 					lineHT[1],
@@ -594,48 +587,44 @@ namespace PP
 					lineHT[2],
 					lineHT[3],
 				};
-				pen.Color = XColor.FromArgb(0, 0, 0);
-				xg.DrawLines(pen, TT);
+				svg.DrawPolyline("tail", TT, Color.FromArgb(0, 0, 0));
 			}
 			else
 			{
-				pen.Color = XColor.FromArgb(0, 0, 0);
-				xg.DrawLines(pen, lineHT);
-				pen.Color = XColor.FromArgb(200, 50, 50);
-				xg.DrawLines(pen, lineVT);
+				svg.DrawPolyline("HTail", lineHT, Color.FromArgb(0, 0, 0));
+				svg.DrawPolyline("VTail", lineVT, Color.FromArgb(0, 0, 0));
 
 			}
-
-			document.PageLayout = PdfPageLayout.OneColumn; //幅一杯に表示
 
 			try
 			{
-				document.Save(p);
+				StreamWriter sw = new StreamWriter(p);
+				sw.Write(svg.SVGString());
+				sw.Close();
 				ret = true;
-			}
-			catch
-			{
+			}catch{
 				ret = false;
 			}
 			return ret;
 		}
-		private string m_filename = "";
-		public bool ExportPDF()
+		public bool ExportSVG()
 		{
 			bool ret = false;
 			using (SaveFileDialog dlg = new SaveFileDialog())
 			{
-				dlg.DefaultExt = ".pdf";
-				dlg.Filter = "*.pdf|*.pdf|*.*|*.*";
+				dlg.DefaultExt = ".svg";
+				dlg.Filter = "*.svg|*.svg|*.*|*.*";
 				if (m_filename != "")
 				{
 					dlg.InitialDirectory = Path.GetDirectoryName(m_filename);
-					dlg.FileName = Path.GetFileName(m_filename);
+					string pp = Path.GetFileName(m_filename);
+					pp = Path.ChangeExtension(pp, ".svg");
+					dlg.FileName = pp;
 				}
 
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
-					ret = ExportPDF(dlg.FileName);
+					ret = ExportSVG(dlg.FileName);
 				}
 			}
 

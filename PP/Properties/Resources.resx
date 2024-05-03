@@ -242,6 +242,22 @@ bryful@gmail.com&lt;br&gt;
 # References
 [「日本で生まれ育った高性能紙飛行機　その設計・製作・飛行技術のすべて」　二宮康明著](https://www.amazon.co.jp/%E9%AB%98%E6%80%A7%E8%83%BD%E7%B4%99%E9%A3%9B%E8%A1%8C%E6%A9%9F-%E3%81%9D%E3%81%AE%E8%A8%AD%E8%A8%88%E3%83%BB%E8%A3%BD%E4%BD%9C%E3%83%BB%E9%A3%9B%E8%A1%8C%E6%8A%80%E8%A1%93%E3%81%AE%E3%81%99%E3%81%B9%E3%81%A6-%E4%BA%8C%E5%AE%AE-%E5%BA%B7%E6%98%8E/dp/4416313071)</value>
   </data>
+  <data name="SVGBase" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;svg id="pp" data-name="pp" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 595 842"&gt;
+  &lt;defs&gt;
+    &lt;style&gt;
+      .cls-1 {
+        stroke: #000000;
+        fill: none;
+        stroke-miterlimit: 10;
+        stroke-width: .57px;
+      }
+    &lt;/style&gt;
+  &lt;/defs&gt;
+$Lines
+&lt;/svg&gt;</value>
+  </data>
   <data name="upALL" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\upALL.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

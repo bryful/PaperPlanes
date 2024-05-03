@@ -51,6 +51,18 @@ namespace PP
 			{
 				Open(cmds[1]);
 			}
+			EasySVG es = new EasySVG();
+			es.Unit = EasySVG.UnitType.Mm;
+			es.DrawLine("Main", 10, 10, 50, 50, Color.Red);
+			PointF[] aa = new PointF[]
+			{
+				new PointF(50, 60),
+				new PointF(100, 60),
+				new PointF(100, 0),
+				new PointF(120, 200)
+			};
+			es.DrawPolyline("Sub",aa,Color.Blue);
+			Clipboard.SetText(es.SVGString());
 		}
 		public void PrefSave()
 		{
@@ -184,18 +196,17 @@ namespace PP
 		private void button1_Click(object sender, EventArgs e)
 		{
 
-			pCanvas1.ExportPDF("AAA.pdf");
-
 		}
 
-		private void exportPDFMenu_Click(object sender, EventArgs e)
-		{
-			pCanvas1.ExportPDF();
-		}
 
 		private void resolutionMenu_Click(object sender, EventArgs e)
 		{
 			pCanvas1.ShowDpiDialog();
+		}
+
+		private void exportSVGMenu_Click(object sender, EventArgs e)
+		{
+			pCanvas1.ExportSVG();
 		}
 	}
 }

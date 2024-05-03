@@ -83,6 +83,13 @@ namespace PP
 				m_PF.Y = P.Mm2Px(m_Ymm, m_Dpi);
 			}
 		}
+		public PointF PointPt
+		{
+			get
+			{
+				return new PointF(P.Mm2Px(m_Xmm, 72), P.Mm2Px(m_Ymm, 72));
+			}
+		}
 		public PPoint() 
 		{
 

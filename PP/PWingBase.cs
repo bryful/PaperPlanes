@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PdfSharp.Drawing;
 
 namespace PP
 {
@@ -285,6 +284,18 @@ namespace PP
 		{
 			get { return m_lines; }
 		}
+		public PointF[] PxLines
+		{
+			get 
+			{
+				PointF[] ret = new PointF[4];
+				ret[0] = m_lines[0].PointPt;
+				ret[1] = m_lines[1].PointPt;
+				ret[2] = m_lines[2].PointPt;
+				ret[3] = m_lines[3].PointPt;
+				return ret; 
+			}
+		}
 		public PointF[] GetLines(PointF d)
 		{
 			PointF [] ret = new PointF[4];
@@ -294,13 +305,13 @@ namespace PP
 			ret[3] = m_lines[3].GetPixel(d);
 			return ret;
 		}
-		public XPoint[] GetXLine()
+		public PointF[] GetMMLine(PointF d)
 		{
-			XPoint[] ret = new XPoint[4];
-			ret[0] = new XPoint(m_lines[0].Xmm, m_lines[0].Ymm);
-			ret[1] = new XPoint(m_lines[1].Xmm, m_lines[1].Ymm);
-			ret[2] = new XPoint(m_lines[2].Xmm, m_lines[2].Ymm);
-			ret[3] = new XPoint(m_lines[3].Xmm, m_lines[3].Ymm);
+			PointF[] ret = new PointF[4];
+			ret[0] = new PointF(m_lines[0].Xmm + d.X, m_lines[0].Ymm + d.Y);
+			ret[1] = new PointF(m_lines[1].Xmm + d.X, m_lines[1].Ymm + d.Y);
+			ret[2] = new PointF(m_lines[2].Xmm + d.X, m_lines[2].Ymm + d.Y);
+			ret[3] = new PointF(m_lines[3].Xmm + d.X, m_lines[3].Ymm + d.Y);
 			return ret;
 		}
 		private PPoint[] m_MACLine = new PPoint[2];

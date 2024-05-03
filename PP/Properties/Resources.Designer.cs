@@ -194,6 +194,28 @@ namespace PP.Properties {
         }
         
         /// <summary>
+        ///   &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        ///&lt;svg id=&quot;pp&quot; data-name=&quot;pp&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 595 842&quot;&gt;
+        ///  &lt;defs&gt;
+        ///    &lt;style&gt;
+        ///      .cls-1 {
+        ///        stroke: #000000;
+        ///        fill: none;
+        ///        stroke-miterlimit: 10;
+        ///        stroke-width: .57px;
+        ///      }
+        ///    &lt;/style&gt;
+        ///  &lt;/defs&gt;
+        ///$Lines
+        ///&lt;/svg&gt; に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string SVGBase {
+            get {
+                return ResourceManager.GetString("SVGBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
         internal static System.Drawing.Bitmap upALL {

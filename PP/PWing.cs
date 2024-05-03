@@ -10,7 +10,6 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using PdfSharp.Drawing;
 
 namespace PP
 {
@@ -74,6 +73,27 @@ namespace PP
 				Calc();
 			}
 		}
+		public PointF [] MainLinesPt
+		{
+			get
+			{
+				return m_Main.PxLines;
+			}
+		}
+		public PointF[] HTailLinesPt
+		{
+			get
+			{
+				return m_Hor.PxLines;
+			}
+		}
+		public PointF[] VTailLinesPt
+		{
+			get
+			{
+				return m_Ver.PxLines;
+			}
+		}
 		public float MainPos
 		{
 			get { return m_Main.PosY; }
@@ -132,6 +152,19 @@ namespace PP
 				Calc();
 			}
 		}
+		public PointF[] MainMMLines(PointF d)
+		{
+			return m_Main.GetMMLine(d);
+		}
+		public PointF[] HTailMMLines(PointF d)
+		{
+			return m_Hor.GetMMLine(d);
+		}
+		public PointF[] VTailMMLines(PointF d)
+		{
+			return m_Ver.GetMMLine(d);
+		}
+
 		public PointF[] MainLines(PointF d)
 		{
 			return m_Main.GetLines(d);
@@ -157,18 +190,6 @@ namespace PP
 			return m_Ver.GetMACLines(d);
 		}
 
-		public XPoint[] MainXLine()
-		{
-			return m_Main.GetXLine();
-		}
-		public XPoint[] HTailXLine()
-		{
-			return m_Hor.GetXLine();
-		}
-		public XPoint[] VTailXLine()
-		{
-			return m_Ver.GetXLine();
-		}
 		public float HTailPos
 		{
 			get { return m_Hor.PosY; }

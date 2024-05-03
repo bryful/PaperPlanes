@@ -31,5 +31,16 @@ namespace PP
 			int ff = (int)(f * 100);
 			return (float)ff /100;
 		}
+		static public string F2S(float f)
+		{
+			int f2 = (int)(f * 100 + 0.5);
+			bool b = (f2 < 0);
+			if(b ) { f2*=-1; }
+			string ret = "";
+			if(b ) { ret += "-"; }
+			ret += (f2/100).ToString();
+			ret += "." + (f2 % 100).ToString("D2");
+			return ret;
+		}
 	}
 }
