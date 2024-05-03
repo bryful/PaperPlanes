@@ -170,6 +170,13 @@ namespace PP.Properties {
         ///普通の尾翼と双尾翼の2種類に対応しています。&lt;br&gt;
         ///![PaperPlanes](pp.png)&lt;br&gt;
         ///
+        ///# 更新履歴
+        ///
+        ///* v1.0.0 作った。
+        ///* v1.0.1 コントロールをカスタム化
+        ///* v1.0.2 PDFではなくSVGにエクスポート形式を変更。DXFも&lt;br&gt;表示解像度の指定も出来るように。
+        ///
+        ///
         ///# Usage
         ///簡単な設計の仕方です。
         ///
@@ -180,38 +187,11 @@ namespace PP.Properties {
         ///## 主翼の大きさを決める
         ///タブで「主翼」「水平尾翼」「垂直」とあるので「主翼」を選び、好きな形にします。&lt;br&gt;
         ///&lt;br&gt;
-        ///単位はすべてmm(ミリメートル)です。
-        ///
-        ///* **位置**&lt;br&gt;先頭からの位置。
-        ///* **翼長**&lt;br&gt;中心から翼端までの距離。全長の半分なので注意してください。
-        ///* **翼根**&lt;br&gt;翼の根元の長さ。
-        ///* **翼端 [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
+        ///単位はすべて [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string HelpText {
             get {
                 return ResourceManager.GetString("HelpText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        ///&lt;svg id=&quot;pp&quot; data-name=&quot;pp&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 595 842&quot;&gt;
-        ///  &lt;defs&gt;
-        ///    &lt;style&gt;
-        ///      .cls-1 {
-        ///        stroke: #000000;
-        ///        fill: none;
-        ///        stroke-miterlimit: 10;
-        ///        stroke-width: .57px;
-        ///      }
-        ///    &lt;/style&gt;
-        ///  &lt;/defs&gt;
-        ///$Lines
-        ///&lt;/svg&gt; に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string SVGBase {
-            get {
-                return ResourceManager.GetString("SVGBase", resourceCulture);
             }
         }
         

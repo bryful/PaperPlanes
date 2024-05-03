@@ -12,6 +12,10 @@ using System.Diagnostics;
 using System.Xml.Schema;
 using System.Security;
 using System.IO;
+
+using netDxf;
+using netDxf.Entities;
+
 namespace PP
 {
 	public class PCanvas : Control
@@ -133,7 +137,7 @@ namespace PP
 				this.Invalidate();
 			}
 		}
-		private PointF m_DispP = new Point(0, 0);
+		private System.Drawing.PointF m_DispP = new System.Drawing.PointF(0, 0);
 		private PointF m_DispF = new PointF(10.0f, 10.0f);
 		/// <summary>
 		/// 表示基点
@@ -311,7 +315,7 @@ namespace PP
 			this.Invalidate();
 		}
 		private bool m_IsMd = false;
-		private Point m_md = new Point(0,0);
+		private System.Drawing.Point m_md = new System.Drawing.Point(0,0);
 		// **************************************************************
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
@@ -350,7 +354,7 @@ namespace PP
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			m_IsMd = false;
-			m_md = new Point(0, 0);
+			m_md = new System.Drawing.Point(0, 0);
 			base.OnMouseUp(e);
 		}
 		// **************************************************************
@@ -625,11 +629,137 @@ namespace PP
 				if (dlg.ShowDialog() == DialogResult.OK)
 				{
 					ret = ExportSVG(dlg.FileName);
+					if(ret)
+						m_filename = dlg.FileName;
+
 				}
 			}
 
 			return ret;
 		}
+
+		public bool ExportDXF(string p)
+		{
+			bool ret = false;
+
+			DxfDocument dxf = new DxfDocument();
+			float sX = 0;
+			float sY = -m_Wing.CenterGP;
+
+			Line cg1 = new Line (
+				new Vector2(sX-10,sY+m_Wing.CenterGP),
+				new Vector2(sX,sY+m_Wing.CenterGP)
+			);
+			dxf.Entities.Add(cg1);
+			Line cg2 = new Line (
+				new Vector2(sX-5,sY+m_Wing.CenterGReal),
+				new Vector2(sX,sY+m_Wing.CenterGReal)
+			);
+			dxf.Entities.Add(cg2);
+
+
+			
+
+			Line LineBody = new Line(
+				new Vector2(sX, sY),
+				new Vector2(sX, sY + Wing.FuselageLength)
+			);
+			dxf.Entities.Add(LineBody);
+
+
+			PointF dp = new PointF(sX, sY);
+			PointF[] m = Wing.MainMMLines(dp);
+			Vector2[] lineM = new Vector2[]
+			{
+				new Vector2(m[0].X,m[0].Y),
+				new Vector2(m[1].X,m[1].Y),
+				new Vector2(m[2].X,m[2].Y),
+				new Vector2(m[3].X,m[3].Y)
+			};
+			PointF[]  HT = Wing.HTailMMLines(dp);
+			Vector2[] lineHT = new Vector2[]
+			{
+				new Vector2(HT[0].X,HT[0].Y),
+				new Vector2(HT[1].X,HT[1].Y),
+				new Vector2(HT[2].X,HT[2].Y),
+				new Vector2(HT[3].X,HT[3].Y)
+			};
+			PointF[] VT = Wing.VTailMMLines(dp);
+			Vector2[] lineVT = new Vector2[]
+			{
+				new Vector2(VT[0].X,VT[0].Y),
+				new Vector2(VT[1].X,VT[1].Y),
+				new Vector2(VT[2].X,VT[2].Y),
+				new Vector2(VT[3].X,VT[3].Y)
+			};
+
+			Polyline2D Ml = new Polyline2D(lineM);
+			dxf.Entities.Add(Ml);
+
+			if (TailMode == TailMode.Twin)
+			{
+				Line TT1 = new Line(
+				lineHT[1],
+				lineHT[1]
+				);
+				dxf.Entities.Add(TT1);
+
+				Vector2[] TT = new Vector2[] {
+					lineHT[0],
+					lineHT[1],
+					lineVT[1],
+					lineVT[2],
+					lineHT[2],
+					lineHT[3]
+				};
+				Polyline2D TTL = new Polyline2D(TT);
+				dxf.Entities.Add(TTL);
+			}
+			else
+			{
+				Polyline2D HTa = new Polyline2D(lineHT);
+				Polyline2D VTa = new Polyline2D(lineVT);
+				dxf.Entities.Add(HTa);
+				dxf.Entities.Add(VTa);
+
+			}
+
+			try
+			{
+				ret = dxf.Save(p);
+			}
+			catch
+			{
+				ret = false;
+			}
+			return ret;
+		}
+		public bool ExportDXF()
+		{
+			bool ret = false;
+			using (SaveFileDialog dlg = new SaveFileDialog())
+			{
+				dlg.DefaultExt = ".dxf";
+				dlg.Filter = "*.dxf|*.dxf|*.*|*.*";
+				if (m_filename != "")
+				{
+					dlg.InitialDirectory = Path.GetDirectoryName(m_filename);
+					string pp = Path.GetFileName(m_filename);
+					pp = Path.ChangeExtension(pp, ".dxf");
+					dlg.FileName = pp;
+				}
+
+				if (dlg.ShowDialog() == DialogResult.OK)
+				{
+					ret = ExportDXF(dlg.FileName);
+					if(ret)
+						m_filename = dlg.FileName;
+				}
+			}
+
+			return ret;
+		}
+
 		public void ShowDpiDialog()
 		{
 			using(DpiForm dlg = new DpiForm())

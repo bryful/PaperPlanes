@@ -10,6 +10,9 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
 
+using netDxf;
+using netDxf.Entities;
+
 namespace PP
 {
 	public partial class Form1 : Form
@@ -51,18 +54,6 @@ namespace PP
 			{
 				Open(cmds[1]);
 			}
-			EasySVG es = new EasySVG();
-			es.Unit = EasySVG.UnitType.Mm;
-			es.DrawLine("Main", 10, 10, 50, 50, Color.Red);
-			PointF[] aa = new PointF[]
-			{
-				new PointF(50, 60),
-				new PointF(100, 60),
-				new PointF(100, 0),
-				new PointF(120, 200)
-			};
-			es.DrawPolyline("Sub",aa,Color.Blue);
-			Clipboard.SetText(es.SVGString());
 		}
 		public void PrefSave()
 		{
@@ -207,6 +198,12 @@ namespace PP
 		private void exportSVGMenu_Click(object sender, EventArgs e)
 		{
 			pCanvas1.ExportSVG();
+		}
+
+		
+		private void exportDXFMenu_Click(object sender, EventArgs e)
+		{
+			pCanvas1.ExportDXF();
 		}
 	}
 }

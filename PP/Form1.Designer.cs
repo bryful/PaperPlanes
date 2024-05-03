@@ -36,6 +36,7 @@
 			this.saveAsMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportSVGMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.quitMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportDXFMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.editMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.resolutionMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,6 +78,7 @@
             this.saveMenu,
             this.saveAsMenu,
             this.exportSVGMenu,
+            this.exportDXFMenu,
             this.quitMenu});
 			this.fileMenu.Name = "fileMenu";
 			this.fileMenu.Size = new System.Drawing.Size(37, 20);
@@ -121,6 +123,13 @@
 			this.quitMenu.Size = new System.Drawing.Size(182, 22);
 			this.quitMenu.Text = "Quit";
 			this.quitMenu.Click += new System.EventHandler(this.quitMenu_Click);
+			// 
+			// exportDXFMenu
+			// 
+			this.exportDXFMenu.Name = "exportDXFMenu";
+			this.exportDXFMenu.Size = new System.Drawing.Size(182, 22);
+			this.exportDXFMenu.Text = "ExportDXF";
+			this.exportDXFMenu.Click += new System.EventHandler(this.exportDXFMenu_Click);
 			// 
 			// editMenu
 			// 
@@ -405,6 +414,7 @@
 		private PWingCalc pWingCalc1;
 		private System.Windows.Forms.ToolStripMenuItem resolutionMenu;
 		private System.Windows.Forms.ToolStripMenuItem exportSVGMenu;
+		private System.Windows.Forms.ToolStripMenuItem exportDXFMenu;
 	}
 }
 
