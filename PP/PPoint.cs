@@ -47,6 +47,7 @@ namespace PP
 		public float Dpi
 		{
 			get { return m_Dpi; }
+			set { SetDPI(value); }
 		}
 		public PointF PointMM
 		{
@@ -82,6 +83,14 @@ namespace PP
 				m_PF.X = P.Mm2Px(m_Xmm, m_Dpi);
 				m_PF.Y = P.Mm2Px(m_Ymm, m_Dpi);
 			}
+		}
+		public float Xp
+		{
+			get { return m_PF.X; }
+		}
+		public float Yp
+		{
+			get { return m_PF.Y; }
 		}
 		public PointF PointPt
 		{

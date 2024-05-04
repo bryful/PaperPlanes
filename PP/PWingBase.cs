@@ -56,7 +56,6 @@ namespace PP
 			}
 			set
 			{
-				if (value < 0) value = 0;
 				bool b = (m_posY != value);
 				m_posY = value;
 				Calc();
@@ -75,7 +74,6 @@ namespace PP
 			}
 			set
 			{
-				if (value < 0) value = 0;
 				bool b = (m_posX != value);
 				m_posX = value;
 				Calc();
@@ -284,18 +282,6 @@ namespace PP
 		{
 			get { return m_lines; }
 		}
-		public PointF[] PxLines
-		{
-			get 
-			{
-				PointF[] ret = new PointF[4];
-				ret[0] = m_lines[0].PointPt;
-				ret[1] = m_lines[1].PointPt;
-				ret[2] = m_lines[2].PointPt;
-				ret[3] = m_lines[3].PointPt;
-				return ret; 
-			}
-		}
 		public PointF[] GetLines(PointF d)
 		{
 			PointF [] ret = new PointF[4];
@@ -364,7 +350,6 @@ namespace PP
 		private void Calc()
 		{
 			// 値の確認
-			if (m_posX < 0) m_posX = 0;
 			if (m_span < 5) m_span = 5;
 			if (m_root < 5) m_root = 5;
 			if (m_tip < 5) m_tip = 5;

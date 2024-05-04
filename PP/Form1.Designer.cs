@@ -344,8 +344,6 @@
 			this.pCanvas1.BackColor = System.Drawing.Color.White;
 			this.pCanvas1.BaseColor = System.Drawing.Color.FromArgb(((int)(((byte)(120)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.pCanvas1.CalcEdit = this.pWingCalc1;
-			this.pCanvas1.CanvasSize = new System.Drawing.SizeF(137.4048F, 156.9904F);
-			this.pCanvas1.DispF = ((System.Drawing.PointF)(resources.GetObject("pCanvas1.DispF")));
 			this.pCanvas1.Dpi = 83F;
 			this.pCanvas1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.pCanvas1.GridSize = new System.Drawing.SizeF(5F, 5F);

@@ -159,7 +159,7 @@ namespace PP
 			}
 
 			m_edits[0].Text = "Pos";
-			m_edits[0].SetMinMax(0, 200);
+			m_edits[0].SetMinMax(-200, 200);
 			m_edits[0].IsArrowHor = false;
 			m_edits[1].Text = "Span";
 			m_edits[1].SetMinMax(5, 150);

@@ -14,16 +14,18 @@ namespace PP
 			Point,
 			Mm
 		};
-		private UnitType m_UnitType = UnitType.Point;
+		private UnitType m_UnitType = UnitType.Mm;
 		public UnitType Unit 
 		{
 			get { return m_UnitType; }
 			set { m_UnitType = value; }
 		}
-		private int m_ViewWidth = 595;
-		private int m_ViewHeight = 842;
+		private float m_ViewX1 = -150;
+		private float m_ViewY1 = -150;
+		private float m_ViewX2 = 150;
+		private float m_ViewY2 = 150;
 		private string XmlHeader = "<?xml version = \"1.0\" encoding=\"UTF-8\"?>\r\n";
-		private string SVGHeader = "<svg id = \"{0}\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\"0 0 {1} {2}\">\r\n";
+		private string SVGHeader = "<svg id = \"{0}\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\"{1} {2} {3} {4}\">\r\n";
 		private string SVGFooter = "</svg>\r\n";
 
 		private string m_RootID = "pp";
@@ -50,7 +52,8 @@ namespace PP
 		{
 			string ret = "";
 			ret += XmlHeader;
-			ret += string.Format(SVGHeader, m_RootID, m_ViewWidth, m_ViewHeight);
+
+			ret += string.Format(SVGHeader, m_RootID, FS(m_ViewX1), FS(m_ViewY1), FS(m_ViewX2), FS(m_ViewY2));
 			ret += DefBLoack;
 			if(m_objects.Count>0)
 			{
@@ -64,11 +67,13 @@ namespace PP
 			return ret;
 		}
 		// ***************************************************************************
-		public EasySVG(int w= 595, int h = 842, UnitType u = UnitType.Point)
+		public EasySVG(float x1= -150, float y1 =-150, float x2 = 150, float y2 = 150, UnitType u = UnitType.Mm)
 		{
-			m_ViewWidth = w;
-			m_ViewHeight = h;
 			m_UnitType = u;
+			m_ViewX1 = UV(x1);
+			m_ViewY1 = UV(y1);
+			m_ViewX2 = UV(x2);
+			m_ViewY2 = UV(y2);
 		}
 		// ***************************************************************************
 		private float UV(float m)
@@ -86,12 +91,12 @@ namespace PP
 		{
 			int mi = (int)(m * 100+0.5);
 			string ret = "";
-			if (mi < 0)
+			if (m < 0)
 			{
 				ret += "-";
 				mi *= -1;
 			}
-			ret = (mi / 100).ToString();
+			ret += (mi / 100).ToString();
 			ret += "." + (mi % 100).ToString("D2");
 			return ret;
 		}

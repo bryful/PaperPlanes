@@ -32,52 +32,11 @@ namespace PP
 			{
 				m_Dpi = value;
 				m_Wing.Dpi = value;
-				m_DispP.X = P.Mm2Px(m_DispF.X, m_Dpi);
-				m_DispP.Y = P.Mm2Px(m_DispF.Y, m_Dpi);
+				m_Disp.Dpi = value;
 
 				this.Invalidate(); 
 			}
 		}
-
-		[Category ("PaperPlane")]
-		public SizeF CanvasSize
-		{
-			get 
-			{
-				return new SizeF(
-					P.Px2Mm(Width,m_Dpi), 
-					P.Px2Mm(Height, m_Dpi)); 
-			}
-			set
-			{
-				SetCanvasSize(value);
-			}
-		}
-		[Category("PaperPlaneLine")]
-		public PointF[] MainLines { get { return Wing.MainLinesPt; } }
-		[Category("PaperPlaneLine")]
-		public PointF[] HTailLines { get { return Wing.HTailLinesPt; } }
-		[Category("PaperPlaneLine")]
-		public PointF[] VTailLines { get { return Wing.VTailLinesPt; } }
-		public void SetWidthMM(float w)
-		{
-			base.Width = (int)(P.Mm2Px(w,m_Dpi));
-			this.Invalidate();
-		}
-		public void SetHeightMM(float h)
-		{
-			base.Height = (int)(P.Mm2Px(h, m_Dpi) + 0.5);
-			this.Invalidate();
-		}
-		public void SetCanvasSize(SizeF sz)
-		{
-			base.Size = new Size(
-				(int)(P.Mm2Px(sz.Width, m_Dpi)),
-				(int)(P.Mm2Px(sz.Height, m_Dpi))
-				);
-			this.Invalidate();
-		}
-
 		private Color m_GridColor = Color.FromArgb(255,180,180,180);
 		/// <summary>
 		/// グリッド線の色
@@ -137,23 +96,20 @@ namespace PP
 				this.Invalidate();
 			}
 		}
-		private System.Drawing.PointF m_DispP = new System.Drawing.PointF(0, 0);
-		private PointF m_DispF = new PointF(10.0f, 10.0f);
+		//private System.Drawing.PointF m_DispP = new System.Drawing.PointF(0, 0);
+		//private PointF m_DispF = new PointF(10.0f, 10.0f);
+		private PPoint m_Disp = new PPoint(10,10,82);
 		/// <summary>
 		/// 表示基点
 		/// </summary>
 		[Category("PaperPlane")]
-		public PointF DispF
+		public PointF Disp
 		{
-			get { return m_DispF; }
+			get { return m_Disp.PointMM; }
 			set 
 			{ 
-				m_DispF = value; ;
-				if (m_DispF.X < 0) m_DispF.X = 0;
-				if (m_DispF.Y < 0) m_DispF.Y = 0;
-
-				m_DispP.X = P.Mm2Px(m_DispF.X, m_Dpi);
-				m_DispP.Y = P.Mm2Px(m_DispF.Y, m_Dpi);
+				m_Disp.PointMM = value;
+				this.Invalidate();
 			}
 		}
 
@@ -186,7 +142,6 @@ namespace PP
 				this.Invalidate();
 				if (m_TailModeBtns != null)
 				{
-					//if (m_TailModeBtns.TailMode != m_Wing.TailMode)
 						m_TailModeBtns.TailMode = m_Wing.TailMode;
 				}
 				if(m_VTailEdit != null)
@@ -202,8 +157,8 @@ namespace PP
 		{
 			base.DoubleBuffered = true;
 			base.BackColor = Color.White;
-			Dpi = 83.0f;
-			DispF = new PointF(10, 10);
+			Dpi = 82.0f;
+			m_Disp.PointMM = new PointF(10,10);
 			m_Wing.Calc();
 			m_Wing.WingChanged -= (sender, e) => { this.Invalidate(); };
 			m_Wing.WingChanged += (sender, e) => { this.Invalidate(); };
@@ -218,7 +173,7 @@ namespace PP
 			g.DrawLines(p, mac);
 			
 			float y = (float)(mac[0].Y + (mac[1].Y - mac[0].Y) * 0.25);
-			float x0 = m_DispP.X;
+			float x0 = m_Disp.PointPX.X;
 			float x1 = (float)(mac[0].X);
 			g.DrawLine(p, x0, y, x1, y);
 
@@ -240,29 +195,29 @@ namespace PP
 			// baseLine
 			p.Width = 2;
 			p.Color = m_BaseColor;
-			g.DrawLine(p, m_DispP, new PointF(m_DispP.X, m_DispP.Y + P.Mm2Px(m_Wing.FuselageLength,m_Dpi)));
+			g.DrawLine(p, m_Disp.PointPX, new PointF(m_Disp.Xp, m_Disp.Yp + P.Mm2Px(m_Wing.FuselageLength,m_Dpi)));
 
 			//Main
-			PointF[] lines = m_Wing.MainLines(m_DispF);
-			PointF[] mac = m_Wing.MainMACLines(m_DispF);
+			PointF[] lines = m_Wing.MainLines(m_Disp.PointMM);
+			PointF[] mac = m_Wing.MainMACLines(m_Disp.PointMM);
 			DrawWingSub(g,p,sb, lines, mac, m_Wing.SelectedIndex);
 
 			p.Color = m_LineColor;
 			p.Width = 1;
-			float cg = P.Mm2Px(m_Wing.CenterGP, m_Dpi) + m_DispP.Y;
-			g.DrawLine(p, m_DispP.X, cg, m_DispP.X - 10, cg);
+			float cg = P.Mm2Px(m_Wing.CenterGP, m_Dpi) + m_Disp.Yp;
+			g.DrawLine(p, m_Disp.Xp, cg, m_Disp.Xp - 10, cg);
 
 			p.Color = Color.Red;
 			p.Width = 1;
-			float cg2 = P.Mm2Px(m_Wing.CenterGReal, m_Dpi) + m_DispP.Y;
-			g.DrawLine(p, m_DispP.X, cg2, m_DispP.X + 20, cg2);
+			float cg2 = P.Mm2Px(m_Wing.CenterGReal, m_Dpi) + m_Disp.Yp;
+			g.DrawLine(p, m_Disp.Xp, cg2, m_Disp.Xp + 20, cg2);
 
 
-			lines = m_Wing.HTailLines(m_DispF);
-			mac = m_Wing.HTailMACLines(m_DispF);
+			lines = m_Wing.HTailLines(m_Disp.PointMM);
+			mac = m_Wing.HTailMACLines(m_Disp.PointMM);
 			DrawWingSub(g, p, sb, lines, mac, m_Wing.SelectedIndex - 4);
-			lines = m_Wing.VTailLines(m_DispF);
-			mac = m_Wing.VTailMACLines(m_DispF);
+			lines = m_Wing.VTailLines(m_Disp.PointMM);
+			mac = m_Wing.VTailMACLines(m_Disp.PointMM);
 			DrawWingSub(g, p, sb, lines, mac, m_Wing.SelectedIndex - 8);
 
 		}
@@ -319,8 +274,8 @@ namespace PP
 		// **************************************************************
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			float x = e.X - m_DispP.X;
-			float y = e.Y - m_DispP.Y;
+			float x = e.X - m_Disp.Xp;
+			float y = e.Y - m_Disp.Yp;
 
 			int idx = m_Wing.IsIn(x, y);
 			if(idx>=0)
@@ -542,28 +497,60 @@ namespace PP
 			return pnts;
 		}
 		private string m_filename = "";
+		private PointF[] Rotate(PointF[] pt, float r)
+		{
+			if (pt.Length<=0) return pt;
+			PointF[] ret = new PointF[pt.Length];
+
+			for (int i=0; i<pt.Length; i++)
+			{
+				float x = pt[i].X;
+				float y = pt[i].Y;
+				double r2 = r * Math.PI / 180;
+				float x2 = (float)(x * Math.Cos(r2) - y * Math.Sin(r2));
+				float y2 = (float)(x * Math.Sin(r2) + y * Math.Cos(r2));
+				ret[i] = new PointF(x2, y2);
+			}
+			return ret;
+		}
+		private PointF[] MirrorH(PointF[] pt)
+		{
+			if (pt.Length <= 0) return pt;
+
+			for (int i = 0; i < pt.Length; i++)
+			{
+				pt[i].Y *= -1; 
+			}
+			return pt;
+		}
 		public bool ExportSVG(string p)
 		{
 			bool ret = false;
-			EasySVG svg = new EasySVG();
-			svg.Unit = EasySVG.UnitType.Mm;
-			float sX = 40;
-			float sY = 30;
+			float w = Wing.CSize.Width/2;
+			float h = Wing.CSize.Height/2;
 
-			PointF[] cg1 = new PointF[] {
+			EasySVG svg = new EasySVG(-w,-h,w*2,h*2);
+			svg.Unit = EasySVG.UnitType.Mm;
+			float sX = 0;
+			float sY =  -m_Wing.CenterGP;
+
+			PointF[] cg = new PointF[] {
 				new PointF(sX-10,sY+m_Wing.CenterGP),
 				new PointF(sX,sY+m_Wing.CenterGP),
 			};
-			svg.DrawLine("cg",cg1,Color.FromArgb(255,128,128));
-			PointF[] cg2 = new PointF[] {
+			cg = Rotate(cg,-90);
+			svg.DrawLine("cg",cg,Color.FromArgb(255,128,128));
+			PointF[] cg_ex = new PointF[] {
 				new PointF(sX-5,sY+m_Wing.CenterGReal),
 				new PointF(sX,sY+m_Wing.CenterGReal),
 			};
-			svg.DrawLine("cg-ex", cg2, Color.FromArgb(255, 200, 200));
+			cg_ex = Rotate(cg_ex, -90);
+			svg.DrawLine("cg-ex", cg_ex, Color.FromArgb(255, 200, 200));
 			PointF[] LineBody = new PointF[] {
 				new PointF(sX,sY),
 				new PointF(sX,sY + Wing.FuselageLength),
 			};
+			LineBody = Rotate(LineBody, -90);
 			svg.DrawLine("body", LineBody, Color.FromArgb(0, 0, 0));
 
 			PointF dp = new PointF(sX, sY);
@@ -571,6 +558,7 @@ namespace PP
 			PointF[] lineHT = Wing.HTailMMLines(dp);
 			PointF[] lineVT = Wing.VTailMMLines(dp);
 
+			lineM = Rotate(lineM, -90);
 			svg.DrawPolyline("Main", lineM, Color.FromArgb(0, 0, 0));
 
 			if (TailMode == TailMode.Twin)
@@ -580,6 +568,7 @@ namespace PP
 					lineHT[1],
 					lineHT[2]
 				};
+				TT1 = Rotate(TT1, -90);
 				svg.DrawLine("Tail-ori", TT1, Color.FromArgb(160, 160, 160));
 
 				PointF[] TT = new PointF[]
@@ -591,11 +580,14 @@ namespace PP
 					lineHT[2],
 					lineHT[3],
 				};
+				TT = Rotate(TT, -90);
 				svg.DrawPolyline("tail", TT, Color.FromArgb(0, 0, 0));
 			}
 			else
 			{
+				lineHT = Rotate(lineHT, -90);
 				svg.DrawPolyline("HTail", lineHT, Color.FromArgb(0, 0, 0));
+				lineVT = Rotate(lineVT, -90);
 				svg.DrawPolyline("VTail", lineVT, Color.FromArgb(0, 0, 0));
 
 			}
@@ -642,33 +634,71 @@ namespace PP
 		{
 			bool ret = false;
 
+			SizeF sz = m_Wing.CSize;
+
 			DxfDocument dxf = new DxfDocument();
 			float sX = 0;
 			float sY = -m_Wing.CenterGP;
+			Vector2[] Edge1 = new Vector2[]
+			{
+				new Vector2(-sz.Width/2,-sz.Height/2+10),
+				new Vector2(-sz.Width/2,-sz.Height/2),
+				new Vector2(-sz.Width/2+10,-sz.Height/2)
+			};
+			Polyline2D e1 = new Polyline2D(Edge1);
+			dxf.Entities.Add(e1);
+			
+			Vector2[] Edge2 = new Vector2[]
+			{
+				new Vector2(sz.Width/2,sz.Height/2-10),
+				new Vector2(sz.Width/2,sz.Height/2),
+				new Vector2(sz.Width/2-10,sz.Height/2)
+			};
+			Polyline2D e2 = new Polyline2D(Edge2);
+			dxf.Entities.Add(e2);
+
+			PointF[] cg1_ = new PointF[] {
+				new PointF(sX-10,sY+m_Wing.CenterGP),
+				new PointF(sX,sY+m_Wing.CenterGP),
+			};
+			cg1_ = MirrorH(Rotate(cg1_, -90));
 
 			Line cg1 = new Line (
-				new Vector2(sX-10,sY+m_Wing.CenterGP),
-				new Vector2(sX,sY+m_Wing.CenterGP)
+				new Vector2(cg1_[0].X, cg1_[0].Y),
+				new Vector2(cg1_[1].X, cg1_[1].Y)
 			);
 			dxf.Entities.Add(cg1);
+
+			PointF[] cg2_ = new PointF[] {
+				new PointF(sX-5,sY+m_Wing.CenterGReal),
+				new PointF(sX,sY+m_Wing.CenterGReal)
+			};
+			cg2_ = MirrorH(Rotate(cg2_, -90));
+
 			Line cg2 = new Line (
-				new Vector2(sX-5,sY+m_Wing.CenterGReal),
-				new Vector2(sX,sY+m_Wing.CenterGReal)
+				new Vector2(cg2_[0].X, cg2_[0].Y),
+				new Vector2(cg2_[1].X, cg2_[1].Y)
 			);
 			dxf.Entities.Add(cg2);
 
 
-			
+			PointF[] LineBody_ = new PointF[] {
+				new PointF(sX, sY),
+				new PointF(sX, sY + Wing.FuselageLength),
+			};
+			LineBody_ = MirrorH(Rotate(LineBody_, -90));
 
 			Line LineBody = new Line(
-				new Vector2(sX, sY),
-				new Vector2(sX, sY + Wing.FuselageLength)
+				new Vector2(LineBody_[0].X, LineBody_[0].Y),
+				new Vector2(LineBody_[1].X, LineBody_[1].Y)
 			);
 			dxf.Entities.Add(LineBody);
 
 
 			PointF dp = new PointF(sX, sY);
 			PointF[] m = Wing.MainMMLines(dp);
+			m = MirrorH(Rotate(m, -90));
+
 			Vector2[] lineM = new Vector2[]
 			{
 				new Vector2(m[0].X,m[0].Y),
@@ -677,6 +707,7 @@ namespace PP
 				new Vector2(m[3].X,m[3].Y)
 			};
 			PointF[]  HT = Wing.HTailMMLines(dp);
+			HT = MirrorH(Rotate(HT, -90));
 			Vector2[] lineHT = new Vector2[]
 			{
 				new Vector2(HT[0].X,HT[0].Y),
@@ -685,6 +716,7 @@ namespace PP
 				new Vector2(HT[3].X,HT[3].Y)
 			};
 			PointF[] VT = Wing.VTailMMLines(dp);
+			VT = MirrorH(Rotate(VT, -90));
 			Vector2[] lineVT = new Vector2[]
 			{
 				new Vector2(VT[0].X,VT[0].Y),
@@ -700,7 +732,7 @@ namespace PP
 			{
 				Line TT1 = new Line(
 				lineHT[1],
-				lineHT[1]
+				lineHT[2]
 				);
 				dxf.Entities.Add(TT1);
 
@@ -723,7 +755,6 @@ namespace PP
 				dxf.Entities.Add(VTa);
 
 			}
-
 			try
 			{
 				ret = dxf.Save(p);

@@ -1,0 +1,18 @@
+<?xml version = "1.0" encoding="UTF-8"?>
+<svg id = "pp" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-374.13 -297.63 748.29 595.28">
+<defs>
+<style>
+.base{
+fill: none;
+stroke-miterlimit: 10;
+stroke-width: .6;
+}
+</style>
+</defs>
+<line id="cg" class="base" x1="-0.00" y1="28.35" x2="0.00" y2="0.00" stroke="#FF8080" />
+<line id="cg-ex" class="base" x1="-5.15" y1="14.17" x2="-5.15" y2="-0.00" stroke="#FFC8C8" />
+<line id="body" class="base" x1="-209.78" y1="-0.00" x2="317.45" y2="0.00" stroke="#000000" />
+ <polyline id="Main" class="base" points="-88.69 -0.00 -75.00 -240.93 -4.14 -240.93 30.36 0.00" stroke="#000000" />
+ <line id="Tail-ori" class="base" x1="280.60" y1="-134.95" x2="325.30" y2="-134.95" stroke="#A0A0A0" />
+ <polyline id="tail" class="base" points="243.75 0.00 280.60 -134.95 315.79 -187.96 329.96 -187.96 325.30 -134.95 317.45 0.00" stroke="#000000" />
+ </svg>
